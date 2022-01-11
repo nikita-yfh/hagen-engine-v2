@@ -1,0 +1,15 @@
+include_directories(
+	"."
+	"box2d"
+	"imgui"
+	"imgui/backends"
+	"glad"
+	"core"
+	"rapidjson"
+)
+add_subdirectory("box2d")
+add_subdirectory("imgui")
+add_subdirectory("glad")
+add_subdirectory("core")
+add_subdirectory("engine")
+add_subdirectory("editor")

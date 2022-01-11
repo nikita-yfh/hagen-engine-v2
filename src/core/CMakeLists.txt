@@ -1,0 +1,37 @@
+set(CORE "core")
+set(CORE_SOURCES
+	"Serializer.cpp"
+	"Utility.cpp"
+	"Locale.cpp"
+	"Logger.cpp"
+	"Texture.cpp"
+	"ResourceManager.cpp"
+	"SavesManager.cpp"
+	"Resource.cpp"
+	"Sound.cpp"
+	"Surface.cpp"
+	"Shader.cpp"
+	"miniz.c"
+)
+set(CORE_HEADERS
+	"Serializer.hpp"
+	"Utility.hpp"
+	"Locale.hpp"
+	"Logger.hpp"
+	"Texture.hpp"
+	"ResourceManager.hpp"
+	"SavesManager.hpp"
+	"Resource.hpp"
+	"Sound.hpp"
+	"Surface.hpp"
+	"Shader.hpp"
+	"miniz.h"
+	"stb_image.h"
+)
+include_directories(
+	${SDL2_INCLUDE_DIR}
+)
+add_library(${CORE} SHARED ${CORE_HEADERS} ${CORE_SOURCES})
+target_link_libraries(${CORE}
+	${SDL2_LIBRARY}
+)

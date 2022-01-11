@@ -1,0 +1,71 @@
+set(EDITOR "editor")
+set(EDITOR_SOURCES
+	"EditorApp.cpp"
+	"EditorMain.cpp"
+	"Vec2Property.cpp"
+	"ToolBar.cpp"
+	"MenuBar.cpp"
+	"EditMenu.cpp"
+	"GLCanvas.cpp"
+	"ImagePanel.cpp"
+	"ImagePreview.cpp"
+	"Level.cpp"
+	"Body.cpp"
+	"Fixture.cpp"
+	"Camera.cpp"
+	"Edge.cpp"
+	"Circle.cpp"
+	"Colors.cpp"
+	"Object.cpp"
+	"GLUtils.cpp"
+	"Polygon.cpp"
+	"Chain.cpp"
+	"Joint.cpp"
+	"PointJoint.cpp"
+	"WeldJoint.cpp"
+	"RevoluteJoint.cpp"
+	"PrismaticJoint.cpp"
+	"DistanceJoint.cpp"
+	"PulleyJoint.cpp"
+)
+set(EDITOR_HEADERS
+	"EditorApp.hpp"
+	"EditorMain.hpp"
+	"Vec2Property.hpp"
+	"ToolBar.hpp"
+	"MenuBar.hpp"
+	"EditMenu.hpp"
+	"GLCanvas.hpp"
+	"ImagePanel.hpp"
+	"ImagePreview.hpp"
+	"Level.hpp"
+	"Body.hpp"
+	"Fixture.hpp"
+	"Camera.hpp"
+	"Edge.hpp"
+	"Circle.hpp"
+	"Colors.hpp"
+	"Object.hpp"
+	"GLUtils.hpp"
+	"Mouse.hpp"
+	"Polygon.hpp"
+	"Chain.hpp"
+	"Joint.hpp"
+	"PointJoint.hpp"
+	"WeldJoint.hpp"
+	"RevoluteJoint.hpp"
+	"PrismaticJoint.hpp"
+	"DistanceJoint.hpp"
+	"PulleyJoint.hpp"
+)
+find_package(wxWidgets REQUIRED core base gl propgrid)
+find_package(OpenGL REQUIRED)
+include(${wxWidgets_USE_FILE})
+add_executable(${EDITOR} ${EDITOR_SOURCES} ${EDITOR_HEADERS})
+
+target_link_libraries(${EDITOR}
+	${wxWidgets_LIBRARIES}
+	${OPENGL_LIBRARIES}
+	${GL_LIBRARIES}
+)
+

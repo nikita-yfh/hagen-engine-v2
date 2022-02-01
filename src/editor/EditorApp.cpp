@@ -26,6 +26,7 @@ bool EditorApp::OnInit() {
 			return false;
 		gameDir = dialog.GetPath();
 	}
+	wxInitAllImageHandlers();
 	EditorFrame* frame;
 	frame=new EditorFrame(gameDir);
 	frame->Show();

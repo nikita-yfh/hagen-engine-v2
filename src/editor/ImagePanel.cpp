@@ -30,7 +30,6 @@ ImagePanel::ImagePanel(wxWindow *parent, const wxString &_gameDir, Level &_level
 		sizer->Add(preview, 0, wxEXPAND);
 	}
 	SetSizerAndFit(sizer);
-	wxInitAllImageHandlers();
 }
 
 void ImagePanel::OnPressButtonAdd(wxCommandEvent&){

@@ -3,11 +3,11 @@
 #include "ImagePreview.hpp"
 #include <wx/panel.h>
 #include <wx/listbox.h>
-#include <wx/string.h>
 
-class ImagePanel : public wxPanel{
+class ImagePanel : public wxPanel {
 public:
-	ImagePanel(wxWindow *parent, const wxString &gameDir, Level &level);
+	ImagePanel(wxWindow *parent, Level &level);
+	void AppendImage(const wxString&);
 private:
 	void OnPressButtonAdd(wxCommandEvent&);
 	void OnPressButtonRemove(wxCommandEvent&);
@@ -15,7 +15,7 @@ private:
 	void SelectedImage(wxUpdateUIEvent&);
 
 	Level &level;
-	wxString gameDir;
+	const Directory &gameDir;
 
 	wxListBox *list;
 	ImagePreview *preview;

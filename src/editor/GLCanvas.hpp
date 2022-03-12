@@ -32,7 +32,6 @@ private:
 	Colors colors;
 	Camera camera;
 	b2Vec2 mouse;
-	bool create;
 
 	wxDECLARE_EVENT_TABLE();
 };

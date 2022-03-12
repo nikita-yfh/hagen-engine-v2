@@ -16,6 +16,7 @@ private:
 
 	wxImage image;
 	wxBitmap resized;
+	wxString path;
 	bool loaded;
 
 	wxDECLARE_EVENT_TABLE();

@@ -37,7 +37,7 @@ enum{
 
 class EditorFrame : public wxFrame {
 public:
-	EditorFrame(const wxString &gameDir);
+	EditorFrame(const Directory &directory);
 
 	template<b2BodyType type>
 	void AddBody(wxCommandEvent&){
@@ -70,6 +70,7 @@ private:
 	void OnLevelUpdate(wxCommandEvent&);
 	void OnPropertyGridUpdate(wxPropertyGridEvent&);
 	void DeleteSelected(wxCommandEvent&);
+	void OnExit(wxCloseEvent&);
 
 	Level level;
 	GLCanvas *canvas;

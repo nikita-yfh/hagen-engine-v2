@@ -55,6 +55,7 @@ void Body::DeleteSelected(){
 	}
 }
 void Body::Draw(const Colors &colors) const{
+
 	Transform();
 	glLineWidth(GetLineWidth());
 	for(Fixture *fixture=fixtures;fixture;fixture=fixture->next)

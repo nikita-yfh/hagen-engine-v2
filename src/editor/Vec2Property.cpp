@@ -4,8 +4,8 @@ WX_PG_IMPLEMENT_VARIANT_DATA(b2Vec2)
 
 wxIMPLEMENT_DYNAMIC_CLASS(Vec2Property, wxPGProperty);
 
-Vec2Property::Vec2Property(const wxString &label, const wxString &name, const b2Vec2 &value)
-		:wxPGProperty(label,name){
+Vec2Property::Vec2Property(const wxString &label, const wxString &name,
+				const b2Vec2 &value) :wxPGProperty(label,name){
 	m_value=WXVARIANT(value);
 
 	AddPrivateChild(new wxFloatProperty("X", "X", value.x));

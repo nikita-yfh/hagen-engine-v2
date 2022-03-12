@@ -6,8 +6,7 @@
 
 class Object{
 public:
-	Object()
-		: selected(-1) {id[0]=0;}
+	Object();
 
 	inline void Select(){selected=-1;}
 	inline void Unselect(){selected=0;}

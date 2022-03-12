@@ -1,6 +1,9 @@
 #include "GLCanvas.hpp"
 #include "EditMenu.hpp"
+#include "Texture.hpp"
 #include <wx/utils.h>
+#include <wx/dnd.h>
+#include <iostream>
 
 wxBEGIN_EVENT_TABLE(GLCanvas,wxGLCanvas)
 	EVT_MOTION(GLCanvas::OnMouseMotion)
@@ -20,9 +23,22 @@ static const int attribList[] = {
 	WX_GL_SAMPLE_BUFFERS, GL_FALSE,
 	WX_GL_DEPTH_SIZE, 24, 0, 0
 };
+class CanvasDropTarget : public wxFileDropTarget{
+public:
+	CanvasDropTarget(GLCanvas *_canvas, Level &_level)
+		:canvas(_canvas), level(_level) {}
+	virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames) override{
+		level.AddImage(filenames[0]);
+		return true;
+	}
+	GLCanvas *canvas;
+	Level &level;
+};
+
 GLCanvas::GLCanvas(wxWindow *parent, Level &_level)
-		:wxGLCanvas(parent,wxID_ANY,attribList), level(_level), create(false) {
+		:wxGLCanvas(parent,wxID_ANY,attribList), level(_level) {
 	SetFocus();
+	SetDropTarget(new CanvasDropTarget(this, level));
 }
 b2Vec2 GLCanvas::GetMousePos(wxMouseEvent &e) const{
 	wxPoint global=e.GetPosition();
@@ -71,7 +87,7 @@ void GLCanvas::OnKey(wxKeyEvent&e) {
 	e.Skip();
 }
 void GLCanvas::OnMouseWheel(wxMouseEvent &e){
-	float n=(e.GetWheelRotation()>0)?1.05:0.95;
+	float n=(e.GetWheelRotation()>0)?1.05f:0.95f;
 	b2Vec2 currentMouse=GetMousePos(e);
 	camera.Zoom(n,mouse,currentMouse);
 	SetMouse(currentMouse);
@@ -95,8 +111,8 @@ void GLCanvas::OnMouseMotion(wxMouseEvent &e){
 void GLCanvas::Draw(wxPaintEvent&) {
 	static wxGLContext context(this);
 	SetCurrent(context);
-	glEnable(GL_BLEND);
 	glEnable(GL_POINT_SMOOTH);
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glMatrixMode(GL_PROJECTION);
 	colors.ClearColor(COLOR_BGR);
@@ -111,7 +127,6 @@ void GLCanvas::Draw(wxPaintEvent&) {
 	level.Draw(colors);
 	if(camera.zoom>15)
 		level.DrawPoints(colors);
-
 	glFlush();
 	SwapBuffers();
 }

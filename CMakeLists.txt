@@ -5,6 +5,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang
 	set(CMAKE_CXX_FLAGS "-fno-exceptions -fno-rtti -flto") #disable exceptions, not needed for game engine
 endif()
 set(CMAKE_CXX_FLAGS_RELEASE "-s -flto")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 

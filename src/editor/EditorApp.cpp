@@ -1,5 +1,6 @@
 #include "EditorApp.hpp"
 #include "EditorMain.hpp"
+#include "Directory.hpp"
 #include "b2_math.h"
 #include <wx/dirdlg.h>
 #include <wx/msgdlg.h>
@@ -10,7 +11,7 @@ IMPLEMENT_APP(EditorApp);
 const b2Vec2 b2Vec2_zero(0.0f,0.0f);	
 
 bool EditorApp::OnInit() {
-	wxString gameDir;
+	Directory gameDir;
 	if(argc>=2){
 		if(!wxDirExists(argv[1])){
 			wxMessageBox("Directory not found", "Error", wxICON_ERROR);
@@ -27,9 +28,7 @@ bool EditorApp::OnInit() {
 		gameDir = dialog.GetPath();
 	}
 	wxInitAllImageHandlers();
-	EditorFrame* frame;
-	frame=new EditorFrame(gameDir);
+	EditorFrame* frame=new EditorFrame(gameDir);
 	frame->Show();
-	SetTopWindow(frame);
 	return true;
 }

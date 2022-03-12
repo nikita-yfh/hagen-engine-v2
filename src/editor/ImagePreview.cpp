@@ -44,8 +44,9 @@ void ImagePreview::OnSize(wxSizeEvent&){
 		ResizeImage();
 	Refresh();
 }
-void ImagePreview::SetImage(const wxString &path){
-	loaded = image.LoadFile(path);
+void ImagePreview::SetImage(const wxString &_path){
+	path = _path;
+	loaded = image.LoadFile(_path);
 	if(loaded){
 		ResizeImage();
 		Show();
@@ -59,8 +60,9 @@ void ImagePreview::OnMouseMove(wxMouseEvent &event){
 	if(loaded && event.LeftIsDown()){
 		wxBitmapDataObject data(image);
 		wxDropSource dragSource(this);
-		dragSource.SetData(data);
-		wxDragResult result = dragSource.DoDragDrop(true);
-		printf("%d\n", result);
+		wxFileDataObject files;
+		files.AddFile(path);
+		dragSource.SetData(files);
+		wxDragResult result = dragSource.DoDragDrop(wxDrag_CopyOnly);
 	}
 }

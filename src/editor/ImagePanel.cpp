@@ -1,7 +1,9 @@
 #include "ImagePanel.hpp"
 #include "EditorMain.hpp"
+#include "EditorApp.hpp"
 #include <wx/sizer.h>
 #include <wx/filedlg.h>
+#include <wx/dnd.h>
 
 wxBEGIN_EVENT_TABLE(ImagePanel, wxPanel)
 	EVT_BUTTON(ID_IMAGE_ADD,		ImagePanel::OnPressButtonAdd)
@@ -10,8 +12,19 @@ wxBEGIN_EVENT_TABLE(ImagePanel, wxPanel)
 	EVT_LISTBOX(ID_IMAGE_LIST,		ImagePanel::OnSelectImage)
 wxEND_EVENT_TABLE()
 
-ImagePanel::ImagePanel(wxWindow *parent, const wxString &_gameDir, Level &_level)
-		:wxPanel(parent, wxID_ANY), level(_level), gameDir(_gameDir) {
+class ImagePanelDropTarget : public wxFileDropTarget{
+public:
+	ImagePanelDropTarget(ImagePanel *_panel)
+		:panel(_panel) {}
+	virtual bool OnDropFiles(wxCoord, wxCoord, const wxArrayString &files) override {
+		for(const wxString &file : files)
+			panel->AppendImage(file);
+		return true;
+	}
+	ImagePanel *panel;
+};
+ImagePanel::ImagePanel(wxWindow *parent, Level &_level)
+		:wxPanel(parent, wxID_ANY), level(_level), gameDir(_level.GetGameDir()) {
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	{
 		wxBoxSizer *buttons = new wxBoxSizer(wxHORIZONTAL);
@@ -30,20 +43,27 @@ ImagePanel::ImagePanel(wxWindow *parent, const wxString &_gameDir, Level &_level
 		sizer->Add(preview, 0, wxEXPAND);
 	}
 	SetSizerAndFit(sizer);
+	SetDropTarget(new ImagePanelDropTarget(this));
+}
+
+void ImagePanel::AppendImage(const wxString &fullPath){
+	wxString lpath = gameDir.ConvertToLocalPath(fullPath);
+	if(lpath != wxEmptyString){
+		list->Append(lpath);
+		level.AddTexture(lpath);
+	}
 }
 
 void ImagePanel::OnPressButtonAdd(wxCommandEvent&){
-	wxFileDialog dialog(this, wxFileSelectorPromptStr, gameDir, wxEmptyString, 
+	wxFileDialog dialog(this, wxFileSelectorPromptStr, gameDir.GetPath(), wxEmptyString, 
 			"Images(*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg");
 
 	if (dialog.ShowModal() == wxID_CANCEL)
 		return;
-	wxString path=dialog.GetPath();
-	path.Remove(0,gameDir.Length()+1); //convert to local path
-	list->Append(path);
+	AppendImage(dialog.GetPath());
 }
 void ImagePanel::OnSelectImage(wxCommandEvent &event){
-	wxString path = gameDir + "/" + list->GetString(event.GetInt());
+	wxString path = gameDir.ConvertToAbsolutePath(list->GetString(event.GetInt()));
 	preview->SetImage(path);
 	Layout();
 }
@@ -53,6 +73,7 @@ void ImagePanel::OnPressButtonRemove(wxCommandEvent&){
 	wxString str = list->GetString(selection);
 	list->Delete(selection);
 	preview->DeleteImage();
+	level.DeleteTexture(str);
 	Layout();
 }
 void ImagePanel::SelectedImage(wxUpdateUIEvent &e){

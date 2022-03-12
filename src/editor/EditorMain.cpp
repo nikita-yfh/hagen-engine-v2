@@ -43,8 +43,8 @@ wxBEGIN_EVENT_TABLE(EditorFrame,wxFrame)
 	EVT_UPDATE_UI(ID_ADD_JOINT,				EditorFrame::TwoBodiesSelected)
 wxEND_EVENT_TABLE()
 
-EditorFrame::EditorFrame(const wxString &gameDir)
-		:wxFrame(nullptr,wxID_ANY,"Hagen Editor",wxDefaultPosition, {800,600}) {
+EditorFrame::EditorFrame(const Directory &gameDir) : level(gameDir),
+		wxFrame(nullptr,wxID_ANY,"Hagen Editor",wxDefaultPosition, {800,600}) {
 	ToolBar *toolbar=new ToolBar(this);
 	SetToolBar(toolbar);
 	MenuBar *menubar=new MenuBar();
@@ -55,7 +55,7 @@ EditorFrame::EditorFrame(const wxString &gameDir)
 	{
 		wxSplitterWindow *hsplit=new wxSplitterWindow(vsplit, wxID_ANY);
 		{
-			imagePanel=new ImagePanel(hsplit,gameDir,level);
+			imagePanel=new ImagePanel(hsplit, level);
 
 			properties=new wxPropertyGrid(hsplit,ID_PROPERTY_GRID,wxDefaultPosition,
 					wxDefaultSize, wxPG_SPLITTER_AUTO_CENTER|wxPG_DEFAULT_STYLE);

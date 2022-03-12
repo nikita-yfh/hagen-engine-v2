@@ -6,6 +6,8 @@ const float Object::inactiveSize=4.0f;
 const float Object::borderAlpha=1.0f;
 const float Object::fillAlpha=0.4f;
 
+Object:: Object() : selected(-1) {}
+
 void Object::DrawPoint(const Colors &colors, int index, const b2Vec2 &pos) const{
 	if(index==selected || selected==-1)
 		colors.Apply(COLOR_ACTIVE);

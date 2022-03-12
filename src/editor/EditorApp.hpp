@@ -3,7 +3,7 @@
 
 class EditorApp : public wxApp {
 public:
-	virtual bool OnInit();
+	virtual bool OnInit() override;
 private:
 	wxLocale m_Locale;
 };

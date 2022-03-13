@@ -4,15 +4,19 @@
 #include "stb_image.h"
 
 Texture::Texture(const Directory &dir, const wxString &_name) : name(_name) {
-	glGenTextures(1, &texture);
-	Bind();
-	SetFiltering(GL_NEAREST);
-
 	wxString path = dir.ConvertToAbsolutePath(_name);
 	int channels;
 	unsigned char *data = stbi_load(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-	stbi_image_free(data);
+	if(data){
+		glGenTextures(1, &texture);
+		Bind();
+		SetFiltering(GL_NEAREST);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		stbi_image_free(data);
+	}else{
+		width = 0;
+		height = 0;
+	}
 }
 Texture::~Texture(){
 	glDeleteTextures(1, &texture);

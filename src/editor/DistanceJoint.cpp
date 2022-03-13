@@ -4,9 +4,10 @@
 
 DistanceJoint::DistanceJoint()
 	: localA(b2Vec2_zero), localB(b2Vec2_zero),max(0.0f),min(0.0f),
-		stiffness(1000.0f),damping(0.5f) {selected=1;}
+		stiffness(1000.0f),damping(0.5f) {}
 
-void DistanceJoint::DrawJoint(const Colors &colors) const{
+void DistanceJoint::Draw(const Colors &colors) const{
+	ApplyDrawJoint(colors);
 	glutils::DrawLine(a->GetPosition()+localA,b->GetPosition()+localB);
 	DrawConnections(colors,localA,localB);
 }

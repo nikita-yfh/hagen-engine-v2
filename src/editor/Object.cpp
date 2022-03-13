@@ -6,7 +6,7 @@ const float Object::inactiveSize=4.0f;
 const float Object::borderAlpha=1.0f;
 const float Object::fillAlpha=0.4f;
 
-Object:: Object() : selected(-1) {}
+Object::Object() : selected(1), next(nullptr) {}
 
 void Object::DrawPoint(const Colors &colors, int index, const b2Vec2 &pos) const{
 	if(index==selected || selected==-1)
@@ -40,6 +40,9 @@ bool Object::CancelCreating(){
 	return true;
 }
 bool Object::Create(const Mouse &mouse){
+	return true;
+}
+bool Object::TryRemove(const void *object){
 	return true;
 }
 void Object::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{

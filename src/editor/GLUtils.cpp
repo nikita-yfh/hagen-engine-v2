@@ -1,6 +1,4 @@
 #include "GLUtils.hpp"
-#include <wx/glcanvas.h>
-#include <math.h>
 
 namespace glutils{
 
@@ -25,22 +23,6 @@ void DrawLine(const b2Vec2 &p1, const b2Vec2 &p2){
 	Vertex(p1);
 	Vertex(p2);
 	glEnd();
-}
-
-void Vertex(const b2Vec2 &p){
-	glVertex2f(p.x,p.y);
-}
-void Translate(const b2Vec2 &p){
-	glTranslatef(p.x,p.y,0.0f);
-}
-void Rotate(float rad){
-	glRotatef(RadToDeg(rad),0.0f,0.0f,1.0f);
-}
-float RadToDeg(float rad){
-	return rad/M_PI*180.0f;
-}
-float DegToRad(float deg){
-	return deg/180.0f*M_PI;
 }
 
 float VecToAngle(const b2Vec2 &p) {

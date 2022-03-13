@@ -78,7 +78,8 @@ bool Polygon::UpdatePoints(const Mouse &mouse){
 	}
 	return false;
 }
-bool Polygon::CreateFixture(const Mouse &mouse){
+bool Polygon::Create(const Mouse &_mouse){
+	const Mouse mouse = parent->GetLocalMouse(_mouse);
 	int index=1;
 	for(Point *point=points;point;point=point->next)
 		if(!point->next){

@@ -3,9 +3,7 @@
 
 Level::Level(const Directory &dir) :
 	textures(nullptr),
-	images(nullptr),
-	bodies(nullptr),
-	joints(nullptr),
+	objects(nullptr),
 	create(nullptr),
 	gravity(0.0f, -9.8f),
 	allowSleep(true),
@@ -16,25 +14,15 @@ const Directory &Level::GetGameDir() const{
 	return gameDir;
 }
 void Level::Clear(){
-	while(bodies){
-		Body *child = bodies->next;
-		delete bodies;
-		bodies = child;
-	}
-	while(joints){
-		Joint *child = joints->next;
-		delete joints;
-		joints = child;
-	}
 	while(textures){
 		Texture *child = textures->next;
 		delete child;
 		textures = child;
 	}
-	while(images){
-		Image *child = images->next;
-		delete child;
-		images = child;
+	while(objects){
+		Object *child = objects->next;
+		delete objects;
+		objects = child;
 	}
 }
 Level::~Level(){
@@ -45,63 +33,75 @@ void Level::AddImage(const wxString &path){
 	for(Texture *texture = textures; texture; texture = texture->next){
 		if(texture->name == name){
 			Image *image = new Image(texture, textureScale);
-			UnselectAll();
-			image->next = images;
-			create = images = image;
+			AddObject(image);
 			return;
 		}
 	}
 }
 void Level::AddBody(Body *body){
-	UnselectAll();
-	body->next = bodies;
-	create = bodies = body;
+	AddObject(body);
 }
 void Level::AddJoint(Joint *joint){
-	joint->SetBodies(GetFirstSelectedBody(),
-					GetSecondSelectedBody());
-	UnselectAll();
-	joint->next = joints;
-	create = joints = joint;
+	Body *a = nullptr;
+   	Body *b = nullptr;
+	for(Object *object = objects;object;object = object->next){
+		if(object->IsSelected() && object->GetType() == Object::BODY){
+			if(a)
+				b = (Body*)object;
+			else
+				a = (Body*)object;
+		}
+	}
+	if(a && b){
+		joint->SetBodies(a, b);
+		AddObject(joint);
+	}
 }
 void Level::AddTexture(const wxString &name){
 	Texture *temp = textures;
 	textures = new Texture(gameDir, name);
 	textures->next = temp;
 }
+void Level::AddObject(Object *object){
+	UnselectAll();
+	objects->next = objects;
+	create = objects = object;
+}
 void Level::DeleteTexture(const wxString &name){
-	Texture *prev = nullptr;
+	Texture *del = nullptr;
 	if(textures && textures->name == name){
-		Texture *temp = textures->next;
-		delete textures;
-		textures = temp;
-		return;
+		del = textures;
+		textures = textures->next;
 	}
-	for(Texture *texture = textures; texture; texture = texture->next){
-		Texture *next = texture->next;
-		if(next && next->name == name){
-			texture->next = next->next;
-			delete next;
-			return;
+	else{
+		for(Texture *texture = textures; texture; texture = texture->next){
+			Texture *next = texture->next;
+			if(next && next->name == name){
+				texture->next = next->next;
+				break;
+			}
 		}
 	}
-}
+	if(del){
+		DeleteDependency(del);
+		delete del;
+	}
 
+}
+void Level::DeleteDependency(const void *object){
+	UnselectAll();
+	for(Object *object = objects;object;object = object->next)
+		if(!object->TryRemove(object))
+			object->Select();
+	DeleteSelected();
+}
 void Level::Draw(const Colors &colors) const{
-	for(Body *body = bodies;body;body = body->next)
-		body->Draw(colors);
-	for(Joint *joint = joints;joint;joint = joints->next)
-		joint->Draw(colors);
-	for(Image *image = images;image;image = images->next)
-		image->Draw(colors);
+	for(Object *object = objects;object;object = object->next)
+		object->Draw(colors);
 }
 void Level::DrawPoints(const Colors &colors) const{
-	for(Body *body = bodies;body;body = body->next)
-		body->DrawPoints(colors);
-	for(Joint *joint = joints;joint;joint = joints->next)
-		joint->DrawPoints(colors);
-	for(Image *image = images;image;image = images->next)
-		image->DrawPoints(colors);
+	for(Object *object = objects;object;object = object->next)
+		object->DrawPoints(colors);
 }
 bool Level::UpdatePoints(const Mouse &mouse){
 	if(create){
@@ -111,100 +111,58 @@ bool Level::UpdatePoints(const Mouse &mouse){
 		}
 		return true;
 	}else{
-		for(Joint *joint = joints;joint;joint = joint->next)
-			if(joint->UpdatePoints(mouse))
-				return true;
-		for(Body *body = bodies;body;body = body->next)
-			if(body->UpdatePoints(mouse))
-				return true;
-		for(Image *image = images;image;image = images->next)
-			if(image->UpdatePoints(mouse))
+		for(Object *object = objects;object;object = object->next)
+			if(object->UpdatePoints(mouse))
 				return true;
 	}
 	return false;
 }
 void Level::UnselectAllPoints(){
-	for(Body *body = bodies;body;body = body->next)
-		body->UnselectPoints();
-	for(Joint *joint = joints;joint;joint = joint->next)
-		joint->UnselectPoints();
-	for(Image *image = images;image;image = images->next)
-		image->UnselectPoints();
+	for(Object *object = objects;object;object = object->next)
+		object->UnselectPoints();
 }
 
 void Level::SelectAll(){
-	for(Body *body = bodies;body;body = body->next)
-		body->SelectAll();
-	for(Joint *joint = joints;joint;joint = joint->next)
-		joint->Select();
-	for(Image *image = images;image;image = images->next)
-		image->Select();
+	for(Object *object = objects;object;object = object->next)
+		object->Select();
 }
 void Level::UnselectAll(){
-	for(Body *body = bodies;body;body = body->next)
-		body->UnselectAll();
-	for(Joint *joint = joints;joint;joint = joint->next)
-		joint->Unselect();
-	for(Image *image = images;image;image = images->next)
-		image->Unselect();
+	for(Object *object = objects;object;object = object->next)
+		object->Unselect();
 }
 
-Body *Level::GetFirstSelectedBody(){
-	for(Body *body = bodies; body; body = body->next)
-		if(body->IsSelected())
-			return body;
-	return nullptr;
-}
-Body *Level::GetSecondSelectedBody(){
-	Body *first = nullptr;
-	for(Body *body = bodies; body; body = body->next)
-		if(body->IsSelected()){
-			if(first)
-				return body;
-			else
-				first = body;
-		}
-	return nullptr;
-}
 int Level::GetSelectedBodyCount() const{
 	int count = 0;
-	for(Body *body = bodies;body;body = body->next)
-		if(body->IsSelected())
+	for(Object *object = objects;object;object = object->next)
+		if(object->IsSelected() && object->GetType() == Object::BODY)
 			count++;
 	return count;
 }
 int Level::GetSelectedNotDynamicBodyCount() const{
 	int count = 0;
-	for(Body *body = bodies;body;body = body->next)
-		if(body->IsSelected() && body->type != b2_dynamicBody)
+	for(Object *object = objects;object;object = object->next)
+		if(object->IsSelected() && object->GetType() == Object::BODY && ((Body*)object)->type != b2_dynamicBody)
 			count++;
 	return count;
 }
 int Level::GetSelectedJointCount() const{
 	int count = 0;
-	for(Joint *joint = joints;joint;joint = joint->next)
-		if(joint->IsSelected())
+	for(Object *object = objects;object;object = object->next)
+		if(object->IsSelected() && object->GetType() == Object::JOINT)
 			count++;
 	return count;
 }
 int Level::GetSelectedCount() const{
-	int count = GetSelectedJointCount();
-	for(Body *body = bodies;body;body = body->next)
-		count+=body->GetSelectedCount();
+	int count = 0;
+	for(Object *object = objects;object;object = object->next)
+		if(object->IsSelected())
+			count++;
 	return count;
 }
 Object *Level::GetFirstSelected(){
-	for(Joint *joint = joints;joint;joint = joint->next)
-		if(joint->IsSelected())
-			return joint;
-	for(Body *body = bodies;body;body = body->next){
-		Object *obj = body->GetFirstSelected();
-		if(obj)
-			return obj;
-	}
-	for(Image *image = images;image;image = images->next)
-		if(image->IsSelected())
-			return image;
+	for(Object *object = objects;object;object = object->next)
+		if(object->IsSelected())
+			return object;
 	return nullptr;
 }
 Object *Level::GetFirstSelectedAll(){
@@ -215,12 +173,6 @@ Object *Level::GetFirstSelectedAll(){
 }
 
 void Level::AddFixture(Fixture *fixture){
-	Body *body = GetFirstSelectedBody();
-	if(body==nullptr)
-		return;
-	UnselectAll();
-	body->AddFixture(fixture);
-	create = fixture;
 }
 bool Level::IsCreating() const{
 	return create!=nullptr;
@@ -232,48 +184,23 @@ bool Level::CancelCreating(){
 	create = nullptr;
 	return true;
 }
-void Level::DeleteSelectedBodies(){
-	Body *prev = nullptr;
-	for(Body *body = bodies; body;){
-		if(body->IsSelected()){
-			for(Joint *joint = joints; joint; joint = joint->next)
-				if(joint->HasBody(body))
-					joint->Select(); //for delete
-			if(prev)
-				prev->next = body->next;
-			else
-				bodies = body->next;
-			Body *child = body->next;
-			delete body;
-			body = child;
-		}else{
-			body->DeleteSelected();
-			prev = body;
-			body = body->next;
-		}
-	}
-}
-void Level::DeleteSelectedJoints(){
-	Joint *prev = nullptr;
-	for(Joint *joint = joints; joint;){
-		if(joint->IsSelected()){
-			if(prev)
-				prev->next = joint->next;
-			else
-				joints = joint->next;
-			Joint *child = joint->next;
-			delete child;
-			joint = child;
-		}else{
-			prev = joint;
-			joint = joint->next;
-		}
-	}
-}
-
 void Level::DeleteSelected(){
-	DeleteSelectedBodies();
-	DeleteSelectedJoints();
+	Object *prev = nullptr;
+	for(Object *object = objects; object;){
+		if(object->IsSelected()){
+			DeleteDependency(object);
+			if(prev)
+				prev->next = object->next;
+			else
+				objects = object->next;
+			Object *child = object->next;
+			delete object;
+			object = child;
+		}else{
+			prev = object;
+			object = object->next;
+		}
+	}
 }
 
 void Level::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{

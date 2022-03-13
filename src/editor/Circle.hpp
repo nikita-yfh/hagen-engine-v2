@@ -9,7 +9,7 @@ public:
 
 	virtual void DrawPoints(const Colors &colors) const override;
 	virtual bool UpdatePoints(const Mouse &mouse) override;
-	virtual bool CreateFixture(const Mouse &mouse) override;
+	virtual bool Create(const Mouse &mouse) override;
 
 	virtual bool TestPoint(const b2Vec2 &point) const override;
 

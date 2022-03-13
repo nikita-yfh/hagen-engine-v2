@@ -16,74 +16,15 @@ Body::Body(b2BodyType _type) :
 		fixedRotation(false),
 		bullet(false),
 		enabled(true),
-		gravityScale(1.0f),
-		fixtures(nullptr),
-		next(nullptr) {
-	selected=1;
-}
-Body::~Body(){
-	ClearFixtures();
-}
+		gravityScale(1.0f) {}
 
-void Body::ClearFixtures(){
-	while(fixtures){
-		Fixture *child=fixtures->next;
-		delete fixtures;
-		fixtures=child;
-	}
-}
-void Body::AddFixture(Fixture *fixture){
-	fixture->next=fixtures;
-	fixtures=fixture;
-	fixture->parent=this;
-}
-void Body::DeleteSelected(){
-	Fixture *prev=nullptr;
-	for(Fixture *fixture=fixtures; fixture;){
-		if(fixture->IsSelected()){
-			if(prev)
-				prev->next=fixture->next;
-			else
-				fixtures=fixture->next;
-			Fixture *child=fixture->next;
-			delete fixture;
-			fixture=child;
-		}else{
-			prev=fixture;
-			fixture=fixture->next;
-		}
-	}
-}
 void Body::Draw(const Colors &colors) const{
-
-	Transform();
-	glLineWidth(GetLineWidth());
-	for(Fixture *fixture=fixtures;fixture;fixture=fixture->next)
-		fixture->Draw(colors);
-	TransformBack();
 }
 void Body::DrawPoints(const Colors &colors) const{
 	DrawPoint(colors, 1, position);
-	Transform();
-	for(Fixture *fixture=fixtures;fixture;fixture=fixture->next)
-		fixture->DrawPoints(colors);
-	TransformBack();
 }
 bool Body::UpdatePoints(const Mouse &mouse){
-	Mouse localMouse=GetLocalMouse(mouse);
-	for(Fixture *fixture=fixtures;fixture;fixture=fixture->next)
-		if(fixture->UpdatePoints(localMouse))
-			return true;
-	static b2Vec2 delta;
-	if(mouse.pressed){
-	  	if(TestPoint(localMouse.position)){
-			selected=2;
-			delta=mouse.camera.ToGrid(localMouse.position);
-		}
-	}else if(selected==2)
-		position=mouse.camera.ToGrid(mouse.position-delta);
-
-	return selected==2 || UpdatePoint(mouse,1,position);
+	return UpdatePoint(mouse,1,position);
 }
 bool Body::Create(const Mouse &mouse){
 	UpdatePoint(mouse,1,position);
@@ -112,63 +53,6 @@ Color Body::GetColor() const{
 	}
 	return COLOR_DARK;
 }
-bool Body::TestPoint(const b2Vec2 &point) const{
-	for(Fixture *fixture=fixtures;fixture;fixture=fixture->next)
-		if(fixture->TestPoint(point))
-			return true;
-	return false;
-}
-void Body::UnselectPoints(){
-	for(Fixture *fixture=fixtures;fixture;fixture=fixture->next)
-		fixture->UnselectPoints();
-	if(IsSelectedPoint())
-		Select();
-}
-void Body::SelectAll(){
-	for(Fixture *fixture=fixtures;fixture;fixture=fixture->next)
-		fixture->Select();
-	Select();
-}
-void Body::UnselectAll(){
-	for(Fixture *fixture=fixtures;fixture;fixture=fixture->next)
-		fixture->Unselect();
-	Unselect();
-}
-int Body::GetSelectedCount() const{
-	int count;
-	if(IsSelected())
-		count++;
-	for(Fixture *fixture=fixtures;fixture;fixture=fixture->next)
-		if(fixture->IsSelected())
-			count++;
-	return count;
-}
-Object *Body::GetFirstSelected(){
-	if(IsSelected())
-		return this;
-	for(Fixture *fixture=fixtures;fixture;fixture=fixture->next)
-		if(fixture->IsSelected())
-			return fixture;
-	return nullptr;
-}
-void Body::SetType(b2BodyType _type){
-	type=_type;
-	Fixture *prev=nullptr;
-	for(Fixture *fixture=fixtures; fixture;){
-		if(!fixture->CanBeDynamic()){
-			if(prev)
-				prev->next=fixture->next;
-			else
-				fixtures=fixture->next;
-			Fixture *child=fixture->next;
-			delete fixture;
-			fixture=child;
-		}else{
-			prev=fixture;
-			fixture=fixture->next;
-		}
-	}
-}
 float Body::GetLineWidth() const{
 	if(IsSelected())
 		return 2.0f;
@@ -176,6 +60,9 @@ float Body::GetLineWidth() const{
 }
 const b2Vec2 &Body::GetPosition() const{
 	return position;
+}
+float Body::GetAngle() const{
+	return angle;
 }
 void Body::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if (!n)

@@ -9,19 +9,18 @@ Fixture::Fixture():
 	restitutionThreshold(1.0f * b2_lengthUnitsPerMeter),
 	density(0.0f),
 	isSensor(false),
-	next(nullptr),
 	parent(nullptr) {}
 
-
+bool Fixture::TryRemove(const void *object){
+	if(object != parent)
+		return true;
+	return false;
+}
 void Fixture::ApplyFill(const Colors &colors) const{
 	colors.Apply(parent->GetColor(),fillAlpha);
 }
 void Fixture::ApplyBorder(const Colors &colors) const{
 	colors.Apply(parent->GetColor(),borderAlpha);
-}
-bool Fixture::Create(const Mouse &mouse){
-	Mouse _mouse=parent->GetLocalMouse(mouse);
-	return CreateFixture(_mouse);
 }
 bool Fixture::CanBeDynamic() const{
 	return true;

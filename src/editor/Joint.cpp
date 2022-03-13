@@ -3,21 +3,22 @@
 #include <wx/glcanvas.h>
 
 Joint::Joint()
-	:a(nullptr),b(nullptr),collideConnected(false), next(nullptr) {}
-void Joint::Draw(const Colors &colors) const{
+	:a(nullptr),b(nullptr),collideConnected(false) {}
+void Joint::ApplyDrawJoint(const Colors &colors) const{
 	bool selected=IsSelected();
 	if(a)selected |= a->IsSelected();
 	if(b)selected |= b->IsSelected();
 	glLineWidth(selected?2.0f:1.0f);
 	colors.Apply(COLOR_JOINT,borderAlpha);
-	DrawJoint(colors);
 }
 void Joint::SetBodies(Body *_a, Body *_b){
 	a=_a;
 	b=_b;
 }
-bool Joint::HasBody(const Body *body) const{
-	return a==body || b==body;
+bool Joint::TryRemove(const void *object){
+	if(a!=object && b!=object)
+		return true;
+	return false;
 }
 void Joint::DrawConnections(const Colors &colors, const b2Vec2 &p1, const b2Vec2 &p2) const{
 	const b2Vec2 &posA=a->GetPosition();

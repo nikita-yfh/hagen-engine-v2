@@ -4,9 +4,19 @@
 #include "Vec2Property.hpp"
 #include <wx/propgrid/propgrid.h>
 
+class Level;
+
 class Object{
 public:
 	Object();
+
+	enum{
+		LEVEL,
+		BODY,
+		JOINT,
+		IMAGE,
+		FIXTURE
+	};
 
 	inline void Select(){selected=-1;}
 	inline void Unselect(){selected=0;}
@@ -14,8 +24,13 @@ public:
 	inline bool IsSelectedPoint() const{return selected>0;}
 	inline void UnselectPoints(){if(IsSelectedPoint())Select();}
 
+	virtual void Draw(const Colors &colors) const = 0;
+	virtual void DrawPoints(const Colors &colors) const = 0;
+	virtual bool UpdatePoints(const Mouse &mouse) = 0;
 	virtual bool Create(const Mouse &mouse);
 	virtual bool CancelCreating(); //if false, object isn't valid
+	virtual bool TryRemove(const void *object); //true = success
+	virtual uint8_t GetType() const = 0;
 	
 	virtual void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const;
 	virtual void OnPropertyGridChange(const wxString &name, const wxVariant &value);
@@ -32,4 +47,8 @@ protected:
 	static const float fillAlpha;
 
 	wxString id;
+
+	Object *next;
+
+	friend class Level;
 };

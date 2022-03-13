@@ -13,10 +13,10 @@ public:
 	Level(const Directory &dir);
 	~Level();
 
-	void Draw(const Colors &colors) const;
-
-	void DrawPoints(const Colors &colors) const;
-	bool UpdatePoints(const Mouse &mouse);
+	virtual void Draw(const Colors &colors) const override;
+	virtual void DrawPoints(const Colors &colors) const override;
+	virtual bool UpdatePoints(const Mouse &mouse) override;
+	virtual uint8_t GetType() const override{return LEVEL;}
 
 	void UnselectAllPoints();
 	void UnselectAll();
@@ -33,6 +33,7 @@ public:
 	void DeleteSelected();
 
 	void AddImage(const wxString &path);
+	void AddObject(Object *object);
 	void AddBody(Body *body);
 	void AddFixture(Fixture *fixture);
 	void AddJoint(Joint *joint);
@@ -50,20 +51,14 @@ public:
 
 	const Directory &GetGameDir() const;
 private:
-	Body *GetFirstSelectedBody();
-	Body *GetSecondSelectedBody();
-
-	void DeleteSelectedBodies();
-	void DeleteSelectedJoints();
+	void DeleteDependency(const void *object);
 
 	b2Vec2 gravity;
 	float textureScale;
 	bool allowSleep;
 
-	Image *images;
 	Texture *textures;
-	Body *bodies;
-	Joint *joints;
+	Object *objects;
 
 	Object *create;
 

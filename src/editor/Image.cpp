@@ -4,8 +4,7 @@ Image::Image(const Texture *_texture, const float &_scale)
 		:position(b2Vec2_zero),
 		texture(_texture),
 		scale(_scale),
-		bindBody(nullptr),
-		next(nullptr) {}
+		bindBody(nullptr){}
 
 void Image::Draw(const Colors &colors) const{
 
@@ -29,4 +28,14 @@ bool Image::UpdatePoints(const Mouse &mouse){
 bool Image::Create(const Mouse &mouse){
 	UpdatePoint(mouse,1,position);
 	return mouse.pressed;
+}
+bool Image::TryRemove(const void *object){
+	if(texture == object)
+		return false;
+	if(bindBody != object)
+		return true;
+	position += bindBody->GetPosition();
+	angle += bindBody->GetAngle();
+	bindBody = nullptr;
+	return true;
 }

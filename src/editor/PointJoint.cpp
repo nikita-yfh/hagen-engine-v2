@@ -4,7 +4,8 @@
 PointJoint::PointJoint()
 	:position(b2Vec2_zero){selected=1;}
 
-void PointJoint::DrawJoint(const Colors &colors) const{
+void PointJoint::Draw(const Colors &colors) const{
+	ApplyDrawJoint(colors);
 	DrawConnections(colors,position);
 }
 void PointJoint::DrawPoints(const Colors &colors) const{

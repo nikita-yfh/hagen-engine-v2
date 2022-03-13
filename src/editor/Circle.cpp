@@ -27,7 +27,8 @@ bool Circle::UpdatePoints(const Mouse &mouse){
 	}
 	return UpdatePoint(mouse, 2, position);
 }
-bool Circle::CreateFixture(const Mouse &mouse){
+bool Circle::Create(const Mouse &_mouse){
+	const Mouse mouse = parent->GetLocalMouse(_mouse);
 	UpdatePoints(mouse);
 	if(mouse.pressed)
 		if(selected==2)

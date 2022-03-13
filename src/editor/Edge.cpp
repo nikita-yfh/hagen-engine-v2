@@ -3,9 +3,7 @@
 #include "Body.hpp"
 
 Edge::Edge()
-		:p1(b2Vec2_zero), p2(b2Vec2_zero) {
-	selected=1;
-}
+	:p1(b2Vec2_zero), p2(b2Vec2_zero) {}
 
 void Edge::Draw(const Colors &colors) const{
 	ApplyBorder(colors);
@@ -19,7 +17,8 @@ bool Edge::UpdatePoints(const Mouse &mouse){
 	return UpdatePoint(mouse, 1, p1) ||
 			UpdatePoint(mouse, 2, p2);
 }
-bool Edge::CreateFixture(const Mouse &mouse){
+bool Edge::Create(const Mouse &_mouse){
+	const Mouse mouse = parent->GetLocalMouse(_mouse);
 	UpdatePoints(mouse);
 	if(selected==1)
 		p2=p1;

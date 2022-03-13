@@ -7,7 +7,8 @@ PrismaticJoint::PrismaticJoint()
 		enableLimit(false), lowerTranslation(-3.0f), upperTranslation(3.0f),
 		enableMotor(false), maxMotorForce(1000.0f), motorSpeed(10.0f) {selected=1;}
 
-void PrismaticJoint::DrawJoint(const Colors &colors) const{
+void PrismaticJoint::Draw(const Colors &colors) const{
+	ApplyDrawJoint(colors);
 	Transform();
 	glBegin(GL_LINES);
 	if(enableLimit){

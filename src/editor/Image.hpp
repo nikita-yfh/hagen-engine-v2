@@ -9,13 +9,13 @@ class Image : public Object {
 public:
 	Image(const Texture *texture, const float &scale);
 
-	void Draw(const Colors &colors) const;
-
-	void DrawPoints(const Colors &colors) const;
-	bool UpdatePoints(const Mouse &mouse);
-
+	virtual void Draw(const Colors &colors) const override;
+	virtual void DrawPoints(const Colors &colors) const override;
+	virtual bool UpdatePoints(const Mouse &mouse) override;
 	virtual bool Create(const Mouse &mouse) override;
+	virtual uint8_t GetType() const override{return IMAGE;}
 
+	virtual bool TryRemove(const void *object);
 private:
 	bool TestPoint(const b2Vec2 &point) const;
 
@@ -25,7 +25,6 @@ private:
 	const Body *bindBody;
 
 	const float &scale;
-	Image *next;
 
 	friend class Level;
 };

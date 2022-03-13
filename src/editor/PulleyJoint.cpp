@@ -6,7 +6,8 @@ PulleyJoint::PulleyJoint()
 	:groundA(b2Vec2_zero), groundB(b2Vec2_zero),
 	localA(b2Vec2_zero), localB(b2Vec2_zero), ratio(1.0f) {selected=1;}
 
-void PulleyJoint::DrawJoint(const Colors &colors) const{
+void PulleyJoint::Draw(const Colors &colors) const{
+	ApplyDrawJoint(colors);
 	glBegin(GL_LINE_STRIP);
 	glutils::Vertex(a->GetPosition()+localA);
 	glutils::Vertex(groundA);

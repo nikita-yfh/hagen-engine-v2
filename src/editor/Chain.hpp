@@ -4,7 +4,7 @@
 
 class Chain : public Polygon{
 public:
-	void Draw(const Colors &colors) const override;
+	virtual void Draw(const Colors &colors) const override;
 
 	virtual void DrawPoints(const Colors &colors) const override;
 	virtual bool UpdatePoints(const Mouse &mouse) override;

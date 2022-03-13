@@ -9,38 +9,25 @@ class Level;
 class Body : public Object{
 public:
 	Body(b2BodyType type);
-	~Body();
 
-	void Draw(const Colors &colors) const;
+	virtual uint8_t GetType() const override{return BODY;}
 
-	void DrawPoints(const Colors &colors) const;
-	bool UpdatePoints(const Mouse &mouse);
-	bool Create(const Mouse &mouse);
-
-	void ClearFixtures();
-	void AddFixture(Fixture *fixture);
+	virtual void Draw(const Colors &colors) const override;
+	virtual void DrawPoints(const Colors &colors) const override;
+	virtual bool UpdatePoints(const Mouse &mouse) override;
+	virtual bool Create(const Mouse &mouse) override;
 
 	Color GetColor() const;
 	float GetLineWidth() const;
 
-	void UnselectPoints();
-	void SelectAll();
-	void UnselectAll();
-	int GetSelectedCount() const;
-	void DeleteSelected();
-	Object *GetFirstSelected();
-
 	Mouse GetLocalMouse(const Mouse &mouse) const;
 
-	void SetType(b2BodyType type);
-
 	const b2Vec2 &GetPosition() const;
+	float GetAngle() const;
 
 	virtual void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const override;
 	virtual void OnPropertyGridChange(const wxString &name, const wxVariant &value) override;
 private:
-	bool TestPoint(const b2Vec2 &pos) const;
-
 	void Transform() const;
 	void TransformBack() const;
 
@@ -59,7 +46,6 @@ private:
 	float gravityScale;
 
 	Fixture *fixtures;
-	Body *next;
 
 	friend class Level;
 };

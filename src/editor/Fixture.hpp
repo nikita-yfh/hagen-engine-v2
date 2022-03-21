@@ -4,6 +4,7 @@
 #include "b2_fixture.h"
 
 class Body;
+class Level;
 
 class Fixture : public Object{
 public:
@@ -18,6 +19,7 @@ public:
 protected:
 	void ApplyFill(const Colors &colors) const;
 	void ApplyBorder(const Colors &colors) const;
+	bool UpdateBody(const Mouse &mouse) const;
 
 	virtual bool CanBeDynamic() const;
 
@@ -30,6 +32,6 @@ protected:
 
 	Body *parent;
 
-	friend class Body;
+	friend class Level;
 };
 

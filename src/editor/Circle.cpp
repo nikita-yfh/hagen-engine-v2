@@ -8,28 +8,33 @@ Circle::Circle()
 }
 
 void Circle::Draw(const Colors &colors) const{
+	parent->Transform();
 	const Color color=parent->GetColor();
 	ApplyFill(colors);
 	glutils::DrawCircle(position, radius,true);
 	ApplyBorder(colors);
 	glutils::DrawCircle(position, radius,false);
 	glutils::DrawLine(position, position + b2Vec2(radius, 0.0f));
+	parent->TransformBack();
 }
 void Circle::DrawPoints(const Colors &colors) const{
+	parent->Transform();
 	DrawPoint(colors, 1, position + b2Vec2(radius,0.0f));
 	DrawPoint(colors, 2, position);
+	parent->TransformBack();
 }
-bool Circle::UpdatePoints(const Mouse &mouse){
+bool Circle::UpdatePoints(const Mouse &_mouse){
+	const Mouse mouse = parent->GetLocalMouse(_mouse);
 	b2Vec2 point(position + b2Vec2(radius,0.0f));
 	if(UpdatePoint(mouse, 1, point)){
 		radius=mouse.camera.ToGrid(b2Distance(point, position));
 		return true;
 	}
-	return UpdatePoint(mouse, 2, position);
+	return UpdatePoint(mouse, 2, position) || UpdateBody(mouse);
 }
 bool Circle::Create(const Mouse &_mouse){
+	UpdatePoints(_mouse);
 	const Mouse mouse = parent->GetLocalMouse(_mouse);
-	UpdatePoints(mouse);
 	if(mouse.pressed)
 		if(selected==2)
 			selected=1;

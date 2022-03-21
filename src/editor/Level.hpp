@@ -33,7 +33,6 @@ public:
 	void DeleteSelected();
 
 	void AddImage(const wxString &path);
-	void AddObject(Object *object);
 	void AddBody(Body *body);
 	void AddFixture(Fixture *fixture);
 	void AddJoint(Joint *joint);
@@ -51,7 +50,8 @@ public:
 
 	const Directory &GetGameDir() const;
 private:
-	void DeleteDependency(const void *object);
+	void AddObject(Object *object);
+	void DeleteObject(const void *object);
 
 	b2Vec2 gravity;
 	float textureScale;

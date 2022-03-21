@@ -30,6 +30,7 @@ bool Polygon::CancelCreating(){
 	return true;
 }
 void Polygon::Draw(const Colors &colors) const{
+	parent->Transform();
 	ApplyFill(colors);
 	glBegin(GL_POLYGON);
 	for(Point *point=points;point;point=point->next)
@@ -40,8 +41,10 @@ void Polygon::Draw(const Colors &colors) const{
 	for(Point *point=points;point;point=point->next)
 		glutils::Vertex(*point);
 	glEnd();
+	parent->TransformBack();
 }
 void Polygon::DrawPoints(const Colors &colors) const{
+	parent->Transform();
 	int index=1;
 	for(const Point *point=points;point;point=point->next)
 		DrawPoint(colors,index++,*point);
@@ -53,14 +56,17 @@ void Polygon::DrawPoints(const Colors &colors) const{
 			DrawPoint(colors,index++,point);
 		}
 	}
+	parent->TransformBack();
 }
 
-bool Polygon::UpdatePoints(const Mouse &mouse){
+bool Polygon::UpdatePoints(const Mouse &_mouse){
+	const Mouse mouse = parent->GetLocalMouse(_mouse);
 	int index=1;
 	for(Point *point=points;point;point=point->next)
 		if(UpdatePoint(mouse,index++,*point))
 			return true;
 	for(Point *p1=points;p1;p1=p1->next){
+		printf("%g %g\n", p1->x, p1->y);
 		Point *p2=p1->next;
 		if(p2==nullptr)p2=points;
 		b2Vec2 point((*p1+*p2)/2.0f);
@@ -76,7 +82,7 @@ bool Polygon::UpdatePoints(const Mouse &mouse){
 			return true;
 		}
 	}
-	return false;
+	return UpdateBody(mouse);
 }
 bool Polygon::Create(const Mouse &_mouse){
 	const Mouse mouse = parent->GetLocalMouse(_mouse);

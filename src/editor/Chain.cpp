@@ -4,6 +4,7 @@
 #include <wx/glcanvas.h>
 
 void Chain::Draw(const Colors &colors) const{
+	parent->Transform();
 	ApplyBorder(colors);
 	glBegin(GL_LINE_STRIP);
 	for(const Point *point=points->next;point&&point->next;point=point->next)
@@ -33,8 +34,10 @@ void Chain::Draw(const Colors &colors) const{
 		}
 		glEnd();
 	}
+	parent->TransformBack();
 }
 void Chain::DrawPoints(const Colors &colors) const{
+	parent->Transform();
 	int index=1;
 	for(const Point *point=points;point;point=point->next)
 		DrawPoint(colors,index++,*point);
@@ -45,8 +48,10 @@ void Chain::DrawPoints(const Colors &colors) const{
 			DrawPoint(colors,index++,point);
 		}
 	}
+	parent->TransformBack();
 }
-bool Chain::UpdatePoints(const Mouse &mouse){
+bool Chain::UpdatePoints(const Mouse &_mouse){
+	const Mouse mouse = parent->GetLocalMouse(_mouse);
 	int index=1;
 	for(Point *point=points;point;point=point->next)
 		if(UpdatePoint(mouse,index++,*point))
@@ -66,7 +71,7 @@ bool Chain::UpdatePoints(const Mouse &mouse){
 			return true;
 		}
 	}
-	return false;
+	return UpdateBody(mouse);
 }
 bool Chain::TestPoint(const b2Vec2 &point) const{
 	return false; // :)

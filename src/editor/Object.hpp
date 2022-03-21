@@ -24,6 +24,11 @@ public:
 	inline bool IsSelectedPoint() const{return selected>0;}
 	inline void UnselectPoints(){if(IsSelectedPoint())Select();}
 
+	void _Draw() const;
+	void _DrawPoints() const;
+	bool _UpdatePoints();
+	bool _Create(const Mouse &mouse);
+
 	virtual void Draw(const Colors &colors) const = 0;
 	virtual void DrawPoints(const Colors &colors) const = 0;
 	virtual bool UpdatePoints(const Mouse &mouse) = 0;

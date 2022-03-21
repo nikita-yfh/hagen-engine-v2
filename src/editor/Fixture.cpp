@@ -22,6 +22,14 @@ void Fixture::ApplyFill(const Colors &colors) const{
 void Fixture::ApplyBorder(const Colors &colors) const{
 	colors.Apply(parent->GetColor(),borderAlpha);
 }
+bool Fixture::UpdateBody(const Mouse &mouse) const{
+	if(mouse.pressed && TestPoint(mouse.position)){
+		parent->BeginDrag(mouse);
+		return true;
+	}
+	return false;
+}
+
 bool Fixture::CanBeDynamic() const{
 	return true;
 }

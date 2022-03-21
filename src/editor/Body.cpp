@@ -3,10 +3,13 @@
 #include "EditorMain.hpp"
 #include <wx/glcanvas.h>
 
+static b2Vec2 delta;
+
 Body::Body(b2BodyType _type) :
 		position(b2Vec2_zero),
 		type(_type),
 		angle(0.0f),
+		rotate(0.0f),
 		linearVelocity(0.0f,0.0f),
 		angularVelocity(0.0f),
 		linearDamping(0.0f),
@@ -19,21 +22,30 @@ Body::Body(b2BodyType _type) :
 		gravityScale(1.0f) {}
 
 void Body::Draw(const Colors &colors) const{
+	glLineWidth(IsSelected()?2.0f:1.0f);
 }
+
 void Body::DrawPoints(const Colors &colors) const{
 	DrawPoint(colors, 1, position);
 }
 bool Body::UpdatePoints(const Mouse &mouse){
-	return UpdatePoint(mouse,1,position);
+	if(selected == 2)
+		position = mouse.camera.ToGrid(mouse.position-delta);
+	return selected == 2 || UpdatePoint(mouse,1,position);
 }
 bool Body::Create(const Mouse &mouse){
 	UpdatePoint(mouse,1,position);
 	return mouse.pressed;
 }
 Mouse Body::GetLocalMouse(const Mouse &mouse) const{
-	b2Transform transform(position,b2Rot(angle));
+	b2Transform transform(position,rotate);
 	return mouse*transform;
 }
+void Body::BeginDrag(const Mouse &mouse) {
+	selected = 2;
+	delta = mouse.camera.ToGrid(b2Mul(rotate,mouse.position));
+}
+
 void Body::Transform() const{
 	glPushMatrix();
 	glutils::Translate(position);
@@ -53,16 +65,15 @@ Color Body::GetColor() const{
 	}
 	return COLOR_DARK;
 }
-float Body::GetLineWidth() const{
-	if(IsSelected())
-		return 2.0f;
-	return 1.0f;
-}
 const b2Vec2 &Body::GetPosition() const{
 	return position;
 }
 float Body::GetAngle() const{
 	return angle;
+}
+void Body::SetAngle(float a){
+	angle = a;
+	rotate = b2Rot(a);
 }
 void Body::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if (!n)
@@ -94,7 +105,7 @@ void Body::OnPropertyGridChange(const wxString& name, const wxVariant& value){
 	else if(name == "Position")
 		position << value;
 	else if(name == "Angle")
-		angle = glutils::DegToRad(value.GetDouble());
+		SetAngle(glutils::DegToRad(value.GetDouble()));
 	else if(name == "LinearVelocity")
 		linearVelocity << value;
 	else if(name == "AngularVelocity")

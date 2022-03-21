@@ -52,10 +52,10 @@ void Level::AddJoint(Joint *joint){
 				a = (Body*)object;
 		}
 	}
-	if(a && b){
-		joint->SetBodies(a, b);
-		AddObject(joint);
-	}
+	if(!a || !b)
+		return;
+	joint->SetBodies(a, b);
+	AddObject(joint);
 }
 void Level::AddTexture(const wxString &name){
 	Texture *temp = textures;
@@ -64,7 +64,7 @@ void Level::AddTexture(const wxString &name){
 }
 void Level::AddObject(Object *object){
 	UnselectAll();
-	objects->next = objects;
+	object->next = objects;
 	create = objects = object;
 }
 void Level::DeleteTexture(const wxString &name){
@@ -72,8 +72,7 @@ void Level::DeleteTexture(const wxString &name){
 	if(textures && textures->name == name){
 		del = textures;
 		textures = textures->next;
-	}
-	else{
+	}else{
 		for(Texture *texture = textures; texture; texture = texture->next){
 			Texture *next = texture->next;
 			if(next && next->name == name){
@@ -82,13 +81,12 @@ void Level::DeleteTexture(const wxString &name){
 			}
 		}
 	}
-	if(del){
-		DeleteDependency(del);
-		delete del;
-	}
-
+	if(!del)
+		return;
+	DeleteObject(del);
+	delete del;
 }
-void Level::DeleteDependency(const void *object){
+void Level::DeleteObject(const void *object){
 	UnselectAll();
 	for(Object *object = objects;object;object = object->next)
 		if(!object->TryRemove(object))
@@ -96,8 +94,9 @@ void Level::DeleteDependency(const void *object){
 	DeleteSelected();
 }
 void Level::Draw(const Colors &colors) const{
-	for(Object *object = objects;object;object = object->next)
+	for(Object *object = objects;object;object = object->next){
 		object->Draw(colors);
+	}
 }
 void Level::DrawPoints(const Colors &colors) const{
 	for(Object *object = objects;object;object = object->next)
@@ -173,6 +172,20 @@ Object *Level::GetFirstSelectedAll(){
 }
 
 void Level::AddFixture(Fixture *fixture){
+	Body *selected = nullptr;
+	for(Object *object = objects;object;object = object->next){
+		if(object->IsSelected() && object->GetType() == Object::BODY){
+			selected = (Body*)object;
+			break;
+		}
+	}
+	if(selected == nullptr)
+		return;
+	UnselectAll();
+	//Add fixture after body
+	fixture->parent = selected;
+	fixture->next = selected->next;
+	create = selected->next = fixture;
 }
 bool Level::IsCreating() const{
 	return create!=nullptr;
@@ -188,7 +201,7 @@ void Level::DeleteSelected(){
 	Object *prev = nullptr;
 	for(Object *object = objects; object;){
 		if(object->IsSelected()){
-			DeleteDependency(object);
+			DeleteObject(object);
 			if(prev)
 				prev->next = object->next;
 			else

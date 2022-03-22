@@ -3,7 +3,7 @@
 
 Colors::Colors(){
 	colors[COLOR_BGR]			= GetSystemColor(wxSYS_COLOUR_WINDOW);
-	colors[COLOR_GRID]			= GetSystemColor(wxSYS_COLOUR_MENUTEXT);
+	colors[COLOR_GRID]			= GetSystemColor(wxSYS_COLOUR_GRAYTEXT);
 	colors[COLOR_DARK]			= GetSystemColor(wxSYS_COLOUR_BTNTEXT);
 	colors[COLOR_INACTIVE]		= GetSystemColor(wxSYS_COLOUR_GRAYTEXT);
 	colors[COLOR_ACTIVE]		= GetSystemColor(wxSYS_COLOUR_MENUHILIGHT);

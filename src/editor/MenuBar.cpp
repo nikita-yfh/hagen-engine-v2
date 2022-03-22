@@ -1,5 +1,6 @@
 #include "MenuBar.hpp"
 #include "EditMenu.hpp"
+#include "EditorMain.hpp"
 
 MenuBar::MenuBar() {
 	{
@@ -16,5 +17,11 @@ MenuBar::MenuBar() {
 		//Edit
 		EditMenu *menu=new EditMenu();
 		Append(menu,_("Edit"));
+	}
+	{
+		//File
+		wxMenu* menu= new wxMenu();
+		menu->Append(ID_TEXTURE_RELOAD,_("Reload textures\tCtrl+R"));
+		Append(menu, _("Level"));
 	}
 }

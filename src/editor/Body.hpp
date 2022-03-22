@@ -2,11 +2,11 @@
 #include "b2_body.h"
 #include "Fixture.hpp"
 #include "Colors.hpp"
-#include "Object.hpp"
+#include "RotatableObject.hpp"
 
 class Level;
 
-class Body : public Object{
+class Body : public RotatableObject{
 public:
 	Body(b2BodyType type);
 
@@ -16,26 +16,14 @@ public:
 	virtual void DrawPoints(const Colors &colors) const override;
 	virtual bool UpdatePoints(const Mouse &mouse) override;
 	virtual bool Create(const Mouse &mouse) override;
+	void BeginDrag(const Mouse &mouse);
 
 	Color GetColor() const;
 
-	Mouse GetLocalMouse(const Mouse &mouse) const;
-	void BeginDrag(const Mouse &mouse);
-
-	const b2Vec2 &GetPosition() const;
-	float GetAngle() const;
-
 	virtual void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const override;
 	virtual void OnPropertyGridChange(const wxString &name, const wxVariant &value) override;
-
-	void Transform() const;
-	void TransformBack() const;
 private:
-	void SetAngle(float a);
-
 	b2BodyType type;
-	b2Vec2 position;
-	float angle;
 	b2Vec2 linearVelocity;
 	float angularVelocity;
 	float linearDamping;
@@ -46,9 +34,6 @@ private:
 	bool bullet;
 	bool enabled;
 	float gravityScale;
-
-	Fixture *fixtures;
-	b2Rot rotate;
 
 	friend class Level;
 };

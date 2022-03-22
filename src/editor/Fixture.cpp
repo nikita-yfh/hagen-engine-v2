@@ -12,9 +12,9 @@ Fixture::Fixture():
 	parent(nullptr) {}
 
 bool Fixture::TryRemove(const void *object){
-	if(object != parent)
-		return true;
-	return false;
+	if(object == parent)
+		return false;
+	return true;
 }
 void Fixture::ApplyFill(const Colors &colors) const{
 	colors.Apply(parent->GetColor(),fillAlpha);

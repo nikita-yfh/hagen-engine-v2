@@ -9,6 +9,8 @@ public:
 	Texture(const Directory &dir, const wxString &name);
 	~Texture();
 
+	bool Reload(const Directory &dir);
+
 	void Bind() const;
 	void Activate() const;
 	void Deactivate() const;
@@ -40,6 +42,7 @@ private:
 	int		GetParameteri(GLenum pname) const;
 	float	GetParameterf(GLenum pname) const;
 
+	bool LoadTexture(const wxString &name);
 	void operator=(const Texture&) = delete;
 	Texture(const Texture&) = delete;
 

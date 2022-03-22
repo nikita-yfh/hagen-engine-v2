@@ -26,5 +26,11 @@ inline void Translate(const b2Vec2 &p){
 inline void Rotate(float rad){
 	glRotatef(RadToDeg(rad),0.0f,0.0f,1.0f);
 }
+inline void Scale(float s){
+	glScalef(s,s,1.0f);
+}
+inline void Scale(float x, float y){
+	glScalef(x,y,1.0f);
+}
 
 };

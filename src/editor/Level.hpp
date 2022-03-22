@@ -44,6 +44,7 @@ public:
 
 	void AddTexture(const wxString&);
 	void DeleteTexture(const wxString&);
+	void ReloadTextures();
 
 	void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const;
 	void OnPropertyGridChange(const wxString &name, const wxVariant &value);
@@ -51,7 +52,8 @@ public:
 	const Directory &GetGameDir() const;
 private:
 	void AddObject(Object *object);
-	void DeleteObject(const void *object);
+	void DeleteDeps(const void *object);
+	bool SelectDeps(const void *object);
 
 	b2Vec2 gravity;
 	float textureScale;

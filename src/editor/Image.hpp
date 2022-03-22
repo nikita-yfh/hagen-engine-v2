@@ -1,11 +1,11 @@
 #pragma once
-#include "Object.hpp"
+#include "RotatableObject.hpp"
 #include "Texture.hpp"
 #include "Body.hpp"
 
 class Level;
 
-class Image : public Object {
+class Image : public RotatableObject {
 public:
 	Image(const Texture *texture, const float &scale);
 
@@ -16,11 +16,13 @@ public:
 	virtual uint8_t GetType() const override{return IMAGE;}
 
 	virtual bool TryRemove(const void *object);
+
+	virtual void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const override;
+	virtual void OnPropertyGridChange(const wxString &name, const wxVariant &value) override;
 private:
+	void Transform() const;
 	bool TestPoint(const b2Vec2 &point) const;
 
-	b2Vec2 position;
-	float angle;
 	const Texture *texture;
 	const Body *bindBody;
 

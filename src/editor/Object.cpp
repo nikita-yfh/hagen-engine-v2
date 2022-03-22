@@ -1,10 +1,7 @@
 #include "Object.hpp"
 #include <wx/glcanvas.h>
 
-const float Object::activeSize=6.0f;
-const float Object::inactiveSize=4.0f;
-const float Object::borderAlpha=1.0f;
-const float Object::fillAlpha=0.4f;
+b2Vec2 Object::delta;
 
 Object::Object() : selected(1), next(nullptr) {}
 

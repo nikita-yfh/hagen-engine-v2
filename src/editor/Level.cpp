@@ -57,15 +57,29 @@ void Level::AddJoint(Joint *joint){
 	joint->SetBodies(a, b);
 	AddObject(joint);
 }
-void Level::AddTexture(const wxString &name){
-	Texture *temp = textures;
-	textures = new Texture(gameDir, name);
-	textures->next = temp;
-}
 void Level::AddObject(Object *object){
 	UnselectAll();
 	object->next = objects;
 	create = objects = object;
+}
+void Level::DeleteDeps(const void *object){
+	UnselectAll();
+	SelectDeps(object);
+	DeleteSelected();
+}
+bool Level::SelectDeps(const void *del){
+	bool ok = false;
+	for(Object *object = objects;object;object = object->next)
+		if(!object->TryRemove(del)){
+			object->Select();
+			ok = true;
+		}
+	return ok;
+}
+void Level::AddTexture(const wxString &name){
+	Texture *temp = textures;
+	textures = new Texture(gameDir, name);
+	textures->next = temp;
 }
 void Level::DeleteTexture(const wxString &name){
 	Texture *del = nullptr;
@@ -83,20 +97,12 @@ void Level::DeleteTexture(const wxString &name){
 	}
 	if(!del)
 		return;
-	DeleteObject(del);
+	DeleteDeps(del);
 	delete del;
 }
-void Level::DeleteObject(const void *object){
-	UnselectAll();
-	for(Object *object = objects;object;object = object->next)
-		if(!object->TryRemove(object))
-			object->Select();
-	DeleteSelected();
-}
 void Level::Draw(const Colors &colors) const{
-	for(Object *object = objects;object;object = object->next){
+	for(Object *object = objects;object;object = object->next)
 		object->Draw(colors);
-	}
 }
 void Level::DrawPoints(const Colors &colors) const{
 	for(Object *object = objects;object;object = object->next)
@@ -199,23 +205,31 @@ bool Level::CancelCreating(){
 }
 void Level::DeleteSelected(){
 	Object *prev = nullptr;
-	for(Object *object = objects; object;){
-		if(object->IsSelected()){
-			DeleteObject(object);
-			if(prev)
-				prev->next = object->next;
-			else
-				objects = object->next;
-			Object *child = object->next;
-			delete object;
-			object = child;
-		}else{
-			prev = object;
-			object = object->next;
+	bool ok;
+	do{
+		ok = false;
+		for(Object *object = objects; object;){
+			if(object->IsSelected()){
+				if(SelectDeps(object))
+					ok = true;
+				if(prev)
+					prev->next = object->next;
+				else
+					objects = object->next;
+				Object *child = object->next;
+				delete object;
+				object = child;
+			}else{
+				prev = object;
+				object = object->next;
+			}
 		}
-	}
+	}while(ok);
 }
-
+void Level::ReloadTextures(){
+	for(Texture *tex = textures; tex; tex = tex->next)
+		tex->Reload(gameDir);
+}
 void Level::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if(n){
 		pg->Append(new Vec2Property("Gravity", wxPG_LABEL, gravity));

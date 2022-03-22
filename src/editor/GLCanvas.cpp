@@ -70,6 +70,7 @@ void GLCanvas::OnRightDown(wxMouseEvent&e) {
 	e.Skip();
 }
 void GLCanvas::OnLeftDown(wxMouseEvent&e) {
+	SetFocus();
 	if(!level.IsCreating() && !wxGetKeyState(WXK_SHIFT))
 		level.UnselectAll();
 	SetMouse(GetMousePos(e));

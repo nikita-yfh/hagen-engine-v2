@@ -45,11 +45,12 @@ protected:
 	
 	int selected;
 
-	static const float activeSize;
-	static const float inactiveSize;
+	static constexpr float activeSize=6.0f;
+	static constexpr float inactiveSize=4.0f;
+	static constexpr float borderAlpha=1.0f;
+	static constexpr float fillAlpha=0.4f;
 
-	static const float borderAlpha;
-	static const float fillAlpha;
+	static b2Vec2 delta;
 
 	wxString id;
 

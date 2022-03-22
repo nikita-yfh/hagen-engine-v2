@@ -1,30 +1,30 @@
-#include "RotatableObject.hpp"
+#include "Rotatable.hpp"
+#include "GLUtils.hpp"
 
-RotatableObject::RotatableObject() :
+Rotatable::Rotatable() :
 	position(b2Vec2_zero),
 	angle(0.0f),
 	rotate(0.0f) {}
 
-Mouse RotatableObject::GetLocalMouse(const Mouse &mouse) const{
+Mouse Rotatable::GetLocalMouse(const Mouse &mouse) const{
 	b2Transform transform(position,rotate);
 	return mouse*transform;
 }
-void RotatableObject::Transform() const{
-	glPushMatrix();
+void Rotatable::Transform() const{
 	glutils::Translate(position);
 	glutils::Rotate(angle);
 }
-void RotatableObject::SetAngle(float a){
+void Rotatable::SetAngle(float a){
 	angle = a;
 	rotate.Set(a);
 }
-const b2Vec2 &RotatableObject::GetPosition() const{
+const b2Vec2 &Rotatable::GetPosition() const{
 	return position;
 }
-float RotatableObject::GetAngle() const{
+float Rotatable::GetAngle() const{
 	return angle;
 }
-void RotatableObject::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
+void Rotatable::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if (!n){
 		pg->GetProperty("Position")->SetValue(WXVARIANT(position));
 		pg->GetProperty("Angle")->SetValue(glutils::RadToDeg(angle));
@@ -32,13 +32,11 @@ void RotatableObject::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 		pg->Append(new Vec2Property("Position", wxPG_LABEL, position));
 		pg->Append(new wxFloatProperty("Angle", wxPG_LABEL, glutils::RadToDeg(angle)));
 	}
-	Object::UpdatePropertyGrid(pg,n);
 }
-void RotatableObject::OnPropertyGridChange(const wxString& name, const wxVariant& value){
+void Rotatable::OnPropertyGridChange(const wxString& name, const wxVariant& value){
 	if(name == "Position")
 		position << value;
 	else if(name == "Angle")
 		SetAngle(glutils::DegToRad(value.GetDouble()));
-	Object::OnPropertyGridChange(name,value);
 }
 

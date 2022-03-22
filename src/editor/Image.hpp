@@ -1,11 +1,12 @@
 #pragma once
-#include "RotatableObject.hpp"
+#include "Object.hpp"
+#include "Rotatable.hpp"
 #include "Texture.hpp"
 #include "Body.hpp"
 
 class Level;
 
-class Image : public RotatableObject {
+class Image : public Object, public Rotatable{
 public:
 	Image(const Texture *texture, const float &scale);
 

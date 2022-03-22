@@ -7,7 +7,9 @@ Image::Image(const Texture *_texture, const float &_scale) :
 	bindBody(nullptr){}
 
 void Image::Transform() const{
-	RotatableObject::Transform();
+	if(bindBody)
+		bindBody->Transform();
+	Rotatable::Transform();
 	glutils::Scale(texture->GetWidth()/2.0f/scale, texture->GetHeight()/2.0f/scale);
 }
 
@@ -22,7 +24,6 @@ void Image::Draw(const Colors &colors) const{
 	glTexCoord2i(1,0); glVertex2f( 1, -1);
 	glEnd();
 	texture->Deactivate();
-	TransformBack();
 }
 void Image::DrawPoints(const Colors &colors) const{
 	if(IsSelected()){
@@ -35,7 +36,6 @@ void Image::DrawPoints(const Colors &colors) const{
 		glVertex2i( 1,  1);
 		glVertex2f( 1, -1);
 		glEnd();
-		TransformBack();
 	}
 }
 bool Image::TestPoint(const b2Vec2 &point) const{
@@ -68,9 +68,11 @@ bool Image::TryRemove(const void *object){
 	return true;
 }
 void Image::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
-	RotatableObject::UpdatePropertyGrid(pg,n);
+	Rotatable::UpdatePropertyGrid(pg,n);
+	Object::UpdatePropertyGrid(pg,n);
 }
 void Image::OnPropertyGridChange(const wxString& name, const wxVariant& value){
-	RotatableObject::OnPropertyGridChange(name, value);
+	Rotatable::OnPropertyGridChange(name, value);
+	Object::OnPropertyGridChange(name, value);
 }
 

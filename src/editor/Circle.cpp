@@ -15,13 +15,11 @@ void Circle::Draw(const Colors &colors) const{
 	ApplyBorder(colors);
 	glutils::DrawCircle(position, radius,false);
 	glutils::DrawLine(position, position + b2Vec2(radius, 0.0f));
-	parent->TransformBack();
 }
 void Circle::DrawPoints(const Colors &colors) const{
 	parent->Transform();
 	DrawPoint(colors, 1, position + b2Vec2(radius,0.0f));
 	DrawPoint(colors, 2, position);
-	parent->TransformBack();
 }
 bool Circle::UpdatePoints(const Mouse &_mouse){
 	const Mouse mouse = parent->GetLocalMouse(_mouse);

@@ -101,12 +101,18 @@ void Level::DeleteTexture(const wxString &name){
 	delete del;
 }
 void Level::Draw(const Colors &colors) const{
-	for(Object *object = objects;object;object = object->next)
+	for(Object *object = objects;object;object = object->next){
+		glPushMatrix();
 		object->Draw(colors);
+		glPopMatrix();
+	}
 }
 void Level::DrawPoints(const Colors &colors) const{
-	for(Object *object = objects;object;object = object->next)
+	for(Object *object = objects;object;object = object->next){
+		glPushMatrix();
 		object->DrawPoints(colors);
+		glPopMatrix();
+	}
 }
 bool Level::UpdatePoints(const Mouse &mouse){
 	if(create){

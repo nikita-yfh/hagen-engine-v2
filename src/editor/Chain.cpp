@@ -34,7 +34,6 @@ void Chain::Draw(const Colors &colors) const{
 		}
 		glEnd();
 	}
-	parent->TransformBack();
 }
 void Chain::DrawPoints(const Colors &colors) const{
 	parent->Transform();
@@ -48,7 +47,6 @@ void Chain::DrawPoints(const Colors &colors) const{
 			DrawPoint(colors,index++,point);
 		}
 	}
-	parent->TransformBack();
 }
 bool Chain::UpdatePoints(const Mouse &_mouse){
 	const Mouse mouse = parent->GetLocalMouse(_mouse);

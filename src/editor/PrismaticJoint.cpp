@@ -2,13 +2,13 @@
 #include "GLUtils.hpp"
 #include <wx/glcanvas.h>
 
-PrismaticJoint::PrismaticJoint()
-	:position(b2Vec2_zero), angle(0.0f),
+PrismaticJoint::PrismaticJoint() :
 		enableLimit(false), lowerTranslation(-3.0f), upperTranslation(3.0f),
-		enableMotor(false), maxMotorForce(1000.0f), motorSpeed(10.0f) {selected=1;}
+		enableMotor(false), maxMotorForce(1000.0f), motorSpeed(10.0f) {}
 
 void PrismaticJoint::Draw(const Colors &colors) const{
 	ApplyDrawJoint(colors);
+	DrawConnections(colors,position);
 	Transform();
 	glBegin(GL_LINES);
 	if(enableLimit){
@@ -19,8 +19,6 @@ void PrismaticJoint::Draw(const Colors &colors) const{
 		glVertex2f( 10000.0f,0.0f);
 	}
 	glEnd();
-	TransformBack();
-	DrawConnections(colors,position);
 }
 void PrismaticJoint::DrawPoints(const Colors &colors) const{
 	DrawPoint(colors,1,position);
@@ -28,7 +26,6 @@ void PrismaticJoint::DrawPoints(const Colors &colors) const{
 		Transform();
 		DrawPoint(colors,2,b2Vec2(lowerTranslation,0.0f));
 		DrawPoint(colors,3,b2Vec2(upperTranslation,0.0f));
-		TransformBack();
 	}
 }
 bool PrismaticJoint::UpdatePoints(const Mouse &_mouse){
@@ -64,27 +61,12 @@ bool PrismaticJoint::Create(const Mouse &mouse){
 	return false;
 }
 
-void PrismaticJoint::Transform() const{
-	glPushMatrix();
-	glutils::Translate(position);
-	glutils::Rotate(angle);
-}
-void PrismaticJoint::TransformBack() const{
-	glPopMatrix();
-}
-Mouse PrismaticJoint::GetLocalMouse(const Mouse &mouse) const{
-	b2Transform transform(position,b2Rot(angle));
-	return mouse*transform;
-}
 void PrismaticJoint::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
+	Rotatable::UpdatePropertyGrid(pg, n);
 	if(!n){
-		pg->GetProperty("Position")->SetValue(WXVARIANT(position));
-		pg->GetProperty("Angle")->SetValue(angle);
 		pg->GetProperty("LowerTranslation")->SetValue(lowerTranslation);
 		pg->GetProperty("UpperTranslation")->SetValue(upperTranslation);
 	}else{
-		pg->Append(new Vec2Property("Position", wxPG_LABEL, position));
-		pg->Append(new wxFloatProperty("Angle", wxPG_LABEL, angle));
 		pg->Append(new wxBoolProperty("EnableLimit", wxPG_LABEL, enableLimit));
 		pg->Append(new wxFloatProperty("LowerTranslation", wxPG_LABEL, lowerTranslation));
 		pg->Append(new wxFloatProperty("UpperTranslation", wxPG_LABEL, upperTranslation));
@@ -95,11 +77,8 @@ void PrismaticJoint::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	Joint::UpdatePropertyGrid(pg, n);
 }
 void PrismaticJoint::OnPropertyGridChange(const wxString &name, const wxVariant &value){
-	if(name == "Position")
-		position << value;
-	else if(name == "Angle")
-		angle = value.GetDouble();
-	else if(name == "EnableLimit")
+	Rotatable::OnPropertyGridChange(name, value);
+	if(name == "EnableLimit")
 		enableLimit = value.GetBool();
 	else if(name == "LowerTranslation")
 		lowerTranslation = value.GetDouble();
@@ -111,5 +90,5 @@ void PrismaticJoint::OnPropertyGridChange(const wxString &name, const wxVariant 
 		maxMotorForce = value.GetDouble();
 	else if(name == "MotorSpeed")
 		motorSpeed = value.GetDouble();
-	Joint::OnPropertyGridChange(name,value);
+	Joint::OnPropertyGridChange(name, value);
 }

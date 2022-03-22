@@ -2,11 +2,12 @@
 #include "b2_body.h"
 #include "Fixture.hpp"
 #include "Colors.hpp"
-#include "RotatableObject.hpp"
+#include "Object.hpp"
+#include "Rotatable.hpp"
 
 class Level;
 
-class Body : public RotatableObject{
+class Body : public Object, public Rotatable{
 public:
 	Body(b2BodyType type);
 

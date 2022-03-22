@@ -48,6 +48,7 @@ Color Body::GetColor() const{
 	return COLOR_DARK;
 }
 void Body::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
+	Rotatable::UpdatePropertyGrid(pg,n);
 	if(n){
  		wxPGChoices eech;
  		eech.Add("static");
@@ -65,9 +66,10 @@ void Body::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 		pg->Append(new wxBoolProperty("Enabled", wxPG_LABEL, enabled));
 		pg->Append(new wxFloatProperty("GravityScale", wxPG_LABEL, gravityScale));
 	}
-	RotatableObject::UpdatePropertyGrid(pg,n);
+	Object::UpdatePropertyGrid(pg,n);
 }
 void Body::OnPropertyGridChange(const wxString& name, const wxVariant& value){
+	Rotatable::OnPropertyGridChange(name,value);
 	if (name == "Type")
 		type = (b2BodyType)value.GetLong();
 	else if(name == "LinearVelocity")
@@ -90,6 +92,6 @@ void Body::OnPropertyGridChange(const wxString& name, const wxVariant& value){
 		enabled = value.GetBool();
 	else if (name == "GravityScale")
 		gravityScale = value.GetDouble();
-	RotatableObject::OnPropertyGridChange(name,value);
+	Object::OnPropertyGridChange(name,value);
 }
 

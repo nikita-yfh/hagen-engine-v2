@@ -2,24 +2,21 @@
 #include "b2_math.h"
 #include "Colors.hpp"
 #include "Object.hpp"
-#include "GLUtils.hpp"
+#include <wx/propgrid/propgrid.h>
 
-class RotatableObject : public Object{
+class Rotatable{
 public:
-	RotatableObject();
+	Rotatable();
 
 	Mouse GetLocalMouse(const Mouse &mouse) const;
 
 	const b2Vec2 &GetPosition() const;
 	float GetAngle() const;
 
-	virtual void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const override;
-	virtual void OnPropertyGridChange(const wxString &name, const wxVariant &value) override;
+	void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const;
+	void OnPropertyGridChange(const wxString &name, const wxVariant &value);
 
 	void Transform() const;
-	inline void TransformBack() const{
-		glPopMatrix();
-	}
 protected:
 	void SetAngle(float a);
 

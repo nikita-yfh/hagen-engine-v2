@@ -41,7 +41,6 @@ void Polygon::Draw(const Colors &colors) const{
 	for(Point *point=points;point;point=point->next)
 		glutils::Vertex(*point);
 	glEnd();
-	parent->TransformBack();
 }
 void Polygon::DrawPoints(const Colors &colors) const{
 	parent->Transform();
@@ -56,7 +55,6 @@ void Polygon::DrawPoints(const Colors &colors) const{
 			DrawPoint(colors,index++,point);
 		}
 	}
-	parent->TransformBack();
 }
 
 bool Polygon::UpdatePoints(const Mouse &_mouse){

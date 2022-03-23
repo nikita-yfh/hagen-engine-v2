@@ -23,6 +23,7 @@ public:
 	static bool enabled;
 private:
 	int8_t layer;
+	b2Vec2 repeat;
 
 	Mouse GetBodyMouse(const Mouse &mouse) const;
 	void Transform() const;

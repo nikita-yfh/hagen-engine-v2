@@ -28,6 +28,8 @@ public:
 	CanvasDropTarget(GLCanvas *_canvas, Level &_level)
 		:canvas(_canvas), level(_level) {}
 	virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames) override{
+		if(!Image::enabled)
+			return false;
 		level.AddImage(filenames[0]);
 		return true;
 	}

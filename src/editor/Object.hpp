@@ -24,18 +24,14 @@ public:
 	inline bool IsSelectedPoint() const{return selected>0;}
 	inline void UnselectPoints(){if(IsSelectedPoint())Select();}
 
-	void _Draw() const;
-	void _DrawPoints() const;
-	bool _UpdatePoints();
-	bool _Create(const Mouse &mouse);
-
 	virtual void Draw(const Colors &colors) const = 0;
 	virtual void DrawPoints(const Colors &colors) const = 0;
 	virtual bool UpdatePoints(const Mouse &mouse) = 0;
 	virtual bool Create(const Mouse &mouse);
 	virtual bool CancelCreating(); //if false, object isn't valid
 	virtual bool TryRemove(const void *object); //true = success
-	virtual uint8_t GetType() const = 0;
+	virtual uint8_t GetObjectType() const = 0;
+	virtual int8_t GetLayer() const;
 	
 	virtual void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const;
 	virtual void OnPropertyGridChange(const wxString &name, const wxVariant &value);

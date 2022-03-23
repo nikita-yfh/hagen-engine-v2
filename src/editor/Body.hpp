@@ -5,13 +5,11 @@
 #include "Object.hpp"
 #include "Rotatable.hpp"
 
-class Level;
-
-class Body : public Object, public Rotatable{
+class Body : public Object, public Rotatable {
 public:
 	Body(b2BodyType type);
 
-	virtual uint8_t GetType() const override{return BODY;}
+	virtual uint8_t GetObjectType() const override{return BODY;}
 
 	virtual void Draw(const Colors &colors) const override;
 	virtual void DrawPoints(const Colors &colors) const override;
@@ -20,6 +18,9 @@ public:
 	void BeginDrag(const Mouse &mouse);
 
 	Color GetColor() const;
+	inline b2BodyType GetType() const{
+		return type;
+	}
 
 	virtual void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const override;
 	virtual void OnPropertyGridChange(const wxString &name, const wxVariant &value) override;
@@ -35,6 +36,4 @@ private:
 	bool bullet;
 	bool enabled;
 	float gravityScale;
-
-	friend class Level;
 };

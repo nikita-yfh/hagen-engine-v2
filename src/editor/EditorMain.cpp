@@ -35,6 +35,7 @@ wxBEGIN_EVENT_TABLE(EditorFrame,wxFrame)
 	EVT_MENU(wxID_DELETE,			 		EditorFrame::DeleteSelected)
 	EVT_MENU(wxID_NEW,			 			EditorFrame::Execute<&Level::Clear>)
 	EVT_MENU(ID_TEXTURE_RELOAD, 			EditorFrame::Execute<&Level::ReloadTextures>)
+	EVT_MENU(ID_IMAGE_EDIT,					EditorFrame::SetImageEditMode)
 	EVT_UPDATE_UI(wxID_COPY,		 		EditorFrame::OneSelected)
 	EVT_UPDATE_UI(wxID_CUT,			 		EditorFrame::OneSelected)
 	EVT_UPDATE_UI(wxID_DUPLICATE,	 		EditorFrame::OneSelected)
@@ -93,6 +94,10 @@ void EditorFrame::OnMouseMotion(wxMouseEvent &e){
 void EditorFrame::DeleteSelected(wxCommandEvent&e){
 	level.DeleteSelected();
 	OnLevelUpdate(e);
+	canvas->Refresh();
+}
+void EditorFrame::SetImageEditMode(wxCommandEvent&){
+	Image::enabled = !Image::enabled;
 	canvas->Refresh();
 }
 void EditorFrame::OnLevelUpdate(wxCommandEvent&){

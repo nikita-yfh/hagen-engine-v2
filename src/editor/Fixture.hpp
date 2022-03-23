@@ -4,13 +4,13 @@
 #include "b2_fixture.h"
 
 class Body;
-class Level;
 
 class Fixture : public Object{
 public:
 	Fixture();
+	void SetParent(Body *parent);
 
-	virtual uint8_t GetType() const override{return FIXTURE;}
+	virtual uint8_t GetObjectType() const override{return FIXTURE;}
 	virtual bool TryRemove(const void *object) override;
 
 	virtual void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const override;
@@ -31,7 +31,5 @@ protected:
 	b2Filter filter;
 
 	Body *parent;
-
-	friend class Level;
 };
 

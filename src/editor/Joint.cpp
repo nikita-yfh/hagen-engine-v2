@@ -4,16 +4,17 @@
 
 Joint::Joint()
 	:a(nullptr),b(nullptr),collideConnected(false) {}
+
+void Joint::SetBodies(Body *_a, Body *_b){
+	a=_a;
+	b=_b;
+}
 void Joint::ApplyDrawJoint(const Colors &colors) const{
 	bool selected=IsSelected();
 	if(a)selected |= a->IsSelected();
 	if(b)selected |= b->IsSelected();
 	glLineWidth(selected?2.0f:1.0f);
 	colors.Apply(COLOR_JOINT,borderAlpha);
-}
-void Joint::SetBodies(Body *_a, Body *_b){
-	a=_a;
-	b=_b;
 }
 bool Joint::TryRemove(const void *object){
 	if(a!=object && b!=object)

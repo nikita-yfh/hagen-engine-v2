@@ -22,6 +22,7 @@ MenuBar::MenuBar() {
 		//File
 		wxMenu* menu= new wxMenu();
 		menu->Append(ID_TEXTURE_RELOAD,_("Reload textures\tCtrl+R"));
+		menu->Append(ID_IMAGE_EDIT, _("Image edit mode\tCtrl-I"), wxEmptyString, wxITEM_CHECK);
 		Append(menu, _("Level"));
 	}
 }

@@ -1,4 +1,5 @@
 #include "Object.hpp"
+#include <stdint.h>
 #include <wx/glcanvas.h>
 
 b2Vec2 Object::delta;
@@ -41,6 +42,9 @@ bool Object::Create(const Mouse &mouse){
 }
 bool Object::TryRemove(const void *object){
 	return true;
+}
+int8_t Object::GetLayer() const{
+	return INT8_MIN;
 }
 void Object::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if(n)

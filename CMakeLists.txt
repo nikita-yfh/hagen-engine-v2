@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 set(CMAKE_CXX_STANDART 11)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	set(CMAKE_CXX_FLAGS "-fno-exceptions -fno-rtti -flto") #disable exceptions, not needed for game engine
+	set(CMAKE_CXX_FLAGS "-fno-exceptions -fno-rtti -flto -fassociative-math -ffast-math -funsafe-math-optimizations") #disable exceptions, not needed for game engine
 endif()
 set(CMAKE_CXX_FLAGS_RELEASE "-s -flto")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")

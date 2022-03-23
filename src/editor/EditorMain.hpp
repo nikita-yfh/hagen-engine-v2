@@ -14,6 +14,7 @@ enum{
 	ID_IMAGE_PREVIEW,
 	ID_IMAGE_LIST,
 	ID_TEXTURE_RELOAD,
+	ID_IMAGE_EDIT,
 	ID_ADD_BODY,
 	ID_ADD_BODY_STATIC,
 	ID_ADD_BODY_KINEMATIC,
@@ -71,6 +72,7 @@ private:
 	void OnLevelUpdate(wxCommandEvent&);
 	void OnPropertyGridUpdate(wxPropertyGridEvent&);
 	void DeleteSelected(wxCommandEvent&);
+	void SetImageEditMode(wxCommandEvent&);
 	void OnExit(wxCloseEvent&);
 
 	Level level;

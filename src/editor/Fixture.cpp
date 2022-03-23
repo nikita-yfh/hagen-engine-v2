@@ -11,6 +11,9 @@ Fixture::Fixture():
 	isSensor(false),
 	parent(nullptr) {}
 
+void Fixture::SetParent(Body *_parent){
+	parent = _parent;
+}
 bool Fixture::TryRemove(const void *object){
 	if(object == parent)
 		return false;

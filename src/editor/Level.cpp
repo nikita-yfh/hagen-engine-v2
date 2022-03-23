@@ -32,7 +32,10 @@ void Level::AddImage(const wxString &path){
 	wxString name = gameDir.ConvertToLocalPath(path);
 	for(Texture *texture = textures; texture; texture = texture->next){
 		if(texture->name == name){
-			Image *image = new Image(texture, textureScale);
+			const Object *selected = GetFirstSelected();
+			if(selected && selected->GetObjectType() != Object::BODY)
+				selected = nullptr;
+			Image *image = new Image(texture, (const Body*)selected, textureScale);
 			AddObject(image);
 			return;
 		}
@@ -45,7 +48,7 @@ void Level::AddJoint(Joint *joint){
 	Body *a = nullptr;
    	Body *b = nullptr;
 	for(Object *object = objects;object;object = object->next){
-		if(object->IsSelected() && object->GetType() == Object::BODY){
+		if(object->IsSelected() && object->GetObjectType() == Object::BODY){
 			if(a)
 				b = (Body*)object;
 			else
@@ -101,10 +104,14 @@ void Level::DeleteTexture(const wxString &name){
 	delete del;
 }
 void Level::Draw(const Colors &colors) const{
-	for(Object *object = objects;object;object = object->next){
-		glPushMatrix();
-		object->Draw(colors);
-		glPopMatrix();
+	for(int layer = INT8_MIN; layer <= INT8_MAX; layer++){
+		for(Object *object = objects;object;object = object->next){
+			if(object->GetLayer() == layer){
+				glPushMatrix();
+				object->Draw(colors);
+				glPopMatrix();
+			}
+		}
 	}
 }
 void Level::DrawPoints(const Colors &colors) const{
@@ -122,9 +129,10 @@ bool Level::UpdatePoints(const Mouse &mouse){
 		}
 		return true;
 	}else{
-		for(Object *object = objects;object;object = object->next)
-			if(object->UpdatePoints(mouse))
-				return true;
+		for(int layer = INT8_MAX; layer >= INT8_MIN; layer--)
+			for(Object *object = objects;object;object = object->next)
+				if(object->GetLayer() == layer && object->UpdatePoints(mouse))
+					return true;
 	}
 	return false;
 }
@@ -145,21 +153,21 @@ void Level::UnselectAll(){
 int Level::GetSelectedBodyCount() const{
 	int count = 0;
 	for(Object *object = objects;object;object = object->next)
-		if(object->IsSelected() && object->GetType() == Object::BODY)
+		if(object->IsSelected() && object->GetObjectType() == Object::BODY)
 			count++;
 	return count;
 }
 int Level::GetSelectedNotDynamicBodyCount() const{
 	int count = 0;
 	for(Object *object = objects;object;object = object->next)
-		if(object->IsSelected() && object->GetType() == Object::BODY && ((Body*)object)->type != b2_dynamicBody)
+		if(object->IsSelected() && object->GetObjectType() == Object::BODY && ((Body*)object)->GetType() != b2_dynamicBody)
 			count++;
 	return count;
 }
 int Level::GetSelectedJointCount() const{
 	int count = 0;
 	for(Object *object = objects;object;object = object->next)
-		if(object->IsSelected() && object->GetType() == Object::JOINT)
+		if(object->IsSelected() && object->GetObjectType() == Object::JOINT)
 			count++;
 	return count;
 }
@@ -186,7 +194,7 @@ Object *Level::GetFirstSelectedAll(){
 void Level::AddFixture(Fixture *fixture){
 	Body *selected = nullptr;
 	for(Object *object = objects;object;object = object->next){
-		if(object->IsSelected() && object->GetType() == Object::BODY){
+		if(object->IsSelected() && object->GetObjectType() == Object::BODY){
 			selected = (Body*)object;
 			break;
 		}
@@ -195,7 +203,7 @@ void Level::AddFixture(Fixture *fixture){
 		return;
 	UnselectAll();
 	//Add fixture after body
-	fixture->parent = selected;
+	fixture->SetParent(selected);
 	fixture->next = selected->next;
 	create = selected->next = fixture;
 }
@@ -239,12 +247,12 @@ void Level::ReloadTextures(){
 void Level::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if(n){
 		pg->Append(new Vec2Property("Gravity", wxPG_LABEL, gravity));
-		pg->Append(new wxFloatProperty("Texture scale", wxPG_LABEL, textureScale));
+		pg->Append(new wxFloatProperty("TextureScale", wxPG_LABEL, textureScale));
 	}
 }
 void Level::OnPropertyGridChange(const wxString &name, const wxVariant &value){
 	if(name == "Gravity")
 		gravity << value;
-	else if(name == "Texture scale")
+	else if(name == "TextureScale")
 		textureScale = value.GetLong();
 }

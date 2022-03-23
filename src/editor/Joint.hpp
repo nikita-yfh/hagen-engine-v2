@@ -2,16 +2,13 @@
 #include "Object.hpp"
 #include "Body.hpp"
 
-class Level;
-
 class Joint : public Object{
 public:
 	Joint();
-
 	void SetBodies(Body *a, Body *b);
 
 	virtual bool TryRemove(const void *object) override;
-	virtual uint8_t GetType() const override{return JOINT;}
+	virtual uint8_t GetObjectType() const override{return JOINT;}
 
 	virtual void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const override;
 	virtual void OnPropertyGridChange(const wxString &name, const wxVariant &value) override;
@@ -28,8 +25,6 @@ protected:
 	Body *a;
 	Body *b;
 	bool collideConnected;
-
-	friend class Level;
 };
 
 

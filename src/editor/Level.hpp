@@ -16,7 +16,7 @@ public:
 	virtual void Draw(const Colors &colors) const override;
 	virtual void DrawPoints(const Colors &colors) const override;
 	virtual bool UpdatePoints(const Mouse &mouse) override;
-	virtual uint8_t GetType() const override{return LEVEL;}
+	virtual uint8_t GetObjectType() const override{return LEVEL;}
 
 	void UnselectAllPoints();
 	void UnselectAll();

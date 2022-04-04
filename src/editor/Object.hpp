@@ -1,5 +1,6 @@
 #pragma once
 #include "Colors.hpp"
+#include "JSONUtils.hpp"
 #include "Mouse.hpp"
 #include "Vec2Property.hpp"
 #include <wx/propgrid/propgrid.h>
@@ -9,6 +10,7 @@ class Level;
 class Object{
 public:
 	Object();
+	virtual ~Object() {}
 
 	enum{
 		LEVEL,
@@ -35,10 +37,15 @@ public:
 	
 	virtual void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const;
 	virtual void OnPropertyGridChange(const wxString &name, const wxVariant &value);
+
+	void Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+	bool Load(const rapidjson::Value &value);
+
+	const wxString &GetID() const;
 protected:
 	void DrawPoint(const Colors &colors, int index, const b2Vec2 &pos) const;
 	bool UpdatePoint(const Mouse &mouse, int index, b2Vec2 &pos, bool grid=true);
-	
+
 	int selected;
 
 	static constexpr float activeSize=6.0f;

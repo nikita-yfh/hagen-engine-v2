@@ -77,3 +77,7 @@ bool Chain::TestPoint(const b2Vec2 &point) const{
 bool Chain::CanBeDynamic()const{
 	return false;
 }
+void Chain::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	value.AddMember("type", "chain", allocator);
+	Polygon::SavePoints(value, allocator);
+}

@@ -20,13 +20,22 @@ bool PointJoint::Create(const Mouse &mouse){
 }
 void PointJoint::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if(!n)
-		pg->GetProperty("Position")->SetValue(WXVARIANT(position));
+		pg->GetProperty("position")->SetValue(WXVARIANT(position));
 	else
-		pg->Append(new Vec2Property("Position", wxPG_LABEL, position));
+		pg->Append(new Vec2Property("position", wxPG_LABEL, position));
 	Joint::UpdatePropertyGrid(pg,n);
 }
 void PointJoint::OnPropertyGridChange(const wxString &name, const wxVariant &value){
-	if(name == "Position")
+	if(name == "position")
 		position << value;
 	OnPropertyGridChange(name,value);
+}
+void PointJoint::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
+	value.AddMember("position", jsonutils::Value(position, allocator), allocator);
+	Joint::Save(value, allocator);
+}
+bool PointJoint::Load(const rapidjson::Value &value){
+	return
+		jsonutils::GetMember(value, "position", position) ||
+		Joint::Load(value);
 }

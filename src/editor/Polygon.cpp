@@ -3,8 +3,22 @@
 #include "GLUtils.hpp"
 #include <wx/glcanvas.h>
 
-Polygon::Polygon()
-	: points(new Point()) {selected=1;}
+Polygon::~Polygon(){
+	ClearPoints();
+}
+void Polygon::ClearPoints(){
+	while(points){
+		Point *next = points->next;
+		delete points;
+		points = next;
+	}
+	points = nullptr;
+}
+void Polygon::AddPoint(b2Vec2 _point){
+	Point *point = new Point(_point);
+	point->next = points;
+	points = point;
+}
 
 int Polygon::GetPointCount() const{
 	int count=0;
@@ -64,7 +78,6 @@ bool Polygon::UpdatePoints(const Mouse &_mouse){
 		if(UpdatePoint(mouse,index++,*point))
 			return true;
 	for(Point *p1=points;p1;p1=p1->next){
-		printf("%g %g\n", p1->x, p1->y);
 		Point *p2=p1->next;
 		if(p2==nullptr)p2=points;
 		b2Vec2 point((*p1+*p2)/2.0f);
@@ -85,6 +98,8 @@ bool Polygon::UpdatePoints(const Mouse &_mouse){
 bool Polygon::Create(const Mouse &_mouse){
 	const Mouse mouse = parent->GetLocalMouse(_mouse);
 	int index=1;
+	if(!points)
+		points=new Point();
 	for(Point *point=points;point;point=point->next)
 		if(!point->next){
 			UpdatePoint(mouse,index++,*point);
@@ -108,3 +123,29 @@ bool Polygon::TestPoint(const b2Vec2 &point) const{
 	}
 	return result;
 }
+void Polygon::SavePoints(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	rapidjson::Value array(rapidjson::kArrayType);
+	for(Point *point=points;point;point=point->next)
+		array.PushBack(jsonutils::Value<b2Vec2>(*point, allocator), allocator);
+	value.AddMember("points", array, allocator);
+}
+void Polygon::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	value.AddMember("type", "polygon", allocator);
+	SavePoints(value, allocator);
+	Fixture::Save(value, allocator);
+}
+bool Polygon::Load(const rapidjson::Value &value){
+	if(!value.HasMember("points"))
+		return true;
+	const rapidjson::Value &array = value["points"];
+	if(!array.IsArray() || array.Size() < 3)
+		return true;
+	ClearPoints();
+	for(int i=0; i<array.Size(); i++)
+		AddPoint(jsonutils::Get<b2Vec2>(array[i])); 
+	return Fixture::Load(value);
+}
+
+	
+
+

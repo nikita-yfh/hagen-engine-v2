@@ -13,7 +13,8 @@ struct Point : public b2Vec2{
 
 class Polygon : public Fixture{
 public:
-	Polygon();
+	Polygon() : points(nullptr) {}
+	~Polygon();
 
 	void Draw(const Colors &colors) const override;
 
@@ -23,6 +24,13 @@ public:
 
 	virtual bool TestPoint(const b2Vec2 &point) const override;
 	virtual bool CancelCreating() override;
+
+	void AddPoint(b2Vec2 point);
+	void ClearPoints();
+	void SavePoints(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+
+	virtual void Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const override;
+	virtual bool Load(const rapidjson::Value &value) override;
 protected:
 	int GetPointCount() const;
 	Point *points;

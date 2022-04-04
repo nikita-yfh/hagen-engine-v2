@@ -53,6 +53,11 @@ void ImagePanel::AppendImage(const wxString &fullPath){
 		level.AddTexture(lpath);
 	}
 }
+void ImagePanel::RefreshList(){
+	list->Clear();
+	for(const Texture *tex = level.GetTextures(); tex; tex = tex->next)
+		list->Append(tex->GetName());
+}
 
 void ImagePanel::OnPressButtonAdd(wxCommandEvent&){
 	wxFileDialog dialog(this, wxFileSelectorPromptStr, gameDir.GetPath(), wxEmptyString, 

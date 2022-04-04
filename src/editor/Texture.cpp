@@ -31,6 +31,9 @@ bool Texture::Reload(const Directory &dir) {
 	wxString path = dir.ConvertToAbsolutePath(name);
 	return LoadTexture(path);
 }
+const wxString &Texture::GetName() const {
+	return name;
+}
 void Texture::Bind() const{
 	glBindTexture(GL_TEXTURE_2D,texture);
 }

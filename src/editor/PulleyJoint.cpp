@@ -43,31 +43,49 @@ bool PulleyJoint::Create(const Mouse &mouse){
 }
 void PulleyJoint::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if(!n){
-		pg->GetProperty("GroundA")->SetValue(WXVARIANT(groundA));
-		pg->GetProperty("GroundB")->SetValue(WXVARIANT(groundB));
-		pg->GetProperty("LocalA")->SetValue(WXVARIANT(localA));
-		pg->GetProperty("LocalB")->SetValue(WXVARIANT(localB));
+		pg->GetProperty("groundA")->SetValue(WXVARIANT(groundA));
+		pg->GetProperty("groundB")->SetValue(WXVARIANT(groundB));
+		pg->GetProperty("localA")->SetValue(WXVARIANT(localA));
+		pg->GetProperty("localB")->SetValue(WXVARIANT(localB));
 	}else{
-		pg->Append(new Vec2Property("GroundA", wxPG_LABEL, groundA));
-		pg->Append(new Vec2Property("GroundB", wxPG_LABEL, groundB));
-		pg->Append(new Vec2Property("LocalB", wxPG_LABEL, localA));
-		pg->Append(new Vec2Property("LocalA", wxPG_LABEL, localB));
-		pg->Append(new wxFloatProperty("Ratio", wxPG_LABEL, ratio));
+		pg->Append(new Vec2Property("groundA", wxPG_LABEL, groundA));
+		pg->Append(new Vec2Property("groundB", wxPG_LABEL, groundB));
+		pg->Append(new Vec2Property("localB", wxPG_LABEL, localA));
+		pg->Append(new Vec2Property("localA", wxPG_LABEL, localB));
+		pg->Append(new wxFloatProperty("ratio", wxPG_LABEL, ratio));
 	}
 	Joint::UpdatePropertyGrid(pg,n);
 }
 void PulleyJoint::OnPropertyGridChange(const wxString &name, const wxVariant &value){
-	if(name == "GroundA")
+	if(name == "groundA")
 		groundA << value;
-	else if(name == "GroundB")
+	else if(name == "groundB")
 		groundB << value;
-	else if(name == "LocalA")
+	else if(name == "localA")
 		localA << value;
-	else if(name == "LocalB")
+	else if(name == "localB")
 		localB << value;
-	else if(name == "Ratio")
+	else if(name == "ratio")
 		ratio = value.GetDouble();
 	Joint::OnPropertyGridChange(name,value);
+}
+void PulleyJoint::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	value.AddMember("type", "pulley", allocator);
+	value.AddMember("groundA", jsonutils::Value(groundA, allocator), allocator);
+	value.AddMember("groundB", jsonutils::Value(groundB, allocator), allocator);
+	value.AddMember("localA", jsonutils::Value(localA, allocator), allocator);
+	value.AddMember("localB", jsonutils::Value(localB, allocator), allocator);
+	value.AddMember("ratio", ratio, allocator);
+	Joint::Save(value, allocator);
+}
+bool PulleyJoint::Load(const rapidjson::Value &value){
+	return
+		jsonutils::GetMember(value, "groundA", groundA) ||
+		jsonutils::GetMember(value, "groundB", groundB) ||
+		jsonutils::GetMember(value, "localA", localA) ||
+		jsonutils::GetMember(value, "localB", localB) ||
+		jsonutils::GetMember(value, "ratio", ratio) ||
+		Joint::Load(value);
 }
 
 

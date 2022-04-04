@@ -13,6 +13,8 @@
 #include "PulleyJoint.hpp"
 #include <wx/sizer.h>
 #include <wx/splitter.h>
+#include <wx/filedlg.h>
+#include <wx/msgdlg.h>
 
 wxBEGIN_EVENT_TABLE(EditorFrame,wxFrame)
 	EVT_MOTION(EditorFrame::OnMouseMotion)
@@ -34,6 +36,8 @@ wxBEGIN_EVENT_TABLE(EditorFrame,wxFrame)
 	EVT_MENU(wxID_SELECTALL,		 		EditorFrame::Execute<&Level::SelectAll>)
 	EVT_MENU(wxID_DELETE,			 		EditorFrame::DeleteSelected)
 	EVT_MENU(wxID_NEW,			 			EditorFrame::Execute<&Level::Clear>)
+	EVT_MENU(wxID_SAVE,			 			EditorFrame::SaveFile)
+	EVT_MENU(wxID_OPEN,			 			EditorFrame::OpenFile)
 	EVT_MENU(ID_TEXTURE_RELOAD, 			EditorFrame::Execute<&Level::ReloadTextures>)
 	EVT_MENU(ID_IMAGE_EDIT,					EditorFrame::SetImageEditMode)
 	EVT_UPDATE_UI(wxID_COPY,		 		EditorFrame::OneSelected)
@@ -117,5 +121,70 @@ void EditorFrame::OnPropertyGridUpdate(wxPropertyGridEvent &e){
 	if(!selected)
 		selected=&level;
 	selected->OnPropertyGridChange(e.GetPropertyName(),e.GetPropertyValue());
+	level.ResolveID(selected);
 	Refresh();
+}
+void EditorFrame::SaveFile(wxCommandEvent&){
+	wxFileDialog dialog(this, _("Save level"), level.GetGameDir().GetPath(), "",
+						_("JSON files (*.json)|*.json"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+	if (dialog.ShowModal() == wxID_CANCEL)
+		return;
+	wxString path=dialog.GetPath();
+
+	rapidjson::Document document(rapidjson::kObjectType);
+	level.Save(document, document.GetAllocator());
+	rapidjson::StringBuffer s;
+	rapidjson::PrettyWriter<rapidjson::StringBuffer>writer(s);
+	writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
+	writer.SetMaxDecimalPlaces(6);
+	document.Accept(writer);
+	FILE *fp = fopen(path.c_str(), "w");
+	fwrite(s.GetString(), 1, s.GetSize(), fp);
+	fclose(fp);
+}
+void EditorFrame::OpenFile(wxCommandEvent&){
+	wxFileDialog dialog(this, _("Open level"), level.GetGameDir().GetPath(), "",
+						_("JSON files (*.json)|*.json"), wxFD_OPEN);
+	if (dialog.ShowModal() == wxID_CANCEL)
+		return;
+	wxString path=dialog.GetPath();
+
+	FILE *fp = fopen(path.c_str(), "r");
+	fseek (fp, 0 , SEEK_END);
+    size_t size = ftell (fp);
+    rewind (fp);
+	char *buffer = (char*) malloc(size + 1);
+	fread(buffer, size + 1, 1, fp);
+
+	rapidjson::Document document;
+	document.Parse(buffer, size);
+	if(document.HasParseError()){
+		DisplayJSONError(buffer, document);
+		return;
+	}
+	if(level.Load(document)){
+		wxMessageBox("Level format error", "Level open error", wxICON_ERROR);
+		level.Clear();
+		return;
+	}
+
+	imagePanel->RefreshList();
+	Refresh();
+
+	free(buffer);
+	fclose(fp);
+}
+void EditorFrame::DisplayJSONError(const char *text, const rapidjson::Document &document) const{
+	size_t pos=document.GetErrorOffset();
+	size_t col=1;
+	size_t str=1;
+	for(int q=0;q<pos;q++){
+		if(text[q]=='\n'){
+			col=1;
+			str++;
+		}else
+			col++;
+	}
+	wxMessageBox(wxString::Format("Failed to parse JSON (string %zu, column %zu): %s", str, col,
+		rapidjson::GetParseError_En(document.GetParseError())), "Level open error", wxICON_ERROR);
 }

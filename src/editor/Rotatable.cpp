@@ -26,17 +26,27 @@ float Rotatable::GetAngle() const{
 }
 void Rotatable::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if (!n){
-		pg->GetProperty("Position")->SetValue(WXVARIANT(position));
-		pg->GetProperty("Angle")->SetValue(glutils::RadToDeg(angle));
+		pg->GetProperty("position")->SetValue(WXVARIANT(position));
+		pg->GetProperty("angle")->SetValue(glutils::RadToDeg(angle));
 	}else{
-		pg->Append(new Vec2Property("Position", wxPG_LABEL, position));
-		pg->Append(new wxFloatProperty("Angle", wxPG_LABEL, glutils::RadToDeg(angle)));
+		pg->Append(new Vec2Property("position", wxPG_LABEL, position));
+		pg->Append(new wxFloatProperty("angle", wxPG_LABEL, glutils::RadToDeg(angle)));
 	}
 }
 void Rotatable::OnPropertyGridChange(const wxString& name, const wxVariant& value){
-	if(name == "Position")
+	if(name == "position")
 		position << value;
-	else if(name == "Angle")
+	else if(name == "angle")
 		SetAngle(glutils::DegToRad(value.GetDouble()));
 }
+void Rotatable::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	value.AddMember("position", jsonutils::Value(position, allocator), allocator);
+	value.AddMember("angle", angle, allocator);
+}
+bool Rotatable::Load(const rapidjson::Value &value){
+	return
+		jsonutils::GetMember(value, "position", position) ||
+		jsonutils::GetMember(value, "angle", angle);
+}
+
 

@@ -8,6 +8,7 @@ class ImagePanel : public wxPanel {
 public:
 	ImagePanel(wxWindow *parent, Level &level);
 	void AppendImage(const wxString&);
+	void RefreshList();
 private:
 	void OnPressButtonAdd(wxCommandEvent&);
 	void OnPressButtonRemove(wxCommandEvent&);

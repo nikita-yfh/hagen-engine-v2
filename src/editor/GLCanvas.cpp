@@ -104,12 +104,9 @@ void GLCanvas::OnMouseMotion(wxMouseEvent &e){
 		Refresh();
 	}else
 		SetMouse(GetMousePos(e));
-	if(e.LeftIsDown() || level.IsCreating()){
-		if(level.UpdatePoints(Mouse(mouse,false,camera))){
+	if(e.LeftIsDown() || level.IsCreating())
+		if(level.UpdatePoints(Mouse(mouse,false,camera)))
 			Update();
-		}
-	}
-	wxPostEvent(GetParent(),e);
 }
 void GLCanvas::Draw(wxPaintEvent&) {
 	static wxGLContext context(this);

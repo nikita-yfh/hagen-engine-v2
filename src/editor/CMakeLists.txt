@@ -45,6 +45,7 @@ set(EDITOR_HEADERS
 	"Body.hpp"
 	"Fixture.hpp"
 	"Camera.hpp"
+	"JSONUtils.hpp"
 	"Texture.hpp"
 	"Image.hpp"
 	"Directory.hpp"

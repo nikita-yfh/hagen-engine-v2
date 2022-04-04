@@ -42,18 +42,31 @@ bool Edge::CanBeDynamic() const{
 }
 void Edge::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if(!n){
-		pg->GetProperty("Point1")->SetValue(WXVARIANT(p1));
-		pg->GetProperty("Point2")->SetValue(WXVARIANT(p2));
+		pg->GetProperty("point1")->SetValue(WXVARIANT(p1));
+		pg->GetProperty("point2")->SetValue(WXVARIANT(p2));
 	}else{
-		pg->Append(new Vec2Property("Point1", wxPG_LABEL, p1));
-		pg->Append(new Vec2Property("Point2", wxPG_LABEL, p2));
+		pg->Append(new Vec2Property("point1", wxPG_LABEL, p1));
+		pg->Append(new Vec2Property("point2", wxPG_LABEL, p2));
 	}
 	Fixture::UpdatePropertyGrid(pg,n);
 }
 void Edge::OnPropertyGridChange(const wxString &name, const wxVariant &value){
-	if(name == "Point1")
+	if(name == "point1")
 		p1 << value;
-	else if(name == "Point2")
+	else if(name == "point2")
 		p2 << value;
 	Fixture::OnPropertyGridChange(name,value);
 }
+void Edge::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	value.AddMember("type", "edge", allocator);
+	value.AddMember("point1", jsonutils::Value(p1, allocator), allocator);
+	value.AddMember("point2", jsonutils::Value(p2, allocator), allocator);
+	Fixture::Save(value, allocator);
+}
+bool Edge::Load(const rapidjson::Value &value){
+	return
+		jsonutils::GetMember(value, "point1", p1) ||
+		jsonutils::GetMember(value, "point2", p2) ||
+		Fixture::Load(value);
+}
+

@@ -2,14 +2,13 @@
 #include "Directory.hpp"
 #include <wx/glcanvas.h>
 
-class Level;
-
 class Texture {
 public:
 	Texture(const Directory &dir, const wxString &name);
 	~Texture();
 
 	bool Reload(const Directory &dir);
+	const wxString &GetName() const;
 
 	void Bind() const;
 	void Activate() const;
@@ -30,6 +29,8 @@ public:
 	void SetFiltering(GLenum type);
 	GLenum GetMagFiltering() const;
 	GLenum GetMinFiltering() const;
+
+	Texture *next;
 private:
 	GLuint texture;
 	int width;
@@ -45,8 +46,4 @@ private:
 	bool LoadTexture(const wxString &name);
 	void operator=(const Texture&) = delete;
 	Texture(const Texture&) = delete;
-
-	Texture *next;
-
-	friend class Level;
 };

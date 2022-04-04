@@ -64,31 +64,55 @@ bool PrismaticJoint::Create(const Mouse &mouse){
 void PrismaticJoint::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	Rotatable::UpdatePropertyGrid(pg, n);
 	if(!n){
-		pg->GetProperty("LowerTranslation")->SetValue(lowerTranslation);
-		pg->GetProperty("UpperTranslation")->SetValue(upperTranslation);
+		pg->GetProperty("lowerTranslation")->SetValue(lowerTranslation);
+		pg->GetProperty("upperTranslation")->SetValue(upperTranslation);
 	}else{
-		pg->Append(new wxBoolProperty("EnableLimit", wxPG_LABEL, enableLimit));
-		pg->Append(new wxFloatProperty("LowerTranslation", wxPG_LABEL, lowerTranslation));
-		pg->Append(new wxFloatProperty("UpperTranslation", wxPG_LABEL, upperTranslation));
-		pg->Append(new wxBoolProperty("EnableMotor", wxPG_LABEL, enableMotor));
-		pg->Append(new wxFloatProperty("MaxMotorForce", wxPG_LABEL, maxMotorForce));
-		pg->Append(new wxFloatProperty("MotorSpeed", wxPG_LABEL, motorSpeed));
+		pg->Append(new wxBoolProperty("enableLimit", wxPG_LABEL, enableLimit));
+		pg->Append(new wxFloatProperty("lowerTranslation", wxPG_LABEL, lowerTranslation));
+		pg->Append(new wxFloatProperty("upperTranslation", wxPG_LABEL, upperTranslation));
+		pg->Append(new wxBoolProperty("enableMotor", wxPG_LABEL, enableMotor));
+		pg->Append(new wxFloatProperty("maxMotorForce", wxPG_LABEL, maxMotorForce));
+		pg->Append(new wxFloatProperty("motorSpeed", wxPG_LABEL, motorSpeed));
 	}
 	Joint::UpdatePropertyGrid(pg, n);
 }
 void PrismaticJoint::OnPropertyGridChange(const wxString &name, const wxVariant &value){
 	Rotatable::OnPropertyGridChange(name, value);
-	if(name == "EnableLimit")
+	if(name == "enableLimit")
 		enableLimit = value.GetBool();
-	else if(name == "LowerTranslation")
+	else if(name == "lowerTranslation")
 		lowerTranslation = value.GetDouble();
-	else if(name == "UpperTranslation")
+	else if(name == "upperTranslation")
 		upperTranslation = value.GetDouble();
-	else if(name == "EnableMotor")
+	else if(name == "enableMotor")
 		enableMotor = value.GetBool();
-	else if(name == "MaxMotorForce")
+	else if(name == "maxMotorForce")
 		maxMotorForce = value.GetDouble();
-	else if(name == "MotorSpeed")
+	else if(name == "motorSpeed")
 		motorSpeed = value.GetDouble();
 	Joint::OnPropertyGridChange(name, value);
 }
+void PrismaticJoint::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	value.AddMember("type", "prismatic", allocator);
+	value.AddMember("enableLimit", enableLimit, allocator);
+	value.AddMember("lowerTranslation", lowerTranslation, allocator);
+	value.AddMember("upperTranslation", upperTranslation, allocator);
+	value.AddMember("enableMotor", enableMotor, allocator);
+	value.AddMember("maxMotorForce", maxMotorForce, allocator);
+	value.AddMember("motorSpeed", motorSpeed, allocator);
+	Rotatable::Save(value, allocator);
+	Joint::Save(value, allocator);
+}
+bool PrismaticJoint::Load(const rapidjson::Value &value){
+	return
+		jsonutils::GetMember(value, "enableLimit", enableLimit) ||
+		jsonutils::GetMember(value, "lowerTranslation", lowerTranslation) ||
+		jsonutils::GetMember(value, "upperTranslation", upperTranslation) ||
+		jsonutils::GetMember(value, "enableMotor", enableMotor) ||
+		jsonutils::GetMember(value, "maxMotorForce", maxMotorForce) ||
+		jsonutils::GetMember(value, "motorSpeed", motorSpeed) ||
+		Rotatable::Load(value) ||
+		Joint::Load(value);
+}
+
+

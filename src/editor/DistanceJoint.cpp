@@ -32,30 +32,50 @@ bool DistanceJoint::Create(const Mouse &mouse){
 }
 void DistanceJoint::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if(!n){
-		pg->GetProperty("LocalA")->SetValue(WXVARIANT(localA));
-		pg->GetProperty("LocalB")->SetValue(WXVARIANT(localB));
+		pg->GetProperty("localA")->SetValue(WXVARIANT(localA));
+		pg->GetProperty("localB")->SetValue(WXVARIANT(localB));
 	}else{
-		pg->Append(new Vec2Property("LocalA", wxPG_LABEL, localA));
-		pg->Append(new Vec2Property("LocalB", wxPG_LABEL, localB));
-		pg->Append(new wxFloatProperty("Min", wxPG_LABEL, min));
-		pg->Append(new wxFloatProperty("Max", wxPG_LABEL, max));
-		pg->Append(new wxFloatProperty("Stiffness", wxPG_LABEL, stiffness));
-		pg->Append(new wxFloatProperty("Damping", wxPG_LABEL, damping));
+		pg->Append(new Vec2Property("localA", wxPG_LABEL, localA));
+		pg->Append(new Vec2Property("localB", wxPG_LABEL, localB));
+		pg->Append(new wxFloatProperty("min", wxPG_LABEL, min));
+		pg->Append(new wxFloatProperty("max", wxPG_LABEL, max));
+		pg->Append(new wxFloatProperty("stiffness", wxPG_LABEL, stiffness));
+		pg->Append(new wxFloatProperty("damping", wxPG_LABEL, damping));
 	}
 	Joint::UpdatePropertyGrid(pg,n);
 }
 void DistanceJoint::OnPropertyGridChange(const wxString &name, const wxVariant &value){
-	if(name == "LocalA")
+	if(name == "localA")
 		localA << value;
-	else if(name == "LocalB")
+	else if(name == "localB")
 		localB << value;
-	else if(name == "Min")
+	else if(name == "min")
 		min = value.GetDouble();
-	else if(name == "Max")
+	else if(name == "max")
 		max = value.GetDouble();
-	else if(name == "Stiffness")
+	else if(name == "stiffness")
 		stiffness = value.GetDouble();
-	else if(name == "Damping")
+	else if(name == "damping")
 		damping = value.GetDouble();
 	Joint::OnPropertyGridChange(name,value);
+}
+void DistanceJoint::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
+	value.AddMember("type", "distance", allocator);
+	value.AddMember("localA", jsonutils::Value(localA, allocator), allocator);
+	value.AddMember("localB", jsonutils::Value(localB, allocator), allocator);
+	value.AddMember("min", min, allocator);
+	value.AddMember("max", max, allocator);
+	value.AddMember("stiffness", stiffness, allocator);
+	value.AddMember("damping", damping, allocator);
+	Joint::Save(value, allocator);
+}
+bool DistanceJoint::Load(const rapidjson::Value &value){
+	return
+		jsonutils::GetMember(value, "localA", localA) ||
+		jsonutils::GetMember(value, "localB", localB) ||
+		jsonutils::GetMember(value, "min", min) ||
+		jsonutils::GetMember(value, "max", max) ||
+		jsonutils::GetMember(value, "stiffness", stiffness) ||
+		jsonutils::GetMember(value, "damping", damping) ||
+		Joint::Load(value);
 }

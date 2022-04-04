@@ -46,12 +46,21 @@ bool Object::TryRemove(const void *object){
 int8_t Object::GetLayer() const{
 	return INT8_MIN;
 }
+const wxString &Object::GetID() const{
+	return id;
+}
 void Object::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if(n)
-		pg->Append(new wxStringProperty("ID", wxPG_LABEL, id));
+		pg->Append(new wxStringProperty("id", wxPG_LABEL, id));
 }
 void Object::OnPropertyGridChange(const wxString &name, const wxVariant &value){
-	if(name == "ID")
+	if(name == "id")
 		id = value.GetString();
+}
+void Object::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
+	value.AddMember("id", jsonutils::Value(id), allocator);
+}
+bool Object::Load(const rapidjson::Value &value){
+	return jsonutils::GetMember(value, "id", id);
 }
 

@@ -46,18 +46,31 @@ bool Circle::TestPoint(const b2Vec2 &point) const{
 }
 void Circle::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if(!n){
-		pg->GetProperty("Position")->SetValue(WXVARIANT(position));
-		pg->GetProperty("Radius")->SetValue(radius);
+		pg->GetProperty("position")->SetValue(WXVARIANT(position));
+		pg->GetProperty("radius")->SetValue(radius);
 	}else{
-		pg->Append(new Vec2Property("Position", wxPG_LABEL, position));
-		pg->Append(new wxFloatProperty("Radius", wxPG_LABEL, radius));
+		pg->Append(new Vec2Property("position", wxPG_LABEL, position));
+		pg->Append(new wxFloatProperty("radius", wxPG_LABEL, radius));
 	}
 	Fixture::UpdatePropertyGrid(pg,n);
 }
 void Circle::OnPropertyGridChange(const wxString &name, const wxVariant &value){
-	if(name == "Position")
+	if(name == "position")
 		position << value;
-	else if(name == "Radius")
+	else if(name == "radius")
 		radius = value.GetDouble();
 	Fixture::OnPropertyGridChange(name,value);
 }
+void Circle::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	value.AddMember("type", "circle", allocator);
+	value.AddMember("position", jsonutils::Value(position, allocator), allocator);
+	value.AddMember("radius", radius, allocator);
+	Fixture::Save(value, allocator);
+}
+bool Circle::Load(const rapidjson::Value &value){
+	return
+		jsonutils::GetMember(value, "position", position) ||
+		jsonutils::GetMember(value, "radius", radius) ||
+		Fixture::Load(value);
+}
+

@@ -43,7 +43,7 @@ public:
 
 	template<b2BodyType type>
 	void AddBody(wxCommandEvent&){
-		level.AddBody(new Body(type));
+		level.AddObject(new Body(type));
 		canvas->Refresh();
 	}
 	template<class T>
@@ -73,7 +73,13 @@ private:
 	void OnPropertyGridUpdate(wxPropertyGridEvent&);
 	void DeleteSelected(wxCommandEvent&);
 	void SetImageEditMode(wxCommandEvent&);
+	
+	void SaveFile(wxCommandEvent&);
+	void OpenFile(wxCommandEvent&);
+
 	void OnExit(wxCloseEvent&);
+
+	void DisplayJSONError(const char *text, const rapidjson::Document &document) const;
 
 	Level level;
 	GLCanvas *canvas;

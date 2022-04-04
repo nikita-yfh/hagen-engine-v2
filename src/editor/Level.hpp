@@ -11,7 +11,9 @@
 class Level : public Object{
 public:
 	Level(const Directory &dir);
-	~Level();
+	~Level(){
+		Clear();
+	}
 
 	virtual void Draw(const Colors &colors) const override;
 	virtual void DrawPoints(const Colors &colors) const override;
@@ -32,28 +34,44 @@ public:
 
 	void DeleteSelected();
 
+	void AddObject(Object *object);
 	void AddImage(const wxString &path);
-	void AddBody(Body *body);
 	void AddFixture(Fixture *fixture);
 	void AddJoint(Joint *joint);
 	
-	bool IsCreating() const;
+	inline bool IsCreating() const{
+		return create != nullptr;
+	}
 	bool CancelCreating();
 
 	void Clear();
 
-	void AddTexture(const wxString&);
+	Texture *AddTexture(const wxString&);
 	void DeleteTexture(const wxString&);
 	void ReloadTextures();
+	inline const Texture *GetTextures() const{
+		return textures;
+	}
 
 	void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const;
 	void OnPropertyGridChange(const wxString &name, const wxVariant &value);
 
-	const Directory &GetGameDir() const;
+	inline const Directory &GetGameDir() const{
+		return gameDir;
+	}
+	void ResolveID(Object *object) const;
+
+	void Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+	bool Load(const rapidjson::Value &value);
 private:
-	void AddObject(Object *object);
+	void AddLoadObject(Object *object);
 	void DeleteDeps(const void *object);
 	bool SelectDeps(const void *object);
+
+	Texture *GetTextureByID(const wxString &id);
+	Body *GetBodyByID(const wxString &id);
+	bool IsFreeID(const wxString &id, const Object *sel = nullptr) const;
+	wxString GetFreeID() const;
 
 	b2Vec2 gravity;
 	float textureScale;

@@ -5,15 +5,29 @@ WeldJoint::WeldJoint()
 
 void WeldJoint::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if(n){
-		pg->Append(new wxFloatProperty("Stiffness", wxPG_LABEL, stiffness));
-		pg->Append(new wxFloatProperty("Damping", wxPG_LABEL, damping));
+		pg->Append(new wxFloatProperty("stiffness", wxPG_LABEL, stiffness));
+		pg->Append(new wxFloatProperty("damping", wxPG_LABEL, damping));
 	}
 	PointJoint::UpdatePropertyGrid(pg,n);
 }
 void WeldJoint::OnPropertyGridChange(const wxString &name, const wxVariant &value){
-	if(name == "Stiffness")
+	if(name == "stiffness")
 		stiffness = value.GetDouble();
-	else if(name == "Damping")
+	else if(name == "damping")
 		damping = value.GetDouble();
 	PointJoint::OnPropertyGridChange(name, value);
 }
+void WeldJoint::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	value.AddMember("type", "weld", allocator);
+	value.AddMember("stiffness", stiffness, allocator);
+	value.AddMember("damping", damping, allocator);
+	PointJoint::Save(value, allocator);
+}
+bool WeldJoint::Load(const rapidjson::Value &value){
+	return
+		jsonutils::GetMember(value, "stiffness", stiffness) ||
+		jsonutils::GetMember(value, "damping", damping) ||
+		PointJoint::Load(value);
+}
+
+

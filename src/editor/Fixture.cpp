@@ -39,33 +39,47 @@ bool Fixture::CanBeDynamic() const{
 
 void Fixture::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 	if(!n){
-		pg->GetProperty("Friction")->SetValue(friction);
-		pg->GetProperty("Restitution")->SetValue(restitution);
-		pg->GetProperty("RestitutionThresold")->SetValue(restitutionThreshold);
-		pg->GetProperty("Density")->SetValue(density);
-		pg->GetProperty("IsSensor")->SetValue(isSensor);
+		pg->GetProperty("friction")->SetValue(friction);
+		pg->GetProperty("restitution")->SetValue(restitution);
+		pg->GetProperty("restitutionThresold")->SetValue(restitutionThreshold);
+		pg->GetProperty("density")->SetValue(density);
+		pg->GetProperty("isSensor")->SetValue(isSensor);
 	}else{
-		pg->Append(new wxFloatProperty("Friction", wxPG_LABEL, friction));
-		pg->Append(new wxFloatProperty("Restitution", wxPG_LABEL, restitution));
-		pg->Append(new wxFloatProperty("RestitutionThresold", wxPG_LABEL, restitutionThreshold));
-		pg->Append(new wxFloatProperty("Density", wxPG_LABEL, density));
-		pg->Append(new wxBoolProperty("IsSensor", wxPG_LABEL, isSensor));
+		pg->Append(new wxFloatProperty("friction", wxPG_LABEL, friction));
+		pg->Append(new wxFloatProperty("restitution", wxPG_LABEL, restitution));
+		pg->Append(new wxFloatProperty("restitutionThresold", wxPG_LABEL, restitutionThreshold));
+		pg->Append(new wxFloatProperty("density", wxPG_LABEL, density));
+		pg->Append(new wxBoolProperty("isSensor", wxPG_LABEL, isSensor));
 	}
 	Object::UpdatePropertyGrid(pg,n);
 }
 void Fixture::OnPropertyGridChange(const wxString &name, const wxVariant &value){
-	if(name=="Friction")
+	if(name=="friction")
 		friction = value.GetDouble();
-	else if(name=="Restitution")
+	else if(name=="restitution")
 		restitution = value.GetDouble();
-	else if(name=="RestitutionThresold")
+	else if(name=="restitutionThresold")
 		restitutionThreshold = value.GetDouble();
-	else if(name=="Density")
+	else if(name=="density")
 		density = value.GetDouble();
-	else if(name=="IsSensor")
+	else if(name=="isSensor")
 		isSensor = value.GetBool();
 	Object::OnPropertyGridChange(name, value);
 }
-
-
-
+void Fixture::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	value.AddMember("friction", friction, allocator);
+	value.AddMember("restitution", restitution, allocator);
+	value.AddMember("restitutionThreshold", restitutionThreshold, allocator);
+	value.AddMember("density", density, allocator);
+	value.AddMember("isSensor", isSensor, allocator);
+	Object::Save(value, allocator);
+}
+bool Fixture::Load(const rapidjson::Value &value){
+	return 
+		jsonutils::GetMember(value, "friction", friction) ||
+		jsonutils::GetMember(value, "restitution", restitution) ||
+		jsonutils::GetMember(value, "restitutionThreshold", restitutionThreshold) ||
+		jsonutils::GetMember(value, "density", density) ||
+		jsonutils::GetMember(value, "isSensor", isSensor) ||
+		Object::Load(value);
+}

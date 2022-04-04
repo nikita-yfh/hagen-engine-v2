@@ -16,6 +16,9 @@ public:
 	void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const;
 	void OnPropertyGridChange(const wxString &name, const wxVariant &value);
 
+	void Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+	bool Load(const rapidjson::Value &value);
+
 	void Transform() const;
 protected:
 	void SetAngle(float a);

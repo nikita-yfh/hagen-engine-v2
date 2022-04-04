@@ -7,6 +7,7 @@
 
 class Body : public Object, public Rotatable {
 public:
+	Body();
 	Body(b2BodyType type);
 
 	virtual uint8_t GetObjectType() const override{return BODY;}
@@ -24,6 +25,9 @@ public:
 
 	virtual void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const override;
 	virtual void OnPropertyGridChange(const wxString &name, const wxVariant &value) override;
+
+	void Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+	bool Load(const rapidjson::Value &value);
 private:
 	b2BodyType type;
 	b2Vec2 linearVelocity;

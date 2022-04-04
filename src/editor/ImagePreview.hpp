@@ -1,6 +1,8 @@
 #pragma once
 #include <wx/sizer.h>
 #include <wx/panel.h>
+#include <wx/bitmap.h>
+#include <wx/image.h>
 
 class ImagePreview : public wxPanel{
 public:

@@ -8,8 +8,8 @@ Vec2Property::Vec2Property(const wxString &label, const wxString &name,
 				const b2Vec2 &value) :wxPGProperty(label,name){
 	m_value=WXVARIANT(value);
 
-	AddPrivateChild(new wxFloatProperty("X", "X", value.x));
-	AddPrivateChild(new wxFloatProperty("Y", "Y", value.y));
+	AddPrivateChild(new wxFloatProperty("x", wxPG_LABEL, value.x));
+	AddPrivateChild(new wxFloatProperty("y", wxPG_LABEL, value.y));
 }
 
 wxVariant Vec2Property::ChildChanged(wxVariant &thisValue,

@@ -2,10 +2,6 @@
 #include "ToolBar.hpp"
 #include "MenuBar.hpp"
 #include "GLCanvas.hpp"
-#include "Edge.hpp"
-#include "Circle.hpp"
-#include "Polygon.hpp"
-#include "Chain.hpp"
 #include "WeldJoint.hpp"
 #include "RevoluteJoint.hpp"
 #include "PrismaticJoint.hpp"
@@ -25,7 +21,7 @@ wxBEGIN_EVENT_TABLE(EditorFrame,wxFrame)
 	EVT_MENU(ID_ADD_BODY_DYNAMIC, 	 		EditorFrame::AddBody<b2_dynamicBody>)
 	EVT_MENU(ID_ADD_FIXTURE_CIRCLE,  		EditorFrame::AddFixture<Circle>)
 	EVT_MENU(ID_ADD_FIXTURE_EDGE, 	 		EditorFrame::AddFixture<Edge>)
-	EVT_MENU(ID_ADD_FIXTURE_POLYGON,	 	EditorFrame::AddFixture<Polygon>)
+	EVT_MENU(ID_ADD_FIXTURE_POLYGON,	 	EditorFrame::AddFixture<Poly>)
 	EVT_MENU(ID_ADD_FIXTURE_CHAIN,		 	EditorFrame::AddFixture<Chain>)
 	EVT_MENU(ID_ADD_JOINT_WELD,			 	EditorFrame::AddJoint<WeldJoint>)
 	EVT_MENU(ID_ADD_JOINT_REVOLUTE,		 	EditorFrame::AddJoint<RevoluteJoint>)

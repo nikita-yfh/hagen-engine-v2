@@ -1,8 +1,8 @@
 #pragma once
 #include "Fixture.hpp"
-#include "Polygon.hpp"
+#include "Poly.hpp"
 
-class Chain : public Polygon{
+class Chain : public Poly{
 public:
 	virtual void Draw(const Colors &colors) const override;
 

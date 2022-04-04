@@ -37,7 +37,7 @@ void ImagePreview::ResizeImage(){
 							panelSize.GetHeight()/height);
 		resized = wxBitmap(image.Scale(width*ratio, height*ratio));
 	}else
-		resized = image;
+		resized = (wxBitmap)image;
 }
 void ImagePreview::OnSize(wxSizeEvent&){
 	if(loaded)

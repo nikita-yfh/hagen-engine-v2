@@ -50,6 +50,7 @@ void Fixture::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
 		pg->Append(new wxFloatProperty("restitutionThresold", wxPG_LABEL, restitutionThreshold));
 		pg->Append(new wxFloatProperty("density", wxPG_LABEL, density));
 		pg->Append(new wxBoolProperty("isSensor", wxPG_LABEL, isSensor));
+		pg->Append(new FilterProperty("filter", wxPG_LABEL, filter));
 	}
 	Object::UpdatePropertyGrid(pg,n);
 }
@@ -64,6 +65,8 @@ void Fixture::OnPropertyGridChange(const wxString &name, const wxVariant &value)
 		density = value.GetDouble();
 	else if(name=="isSensor")
 		isSensor = value.GetBool();
+	else if(name=="filter")
+		filter << value;
 	Object::OnPropertyGridChange(name, value);
 }
 void Fixture::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
@@ -72,9 +75,23 @@ void Fixture::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) con
 	value.AddMember("restitutionThreshold", restitutionThreshold, allocator);
 	value.AddMember("density", density, allocator);
 	value.AddMember("isSensor", isSensor, allocator);
+	rapidjson::Value f(rapidjson::kObjectType);
+	f.AddMember("category", filter.categoryBits, allocator);
+	f.AddMember("mask", filter.maskBits, allocator);
+	f.AddMember("group", filter.groupIndex, allocator);
+	value.AddMember("filter", f, allocator);
 	Object::Save(value, allocator);
 }
 bool Fixture::Load(const rapidjson::Value &value){
+	if(value.HasMember("filter")){
+		const rapidjson::Value &f = value["filter"];
+		if(!f.IsObject())
+			return true;
+		if(jsonutils::GetMember(f, "category", filter.categoryBits) ||
+			jsonutils::GetMember(f, "mask", filter.maskBits) ||
+			jsonutils::GetMember(f, "group", filter.groupIndex))
+			return true;
+	}
 	return 
 		jsonutils::GetMember(value, "friction", friction) ||
 		jsonutils::GetMember(value, "restitution", restitution) ||

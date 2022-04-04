@@ -79,5 +79,5 @@ bool Chain::CanBeDynamic()const{
 }
 void Chain::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("type", "chain", allocator);
-	Polygon::SavePoints(value, allocator);
+	Poly::SavePoints(value, allocator);
 }

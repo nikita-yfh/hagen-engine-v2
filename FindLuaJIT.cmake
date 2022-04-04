@@ -18,6 +18,7 @@ find_path(LUA_INCLUDE_DIR luajit.h
   /opt/local # DarwinPorts
   /opt/csw # Blastwave
   /opt
+  ${LUA_PATH}
 )
 
 find_library(LUA_LIBRARY

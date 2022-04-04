@@ -3,6 +3,10 @@
 #include <wx/event.h>
 #include <wx/propgrid/propgrid.h>
 #include "Level.hpp"
+#include "Edge.hpp"
+#include "Circle.hpp"
+#include "Poly.hpp"
+#include "Chain.hpp"
 #include "Camera.hpp"
 #include "GLCanvas.hpp"
 #include "ImagePanel.hpp"
@@ -47,7 +51,7 @@ public:
 		canvas->Refresh();
 	}
 	template<class T>
-	void AddFixture(wxCommandEvent&){
+	void AddFixture(wxCommandEvent&e){
 		level.AddFixture(new T());
 		canvas->Refresh();
 	}

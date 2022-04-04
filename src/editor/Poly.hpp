@@ -11,10 +11,10 @@ struct Point : public b2Vec2{
 	Point *next;
 };
 
-class Polygon : public Fixture{
+class Poly : public Fixture {
 public:
-	Polygon() : points(nullptr) {}
-	~Polygon();
+	Poly() : points(nullptr) {}
+	virtual ~Poly();
 
 	void Draw(const Colors &colors) const override;
 

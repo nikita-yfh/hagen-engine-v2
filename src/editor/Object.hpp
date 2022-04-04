@@ -3,6 +3,7 @@
 #include "JSONUtils.hpp"
 #include "Mouse.hpp"
 #include "Vec2Property.hpp"
+#include "FilterProperty.hpp"
 #include <wx/propgrid/propgrid.h>
 
 class Level;

@@ -1,12 +1,12 @@
-#include "Polygon.hpp"
+#include "Poly.hpp"
 #include "Body.hpp"
 #include "GLUtils.hpp"
 #include <wx/glcanvas.h>
 
-Polygon::~Polygon(){
+Poly::~Poly(){
 	ClearPoints();
 }
-void Polygon::ClearPoints(){
+void Poly::ClearPoints(){
 	while(points){
 		Point *next = points->next;
 		delete points;
@@ -14,19 +14,19 @@ void Polygon::ClearPoints(){
 	}
 	points = nullptr;
 }
-void Polygon::AddPoint(b2Vec2 _point){
+void Poly::AddPoint(b2Vec2 _point){
 	Point *point = new Point(_point);
 	point->next = points;
 	points = point;
 }
 
-int Polygon::GetPointCount() const{
+int Poly::GetPointCount() const{
 	int count=0;
 	for(Point *point=points;point;point=point->next)
 		count++;
 	return count;
 }
-bool Polygon::CancelCreating(){
+bool Poly::CancelCreating(){
 	if(points != nullptr) { //delete last point
         if(points->next == nullptr){
 			delete points;
@@ -43,7 +43,7 @@ bool Polygon::CancelCreating(){
 		return false;
 	return true;
 }
-void Polygon::Draw(const Colors &colors) const{
+void Poly::Draw(const Colors &colors) const{
 	parent->Transform();
 	ApplyFill(colors);
 	glBegin(GL_POLYGON);
@@ -56,7 +56,7 @@ void Polygon::Draw(const Colors &colors) const{
 		glutils::Vertex(*point);
 	glEnd();
 }
-void Polygon::DrawPoints(const Colors &colors) const{
+void Poly::DrawPoints(const Colors &colors) const{
 	parent->Transform();
 	int index=1;
 	for(const Point *point=points;point;point=point->next)
@@ -71,7 +71,7 @@ void Polygon::DrawPoints(const Colors &colors) const{
 	}
 }
 
-bool Polygon::UpdatePoints(const Mouse &_mouse){
+bool Poly::UpdatePoints(const Mouse &_mouse){
 	const Mouse mouse = parent->GetLocalMouse(_mouse);
 	int index=1;
 	for(Point *point=points;point;point=point->next)
@@ -95,7 +95,7 @@ bool Polygon::UpdatePoints(const Mouse &_mouse){
 	}
 	return UpdateBody(mouse);
 }
-bool Polygon::Create(const Mouse &_mouse){
+bool Poly::Create(const Mouse &_mouse){
 	const Mouse mouse = parent->GetLocalMouse(_mouse);
 	int index=1;
 	if(!points)
@@ -111,7 +111,7 @@ bool Polygon::Create(const Mouse &_mouse){
 
 	return false;
 }
-bool Polygon::TestPoint(const b2Vec2 &point) const{
+bool Poly::TestPoint(const b2Vec2 &point) const{
 	bool result=false;
 	for(const Point *a=points;a;a=a->next){
 		const Point *b=a->next;
@@ -123,18 +123,18 @@ bool Polygon::TestPoint(const b2Vec2 &point) const{
 	}
 	return result;
 }
-void Polygon::SavePoints(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void Poly::SavePoints(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	rapidjson::Value array(rapidjson::kArrayType);
 	for(Point *point=points;point;point=point->next)
 		array.PushBack(jsonutils::Value<b2Vec2>(*point, allocator), allocator);
 	value.AddMember("points", array, allocator);
 }
-void Polygon::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void Poly::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("type", "polygon", allocator);
 	SavePoints(value, allocator);
 	Fixture::Save(value, allocator);
 }
-bool Polygon::Load(const rapidjson::Value &value){
+bool Poly::Load(const rapidjson::Value &value){
 	if(!value.HasMember("points"))
 		return true;
 	const rapidjson::Value &array = value["points"];

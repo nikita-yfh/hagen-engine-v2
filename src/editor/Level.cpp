@@ -2,7 +2,7 @@
 
 #include "Circle.hpp"
 #include "Edge.hpp"
-#include "Polygon.hpp"
+#include "Poly.hpp"
 #include "Chain.hpp"
 
 #include "WeldJoint.hpp"
@@ -365,7 +365,7 @@ bool Level::Load(const rapidjson::Value &value){
 				else if(strcmp(ctype, "edge") == 0)
 					fixture = new Edge();
 				else if(strcmp(ctype, "polygon") == 0)
-					fixture = new Polygon();
+					fixture = new Poly();
 				else if(strcmp(ctype, "edge") == 0)
 					fixture = new Edge();
 				else return true;

@@ -19,18 +19,33 @@ namespace internal{
 
 template<typename ValueType> 
 struct TypeHelper<ValueType, int8_t> {
-    static bool Is(const ValueType& v) { return v.IsInt() && v.GetInt() >= INT8_MIN && v.GetInt() <= INT8_MAX; }
-    static int8_t Get(const ValueType& v) { return v.GetInt(); }
-    static ValueType& Set(ValueType& v, int8_t data) { return v.SetInt(data); }
-    static ValueType& Set(ValueType& v, int8_t data, typename ValueType::AllocatorType&) { return v.SetInt(data); }
+    static inline bool Is(const ValueType& v) { return v.IsInt() && v.GetInt() >= INT8_MIN && v.GetInt() <= INT8_MAX; }
+    static inline int8_t Get(const ValueType& v) { return v.GetInt(); }
+    static inline ValueType& Set(ValueType& v, int8_t data) { return v.SetInt(data); }
+    static inline ValueType& Set(ValueType& v, int8_t data, typename ValueType::AllocatorType&) { return v.SetInt(data); }
 };
 
 template<typename ValueType> 
 struct TypeHelper<ValueType, uint8_t> {
-    static bool Is(const ValueType& v) { return v.IsUint() && v.GetUint() <= UINT8_MAX; }
-    static uint8_t Get(const ValueType& v) { return v.GetUint(); }
-    static ValueType& Set(ValueType& v, uint8_t data) { return v.SetUint(data); }
-    static ValueType& Set(ValueType& v, uint8_t data, typename ValueType::AllocatorType&) { return v.SetUint(data); }
+    static inline bool Is(const ValueType& v) { return v.IsUint() && v.GetUint() <= UINT8_MAX; }
+    static inline uint8_t Get(const ValueType& v) { return v.GetUint(); }
+    static inline ValueType& Set(ValueType& v, uint8_t data) { return v.SetUint(data); }
+    static inline ValueType& Set(ValueType& v, uint8_t data, typename ValueType::AllocatorType&) { return v.SetUint(data); }
+};
+template<typename ValueType> 
+struct TypeHelper<ValueType, int16_t> {
+    static inline bool Is(const ValueType& v) { return v.IsInt() && v.GetInt() >= INT16_MIN && v.GetInt() <= INT16_MAX; }
+    static inline int16_t Get(const ValueType& v) { return v.GetInt(); }
+    static inline ValueType& Set(ValueType& v, int16_t data) { return v.SetInt(data); }
+    static inline ValueType& Set(ValueType& v, int16_t data, typename ValueType::AllocatorType&) { return v.SetInt(data); }
+};
+
+template<typename ValueType> 
+struct TypeHelper<ValueType, uint16_t> {
+    static inline bool Is(const ValueType& v) { return v.IsUint() && v.GetUint() <= UINT16_MAX; }
+    static inline uint16_t Get(const ValueType& v) { return v.GetUint(); }
+    static inline ValueType& Set(ValueType& v, uint16_t data) { return v.SetUint(data); }
+    static inline ValueType& Set(ValueType& v, uint16_t data, typename ValueType::AllocatorType&) { return v.SetUint(data); }
 };
 
 template<typename ValueType> 

@@ -75,11 +75,14 @@ private:
 	void SetImageEditMode(wxCommandEvent&);
 	
 	void SaveFile(wxCommandEvent&);
+	void SaveFileAs(wxCommandEvent&);
 	void OpenFile(wxCommandEvent&);
 
 	void OnExit(wxCloseEvent&);
 
 	void DisplayJSONError(const char *text, const rapidjson::Document &document) const;
+
+	wxString lastFile;
 
 	Level level;
 	GLCanvas *canvas;

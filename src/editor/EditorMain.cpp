@@ -37,6 +37,7 @@ wxBEGIN_EVENT_TABLE(EditorFrame,wxFrame)
 	EVT_MENU(wxID_DELETE,			 		EditorFrame::DeleteSelected)
 	EVT_MENU(wxID_NEW,			 			EditorFrame::Execute<&Level::Clear>)
 	EVT_MENU(wxID_SAVE,			 			EditorFrame::SaveFile)
+	EVT_MENU(wxID_SAVEAS,					EditorFrame::SaveFileAs)
 	EVT_MENU(wxID_OPEN,			 			EditorFrame::OpenFile)
 	EVT_MENU(ID_TEXTURE_RELOAD, 			EditorFrame::Execute<&Level::ReloadTextures>)
 	EVT_MENU(ID_IMAGE_EDIT,					EditorFrame::SetImageEditMode)
@@ -124,13 +125,11 @@ void EditorFrame::OnPropertyGridUpdate(wxPropertyGridEvent &e){
 	level.ResolveID(selected);
 	Refresh();
 }
-void EditorFrame::SaveFile(wxCommandEvent&){
-	wxFileDialog dialog(this, _("Save level"), level.GetGameDir().GetPath(), "",
-						_("JSON files (*.json)|*.json"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
-	if (dialog.ShowModal() == wxID_CANCEL)
+void EditorFrame::SaveFile(wxCommandEvent&e){
+	if(lastFile.IsEmpty()){
+		SaveFileAs(e);
 		return;
-	wxString path=dialog.GetPath();
-
+	}
 	rapidjson::Document document(rapidjson::kObjectType);
 	level.Save(document, document.GetAllocator());
 	rapidjson::StringBuffer s;
@@ -138,18 +137,26 @@ void EditorFrame::SaveFile(wxCommandEvent&){
 	writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
 	writer.SetMaxDecimalPlaces(6);
 	document.Accept(writer);
-	FILE *fp = fopen(path.c_str(), "w");
+	FILE *fp = fopen(lastFile.c_str(), "w");
 	fwrite(s.GetString(), 1, s.GetSize(), fp);
 	fclose(fp);
+}
+void EditorFrame::SaveFileAs(wxCommandEvent&e){
+	wxFileDialog dialog(this, _("Save level"), level.GetGameDir().GetPath(), "",
+						_("JSON files (*.json)|*.json"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+	if (dialog.ShowModal() == wxID_CANCEL)
+		return;
+	lastFile = dialog.GetPath();
+	SaveFile(e);
 }
 void EditorFrame::OpenFile(wxCommandEvent&){
 	wxFileDialog dialog(this, _("Open level"), level.GetGameDir().GetPath(), "",
 						_("JSON files (*.json)|*.json"), wxFD_OPEN);
 	if (dialog.ShowModal() == wxID_CANCEL)
 		return;
-	wxString path=dialog.GetPath();
+	lastFile = dialog.GetPath();
 
-	FILE *fp = fopen(path.c_str(), "r");
+	FILE *fp = fopen(lastFile.c_str(), "r");
 	fseek (fp, 0 , SEEK_END);
     size_t size = ftell (fp);
     rewind (fp);

@@ -25,7 +25,7 @@ Level::Level(const Directory &dir) :
 void Level::Clear(){
 	while(textures){
 		Texture *child = textures->next;
-		delete child;
+		delete textures;
 		textures = child;
 	}
 	while(objects){
@@ -418,13 +418,19 @@ bool Level::Load(const rapidjson::Value &value){
 		for(int i=0; i<imageArray.Size(); i++){
 			const rapidjson::Value &j = imageArray[i];
 			wxString bindID, textureID;
-			if(jsonutils::GetMember(j, "bindBody", bindID) ||
-			   jsonutils::GetMember(j, "texture", textureID))
+			Body *bind = nullptr;
+			if(j.HasMember("bindBody")){
+				if(jsonutils::GetMember(j, "bindBody", bindID))
+					return true;
+				bind = GetBodyByID(bindID);
+				if(!bind)
+					return true;
+			}
+			if(jsonutils::GetMember(j, "texture", textureID))
 				return true;
-			Body *bind = GetBodyByID(bindID);
-			Texture *texture = AddTexture(textureID);
-			if(!bind)
-				return true;
+			Texture *texture = GetTextureByID(textureID);
+			if(!texture)
+				texture = AddTexture(textureID);
 			Image *image = new Image(texture, bind, textureScale);
 			AddLoadObject(image);
 			if(image->Load(j))

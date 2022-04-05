@@ -104,12 +104,14 @@ void Image::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const
 	value.AddMember("texture", jsonutils::Value(texture->GetName()), allocator);
 	if(bindBody)
 		value.AddMember("bindBody", jsonutils::Value(bindBody->GetID()), allocator);
+	Rotatable::Save(value, allocator);
 	Object::Save(value, allocator);
 }
 bool Image::Load(const rapidjson::Value &value){
 	return
 		jsonutils::GetMember(value, "layer", layer) ||
 		jsonutils::GetMember(value, "repeat", repeat) ||
+		Rotatable::Load(value) ||
 		Object::Load(value);
 }
 

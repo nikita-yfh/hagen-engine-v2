@@ -2,6 +2,7 @@ set(EDITOR "editor")
 set(EDITOR_SOURCES
 	"EditorApp.cpp"
 	"EditorMain.cpp"
+	"InputGridDialog.cpp"
 	"Vec2Property.cpp"
 	"FilterProperty.cpp"
 	"ToolBar.cpp"
@@ -35,6 +36,7 @@ set(EDITOR_SOURCES
 set(EDITOR_HEADERS
 	"EditorApp.hpp"
 	"EditorMain.hpp"
+	"InputGridDialog.hpp"
 	"Vec2Property.hpp"
 	"FilterProperty.hpp"
 	"ToolBar.hpp"

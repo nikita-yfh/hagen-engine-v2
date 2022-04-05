@@ -33,6 +33,10 @@ void Camera::Apply(const Colors &colors, const wxSize &halfsize) const{
 	glScalef(zoom,zoom,1.0f);
 	glTranslatef(-position.x,-position.y,0.0f);
 }
+void Camera::SetGrid(float grid){
+	gridSize = grid;
+	UpdateGrid(false, false);
+}
 bool Camera::UpdateGrid(bool shift, bool ctrl){
 	float grid=currentGridSize;
 	if(ctrl){

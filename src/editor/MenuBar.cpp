@@ -19,10 +19,11 @@ MenuBar::MenuBar() {
 		Append(menu,_("Edit"));
 	}
 	{
-		//File
+		//Editor
 		wxMenu* menu= new wxMenu();
 		menu->Append(ID_TEXTURE_RELOAD,_("Reload textures\tCtrl+R"));
 		menu->Append(ID_IMAGE_EDIT, _("Image edit mode\tCtrl-I"), wxEmptyString, wxITEM_CHECK);
-		Append(menu, _("Level"));
+		menu->Append(ID_SET_GRID, _("Set grid\tCtrl+G"));
+		Append(menu, _("Editor"));
 	}
 }

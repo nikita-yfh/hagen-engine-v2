@@ -8,6 +8,7 @@ public:
 
 	void Apply(const Colors &colors, const wxSize &halfsize) const;
 
+	void SetGrid(float grid);
 	bool UpdateGrid(bool shift, bool ctrl);
 
 	b2Vec2 ConvertToPixels(const b2Vec2 &p) const;

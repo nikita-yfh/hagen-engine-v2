@@ -13,6 +13,8 @@ public:
 
 	b2Vec2 GetMousePos() const;
 	b2Vec2 GetGridMousePos() const;
+
+	void SetGridSize();
 private:
 	void OnRightDown(wxMouseEvent&);
 	void OnLeftDown(wxMouseEvent&);

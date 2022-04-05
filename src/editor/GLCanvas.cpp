@@ -1,4 +1,5 @@
 #include "GLCanvas.hpp"
+#include "InputGridDialog.hpp"
 #include "EditMenu.hpp"
 #include "Texture.hpp"
 #include <wx/utils.h>
@@ -42,6 +43,11 @@ GLCanvas::GLCanvas(wxWindow *parent, Level &_level)
 	SetFocus();
 	SetDropTarget(new CanvasDropTarget(this, level));
 }
+void GLCanvas::SetGridSize(){
+	camera.SetGrid(InputGridDialog::InputGrid(this, camera.gridSize));
+	Refresh();
+}
+
 b2Vec2 GLCanvas::GetMousePos(wxMouseEvent &e) const{
 	wxPoint global=e.GetPosition();
 	wxSize size=GetSize();

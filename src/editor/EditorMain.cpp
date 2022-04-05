@@ -37,6 +37,7 @@ wxBEGIN_EVENT_TABLE(EditorFrame,wxFrame)
 	EVT_MENU(wxID_OPEN,			 			EditorFrame::OpenFile)
 	EVT_MENU(ID_TEXTURE_RELOAD, 			EditorFrame::Execute<&Level::ReloadTextures>)
 	EVT_MENU(ID_IMAGE_EDIT,					EditorFrame::SetImageEditMode)
+	EVT_MENU(ID_SET_GRID,					EditorFrame::SetGridSize)
 	EVT_UPDATE_UI(wxID_COPY,		 		EditorFrame::OneSelected)
 	EVT_UPDATE_UI(wxID_CUT,			 		EditorFrame::OneSelected)
 	EVT_UPDATE_UI(wxID_DUPLICATE,	 		EditorFrame::OneSelected)
@@ -100,6 +101,9 @@ void EditorFrame::DeleteSelected(wxCommandEvent&e){
 void EditorFrame::SetImageEditMode(wxCommandEvent&){
 	Image::enabled = !Image::enabled;
 	canvas->Refresh();
+}
+void EditorFrame::SetGridSize(wxCommandEvent&){
+	canvas->SetGridSize();
 }
 void EditorFrame::OnLevelUpdate(wxCommandEvent&){
 	Object *selected=level.GetFirstSelectedAll();

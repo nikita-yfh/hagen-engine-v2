@@ -164,9 +164,9 @@ void EditorFrame::OpenFile(wxCommandEvent&){
 						_("JSON files (*.json)|*.json"), wxFD_OPEN);
 	if (dialog.ShowModal() == wxID_CANCEL)
 		return;
-	lastFile = dialog.GetPath();
+	wxString path = dialog.GetPath();
 
-	FILE *fp = fopen(lastFile.c_str(), "r");
+	FILE *fp = fopen(path.c_str(), "r");
 	fseek (fp, 0 , SEEK_END);
     size_t size = ftell (fp);
     rewind (fp);
@@ -184,6 +184,8 @@ void EditorFrame::OpenFile(wxCommandEvent&){
 		level.Clear();
 		return;
 	}
+
+	lastFile = path;
 
 	imagePanel->RefreshList();
 	Refresh();

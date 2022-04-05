@@ -11,6 +11,7 @@ public:
 	virtual bool UpdatePoints(const Mouse &mouse) override;
 	virtual bool Create(const Mouse &mouse) override;
 
+	virtual void Reverse() override;
 	virtual bool TestPoint(const b2Vec2 &point) const override;
 	virtual bool CanBeDynamic() const override;
 

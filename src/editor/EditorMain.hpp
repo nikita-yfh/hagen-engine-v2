@@ -19,6 +19,7 @@ enum{
 	ID_IMAGE_LIST,
 	ID_TEXTURE_RELOAD,
 	ID_IMAGE_EDIT,
+	ID_REVERSE,
 	ID_SET_GRID,
 	ID_ADD_BODY,
 	ID_ADD_BODY_STATIC,
@@ -71,7 +72,7 @@ public:
 	void TwoBodiesSelected(wxUpdateUIEvent&);
 	void OneNotDynamicBodySelected(wxUpdateUIEvent&);
 	void OneSelected(wxUpdateUIEvent&);
-
+	void FixtureSelected(wxUpdateUIEvent&);
 private:
 	void OnMouseMotion(wxMouseEvent&);
 	void OnLevelUpdate(wxCommandEvent&);
@@ -79,6 +80,7 @@ private:
 	void DeleteSelected(wxCommandEvent&);
 	void SetImageEditMode(wxCommandEvent&);
 	void SetGridSize(wxCommandEvent&);
+	void Reverse(wxCommandEvent&);
 	
 	void SaveFile(wxCommandEvent&);
 	void SaveFileAs(wxCommandEvent&);

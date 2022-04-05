@@ -26,6 +26,19 @@ int Poly::GetPointCount() const{
 		count++;
 	return count;
 }
+void Poly::Reverse(){
+	Point *prev = nullptr;
+	Point *point = points;
+	while(point){
+		Point *next = point->next;
+		point->next = prev;
+		prev = point;
+		point = next;
+	}
+	points = prev;
+}
+
+
 bool Poly::CancelCreating(){
 	if(points != nullptr) { //delete last point
         if(points->next == nullptr){

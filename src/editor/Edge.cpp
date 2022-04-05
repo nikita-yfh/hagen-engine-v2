@@ -33,6 +33,11 @@ bool Edge::Create(const Mouse &_mouse){
 			return true;
 	return false;
 }
+void Edge::Reverse(){
+	b2Vec2 temp = p1;
+	p1 = p2;
+	p2 = temp;
+}
 
 bool Edge::TestPoint(const b2Vec2 &point) const{
 	return false; // :)

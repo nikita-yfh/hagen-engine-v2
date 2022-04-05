@@ -39,4 +39,5 @@ EditMenu::EditMenu(){
 	Append(wxID_DELETE,		_("Delete\tDelete"));
 	AppendSeparator();
 	Append(wxID_SELECTALL,	_("Select all\tCtrl-A"));
+	Append(ID_REVERSE,		_("Reverse fixture points"));
 }

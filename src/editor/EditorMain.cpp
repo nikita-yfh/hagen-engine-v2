@@ -38,9 +38,11 @@ wxBEGIN_EVENT_TABLE(EditorFrame,wxFrame)
 	EVT_MENU(ID_TEXTURE_RELOAD, 			EditorFrame::Execute<&Level::ReloadTextures>)
 	EVT_MENU(ID_IMAGE_EDIT,					EditorFrame::SetImageEditMode)
 	EVT_MENU(ID_SET_GRID,					EditorFrame::SetGridSize)
+	EVT_MENU(ID_REVERSE,					EditorFrame::Reverse)
 	EVT_UPDATE_UI(wxID_COPY,		 		EditorFrame::OneSelected)
 	EVT_UPDATE_UI(wxID_CUT,			 		EditorFrame::OneSelected)
 	EVT_UPDATE_UI(wxID_DUPLICATE,	 		EditorFrame::OneSelected)
+	EVT_UPDATE_UI(ID_REVERSE,		 		EditorFrame::FixtureSelected)
 	EVT_UPDATE_UI(ID_ADD_FIXTURE,			EditorFrame::OneBodySelected)
 	EVT_UPDATE_UI(ID_ADD_FIXTURE_EDGE,		EditorFrame::OneNotDynamicBodySelected)
 	EVT_UPDATE_UI(ID_ADD_FIXTURE_CHAIN,		EditorFrame::OneNotDynamicBodySelected)
@@ -88,6 +90,10 @@ void EditorFrame::OneNotDynamicBodySelected(wxUpdateUIEvent&e){
 void EditorFrame::OneSelected(wxUpdateUIEvent&e){
 	e.Enable(level.GetSelectedCount()>0);
 }
+void EditorFrame::FixtureSelected(wxUpdateUIEvent&e){
+	Object *object = level.GetFirstSelected();
+	e.Enable(object && object->GetObjectType() == Object::FIXTURE);
+}
 void EditorFrame::OnMouseMotion(wxMouseEvent &e){
 	SetStatusText(wxString::Format("%.03f, %.03f",
 		canvas->GetMousePos().x,
@@ -104,6 +110,10 @@ void EditorFrame::SetImageEditMode(wxCommandEvent&){
 }
 void EditorFrame::SetGridSize(wxCommandEvent&){
 	canvas->SetGridSize();
+}
+void EditorFrame::Reverse(wxCommandEvent&){
+	((Fixture*)(level.GetFirstSelected()))->Reverse();
+	canvas->Refresh();
 }
 void EditorFrame::OnLevelUpdate(wxCommandEvent&){
 	Object *selected=level.GetFirstSelectedAll();

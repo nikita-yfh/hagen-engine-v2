@@ -16,6 +16,7 @@ public:
 	virtual void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const override;
 	virtual void OnPropertyGridChange(const wxString &name, const wxVariant &value) override;
 	virtual bool TestPoint(const b2Vec2 &point) const = 0;
+	virtual void Reverse() {};
 
 	virtual void Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
 	virtual bool Load(const rapidjson::Value &value);

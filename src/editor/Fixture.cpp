@@ -4,10 +4,10 @@
 #include <wx/glcanvas.h>
 
 Fixture::Fixture():
-	friction(0.3f),
+	density(1000.0f),
+	friction(0.6f),
 	restitution(0.0f),
 	restitutionThreshold(1.0f * b2_lengthUnitsPerMeter),
-	density(0.0f),
 	isSensor(false),
 	parent(nullptr) {}
 

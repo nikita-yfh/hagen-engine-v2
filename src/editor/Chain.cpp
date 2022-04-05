@@ -4,6 +4,8 @@
 #include <wx/glcanvas.h>
 
 void Chain::Draw(const Colors &colors) const{
+	if(!points)
+		return;
 	parent->Transform();
 	ApplyBorder(colors);
 	glBegin(GL_LINE_STRIP);
@@ -40,7 +42,7 @@ void Chain::DrawPoints(const Colors &colors) const{
 	int index=1;
 	for(const Point *point=points;point;point=point->next)
 		DrawPoint(colors,index++,*point);
-	if(IsSelected()){
+	if(points && IsSelected()){
 		for(const Point *p1=points->next;p1&&p1->next&&p1->next->next;p1=p1->next){
 			const Point *p2=p1->next;
 			b2Vec2 point((*p1+*p2)/2.0f);

@@ -44,6 +44,8 @@ bool Poly::CancelCreating(){
 	return true;
 }
 void Poly::Draw(const Colors &colors) const{
+	if(!points)
+		return;
 	parent->Transform();
 	ApplyFill(colors);
 	glBegin(GL_POLYGON);
@@ -145,7 +147,3 @@ bool Poly::Load(const rapidjson::Value &value){
 		AddPoint(jsonutils::Get<b2Vec2>(array[i])); 
 	return Fixture::Load(value);
 }
-
-	
-
-

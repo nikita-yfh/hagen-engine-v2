@@ -366,8 +366,8 @@ bool Level::Load(const rapidjson::Value &value){
 					fixture = new Edge();
 				else if(strcmp(ctype, "polygon") == 0)
 					fixture = new Poly();
-				else if(strcmp(ctype, "edge") == 0)
-					fixture = new Edge();
+				else if(strcmp(ctype, "chain") == 0)
+					fixture = new Chain();
 				else return true;
 				fixture->SetParent(body);
 				AddLoadObject(fixture);

@@ -104,7 +104,7 @@ void Body::OnPropertyGridChange(const wxString& name, const wxVariant& value){
 
 void Body::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("type", jsonutils::String(bodyTypes[type]), allocator);
-	value.AddMember("linearVelocity", jsonutils::Value(linearVelocity, allocator), allocator);
+	value.AddMember("linearVelocity", jsonutils::ToJSON(linearVelocity, allocator), allocator);
 	value.AddMember("linearDamping", linearDamping, allocator);
 	value.AddMember("angularVelocity", angularVelocity, allocator);
 	value.AddMember("allowSleep", allowSleep, allocator);

@@ -83,16 +83,8 @@ void Fixture::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) c
 	Object::ToJSON(value, allocator);
 }
 bool Fixture::FromJSON(const rapidjson::Value &value){
-	if(value.HasMember("filter")){
-		const rapidjson::Value &f = value["filter"];
-		if(!f.IsObject())
-			return false;
-		if(!jsonutils::GetMember(f, "category", filter.categoryBits) ||
-			!jsonutils::GetMember(f, "mask", filter.maskBits) ||
-			!jsonutils::GetMember(f, "group", filter.groupIndex))
-			return false;
-	}
 	return 
+		jsonutils::GetMember(value, "filter",	filter) &&
 		jsonutils::GetMember(value, "friction", friction) &&
 		jsonutils::GetMember(value, "restitution", restitution) &&
 		jsonutils::GetMember(value, "restitutionThreshold", restitutionThreshold) &&

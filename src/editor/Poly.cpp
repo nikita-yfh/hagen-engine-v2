@@ -141,7 +141,7 @@ bool Poly::TestPoint(const b2Vec2 &point) const{
 void Poly::SavePoints(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	rapidjson::Value array(rapidjson::kArrayType);
 	for(Point *point=points;point;point=point->next)
-		array.PushBack(jsonutils::Value<b2Vec2>(*point, allocator), allocator);
+		array.PushBack(jsonutils::ToJSON(*point, allocator), allocator);
 	value.AddMember("points", array, allocator);
 }
 void Poly::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
@@ -156,7 +156,11 @@ bool Poly::FromJSON(const rapidjson::Value &value){
 	if(!array.IsArray() || array.Size() < 3)
 		return false;
 	ClearPoints();
-	for(int i=0; i<array.Size(); i++)
-		AddPoint(jsonutils::Get<b2Vec2>(array[i])); 
+	for(int i=0; i<array.Size(); i++){
+		b2Vec2 point;
+		if(!jsonutils::FromJSON(array[i], point))
+			return false;
+		AddPoint(point);
+	}
 	return Fixture::FromJSON(value);
 }

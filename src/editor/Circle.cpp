@@ -63,7 +63,7 @@ void Circle::OnPropertyGridChange(const wxString &name, const wxVariant &value){
 }
 void Circle::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("type", "circle", allocator);
-	value.AddMember("position", jsonutils::Value(position, allocator), allocator);
+	value.AddMember("position", jsonutils::ToJSON(position, allocator), allocator);
 	value.AddMember("radius", radius, allocator);
 	Fixture::ToJSON(value, allocator);
 }

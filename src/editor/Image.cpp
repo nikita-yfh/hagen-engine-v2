@@ -100,10 +100,10 @@ void Image::OnPropertyGridChange(const wxString& name, const wxVariant& value){
 }
 void Image::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
 	value.AddMember("layer", layer, allocator);
-	value.AddMember("repeat", jsonutils::Value(repeat, allocator), allocator);
-	value.AddMember("texture", jsonutils::Value(texture->GetName()), allocator);
+	value.AddMember("repeat", jsonutils::ToJSON(repeat, allocator), allocator);
+	value.AddMember("texture", jsonutils::ToJSON(texture->GetName()), allocator);
 	if(bindBody)
-		value.AddMember("bindBody", jsonutils::Value(bindBody->GetID()), allocator);
+		value.AddMember("bindBody", jsonutils::ToJSON(bindBody->GetID()), allocator);
 	Rotatable::ToJSON(value, allocator);
 	Object::ToJSON(value, allocator);
 }

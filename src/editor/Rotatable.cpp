@@ -40,7 +40,7 @@ void Rotatable::OnPropertyGridChange(const wxString& name, const wxVariant& valu
 		SetAngle(glutils::DegToRad(value.GetDouble()));
 }
 void Rotatable::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
-	value.AddMember("position", jsonutils::Value(position, allocator), allocator);
+	value.AddMember("position", jsonutils::ToJSON(position, allocator), allocator);
 	value.AddMember("angle", angle, allocator);
 }
 bool Rotatable::FromJSON(const rapidjson::Value &value){

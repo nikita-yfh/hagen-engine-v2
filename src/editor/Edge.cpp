@@ -64,8 +64,8 @@ void Edge::OnPropertyGridChange(const wxString &name, const wxVariant &value){
 }
 void Edge::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("type", "edge", allocator);
-	value.AddMember("point1", jsonutils::Value(p1, allocator), allocator);
-	value.AddMember("point2", jsonutils::Value(p2, allocator), allocator);
+	value.AddMember("point1", jsonutils::ToJSON(p1, allocator), allocator);
+	value.AddMember("point2", jsonutils::ToJSON(p2, allocator), allocator);
 	Fixture::ToJSON(value, allocator);
 }
 bool Edge::FromJSON(const rapidjson::Value &value){

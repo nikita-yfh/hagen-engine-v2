@@ -71,10 +71,10 @@ void PulleyJoint::OnPropertyGridChange(const wxString &name, const wxVariant &va
 }
 void PulleyJoint::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("type", "pulley", allocator);
-	value.AddMember("groundA", jsonutils::Value(groundA, allocator), allocator);
-	value.AddMember("groundB", jsonutils::Value(groundB, allocator), allocator);
-	value.AddMember("localA", jsonutils::Value(localA, allocator), allocator);
-	value.AddMember("localB", jsonutils::Value(localB, allocator), allocator);
+	value.AddMember("groundA", jsonutils::ToJSON(groundA, allocator), allocator);
+	value.AddMember("groundB", jsonutils::ToJSON(groundB, allocator), allocator);
+	value.AddMember("localA", jsonutils::ToJSON(localA, allocator), allocator);
+	value.AddMember("localB", jsonutils::ToJSON(localB, allocator), allocator);
 	value.AddMember("ratio", ratio, allocator);
 	Joint::ToJSON(value, allocator);
 }

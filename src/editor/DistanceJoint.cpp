@@ -61,8 +61,8 @@ void DistanceJoint::OnPropertyGridChange(const wxString &name, const wxVariant &
 }
 void DistanceJoint::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
 	value.AddMember("type", "distance", allocator);
-	value.AddMember("localA", jsonutils::Value(localA, allocator), allocator);
-	value.AddMember("localB", jsonutils::Value(localB, allocator), allocator);
+	value.AddMember("localA", jsonutils::ToJSON(localA, allocator), allocator);
+	value.AddMember("localB", jsonutils::ToJSON(localB, allocator), allocator);
 	value.AddMember("min", min, allocator);
 	value.AddMember("max", max, allocator);
 	value.AddMember("stiffness", stiffness, allocator);

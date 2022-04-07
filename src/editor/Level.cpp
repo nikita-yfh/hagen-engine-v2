@@ -301,7 +301,7 @@ void Level::OnPropertyGridChange(const wxString &name, const wxVariant &value){
 		textureScale = value.GetLong();
 }
 void Level::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
-	value.AddMember("gravity", jsonutils::Value(gravity, allocator), allocator);
+	value.AddMember("gravity", jsonutils::ToJSON(gravity, allocator), allocator);
 	value.AddMember("textureScale", textureScale, allocator);
 	rapidjson::Value bodyArray(rapidjson::kArrayType);
 	rapidjson::Value jointArray(rapidjson::kArrayType);

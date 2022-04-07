@@ -12,5 +12,5 @@ public:
 	virtual bool TestPoint(const b2Vec2 &point) const override;
 	virtual bool CanBeDynamic() const override;
 
-	virtual void Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const override;
+	virtual void ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const override;
 };

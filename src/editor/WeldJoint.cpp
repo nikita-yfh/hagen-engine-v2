@@ -17,17 +17,17 @@ void WeldJoint::OnPropertyGridChange(const wxString &name, const wxVariant &valu
 		damping = value.GetDouble();
 	PointJoint::OnPropertyGridChange(name, value);
 }
-void WeldJoint::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void WeldJoint::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("type", "weld", allocator);
 	value.AddMember("stiffness", stiffness, allocator);
 	value.AddMember("damping", damping, allocator);
-	PointJoint::Save(value, allocator);
+	PointJoint::ToJSON(value, allocator);
 }
-bool WeldJoint::Load(const rapidjson::Value &value){
+bool WeldJoint::FromJSON(const rapidjson::Value &value){
 	return
-		jsonutils::GetMember(value, "stiffness", stiffness) ||
-		jsonutils::GetMember(value, "damping", damping) ||
-		PointJoint::Load(value);
+		jsonutils::GetMember(value, "stiffness", stiffness) &&
+		jsonutils::GetMember(value, "damping", damping) &&
+		PointJoint::FromJSON(value);
 }
 
 

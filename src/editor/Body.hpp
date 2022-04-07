@@ -26,8 +26,8 @@ public:
 	virtual void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const override;
 	virtual void OnPropertyGridChange(const wxString &name, const wxVariant &value) override;
 
-	void Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
-	bool Load(const rapidjson::Value &value);
+	void ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+	bool FromJSON(const rapidjson::Value &value);
 private:
 	b2BodyType type;
 	b2Vec2 linearVelocity;

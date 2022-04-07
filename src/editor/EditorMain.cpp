@@ -141,7 +141,7 @@ void EditorFrame::SaveFile(wxCommandEvent&e){
 		return;
 	}
 	rapidjson::Document document(rapidjson::kObjectType);
-	level.Save(document, document.GetAllocator());
+	level.ToJSON(document, document.GetAllocator());
 	rapidjson::StringBuffer s;
 	rapidjson::PrettyWriter<rapidjson::StringBuffer>writer(s);
 	writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
@@ -179,7 +179,7 @@ void EditorFrame::OpenFile(wxCommandEvent&){
 		DisplayJSONError(buffer, document);
 		return;
 	}
-	if(level.Load(document)){
+	if(!level.FromJSON(document)){
 		wxMessageBox("Level format error", "Level open error", wxICON_ERROR);
 		level.Clear();
 		return;

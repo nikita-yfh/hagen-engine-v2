@@ -39,8 +39,8 @@ public:
 	virtual void UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const;
 	virtual void OnPropertyGridChange(const wxString &name, const wxVariant &value);
 
-	void Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
-	bool Load(const rapidjson::Value &value);
+	void ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+	bool FromJSON(const rapidjson::Value &value);
 
 	const wxString &GetID() const;
 protected:

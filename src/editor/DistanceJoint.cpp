@@ -59,7 +59,7 @@ void DistanceJoint::OnPropertyGridChange(const wxString &name, const wxVariant &
 		damping = value.GetDouble();
 	Joint::OnPropertyGridChange(name,value);
 }
-void DistanceJoint::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
+void DistanceJoint::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
 	value.AddMember("type", "distance", allocator);
 	value.AddMember("localA", jsonutils::Value(localA, allocator), allocator);
 	value.AddMember("localB", jsonutils::Value(localB, allocator), allocator);
@@ -67,15 +67,15 @@ void DistanceJoint::Save(rapidjson::Value &value, jsonutils::Allocator &allocato
 	value.AddMember("max", max, allocator);
 	value.AddMember("stiffness", stiffness, allocator);
 	value.AddMember("damping", damping, allocator);
-	Joint::Save(value, allocator);
+	Joint::ToJSON(value, allocator);
 }
-bool DistanceJoint::Load(const rapidjson::Value &value){
+bool DistanceJoint::FromJSON(const rapidjson::Value &value){
 	return
-		jsonutils::GetMember(value, "localA", localA) ||
-		jsonutils::GetMember(value, "localB", localB) ||
-		jsonutils::GetMember(value, "min", min) ||
-		jsonutils::GetMember(value, "max", max) ||
-		jsonutils::GetMember(value, "stiffness", stiffness) ||
-		jsonutils::GetMember(value, "damping", damping) ||
-		Joint::Load(value);
+		jsonutils::GetMember(value, "localA", localA) &&
+		jsonutils::GetMember(value, "localB", localB) &&
+		jsonutils::GetMember(value, "min", min) &&
+		jsonutils::GetMember(value, "max", max) &&
+		jsonutils::GetMember(value, "stiffness", stiffness) &&
+		jsonutils::GetMember(value, "damping", damping) &&
+		Joint::FromJSON(value);
 }

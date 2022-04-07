@@ -98,21 +98,21 @@ void Image::OnPropertyGridChange(const wxString& name, const wxVariant& value){
 		repeat << value;
 	Object::OnPropertyGridChange(name, value);
 }
-void Image::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
+void Image::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
 	value.AddMember("layer", layer, allocator);
 	value.AddMember("repeat", jsonutils::Value(repeat, allocator), allocator);
 	value.AddMember("texture", jsonutils::Value(texture->GetName()), allocator);
 	if(bindBody)
 		value.AddMember("bindBody", jsonutils::Value(bindBody->GetID()), allocator);
-	Rotatable::Save(value, allocator);
-	Object::Save(value, allocator);
+	Rotatable::ToJSON(value, allocator);
+	Object::ToJSON(value, allocator);
 }
-bool Image::Load(const rapidjson::Value &value){
+bool Image::FromJSON(const rapidjson::Value &value){
 	return
-		jsonutils::GetMember(value, "layer", layer) ||
-		jsonutils::GetMember(value, "repeat", repeat) ||
-		Rotatable::Load(value) ||
-		Object::Load(value);
+		jsonutils::GetMember(value, "layer", layer) &&
+		jsonutils::GetMember(value, "repeat", repeat) &&
+		Rotatable::FromJSON(value) &&
+		Object::FromJSON(value);
 }
 
 

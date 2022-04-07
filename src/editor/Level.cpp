@@ -300,7 +300,7 @@ void Level::OnPropertyGridChange(const wxString &name, const wxVariant &value){
 	else if(name == "textureScale")
 		textureScale = value.GetLong();
 }
-void Level::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
+void Level::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
 	value.AddMember("gravity", jsonutils::Value(gravity, allocator), allocator);
 	value.AddMember("textureScale", textureScale, allocator);
 	rapidjson::Value bodyArray(rapidjson::kArrayType);
@@ -309,11 +309,11 @@ void Level::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const
 	for(Object *object = objects; object; object = object->next){ rapidjson::Value j(rapidjson::kObjectType);
 		switch(object->GetObjectType()){
 		case Object::BODY:{
-			((Body*)object)->Save(j, allocator);
+			((Body*)object)->ToJSON(j, allocator);
 			rapidjson::Value fixtureArray(rapidjson::kArrayType);
 			while(object->next && object->next->GetObjectType() == Object::FIXTURE){
 				rapidjson::Value f(rapidjson::kObjectType);
-				((Fixture*)object->next)->Save(f, allocator);
+				((Fixture*)object->next)->ToJSON(f, allocator);
 				fixtureArray.PushBack(f, allocator);
 				object = object->next;
 			}
@@ -322,11 +322,11 @@ void Level::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const
 			break;
 		}
 		case Object::IMAGE:
-			((Image*)object)->Save(j, allocator);
+			((Image*)object)->ToJSON(j, allocator);
 			imageArray.PushBack(j, allocator);
 			break;
 		case Object::JOINT:
-			((Joint*)object)->Save(j, allocator);
+			((Joint*)object)->ToJSON(j, allocator);
 			jointArray.PushBack(j, allocator);
 		}
 	}
@@ -334,31 +334,31 @@ void Level::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const
 	value.AddMember("joints", jointArray, allocator);
 	value.AddMember("images", imageArray, allocator);
 }
-bool Level::Load(const rapidjson::Value &value){
+bool Level::FromJSON(const rapidjson::Value &value){
 	Clear();
-	if(jsonutils::GetMember(value, "gravity", gravity) ||
-	   jsonutils::GetMember(value, "textureScale", textureScale))
-		return true;
+	if(!jsonutils::GetMember(value, "gravity", gravity) ||
+	   !jsonutils::GetMember(value, "textureScale", textureScale))
+		return false;
 	if(value.HasMember("bodies")){
 		const rapidjson::Value &bodyArray = value["bodies"];
 		if(!bodyArray.IsArray())
-			return true;
+			return false;
 		for(int i=0; i<bodyArray.Size(); i++){
 			const rapidjson::Value &b = bodyArray[i];
 			Body *body = new Body();
 			AddLoadObject(body);
-			if(body->Load(b))
-				return true;
+			if(!body->FromJSON(b))
+				return false;
 			if(!b.HasMember("fixtures"))
-				return true;
+				return false;
 			const rapidjson::Value &fixtureArray = b["fixtures"];
 			if(!fixtureArray.IsArray())
-				return true;
+				return false;
 			for(int j=0; j<fixtureArray.Size(); j++){
 				const rapidjson::Value &f = fixtureArray[j];
 				const char *ctype;
-				if(jsonutils::GetMember(f, "type", ctype))
-					return true;
+				if(!jsonutils::GetMember(f, "type", ctype))
+					return false;
 				Fixture *fixture;
 				if(strcmp(ctype, "circle") == 0)
 					fixture = new Circle();
@@ -368,32 +368,32 @@ bool Level::Load(const rapidjson::Value &value){
 					fixture = new Poly();
 				else if(strcmp(ctype, "chain") == 0)
 					fixture = new Chain();
-				else return true;
+				else return false;
 				fixture->SetParent(body);
 				AddLoadObject(fixture);
-				if(fixture->Load(f))
-					return true;
+				if(!fixture->FromJSON(f))
+					return false;
 			}
 		}
 	}
 	if(value.HasMember("joints")){
 		const rapidjson::Value &jointArray = value["joints"];
 		if(!jointArray.IsArray())
-			return true;
+			return false;
 		for(int i=0; i<jointArray.Size(); i++){
 			const rapidjson::Value &j = jointArray[i];
 			wxString bodyIDA, bodyIDB;
-			if(jsonutils::GetMember(j, "bodyA", bodyIDA) ||
-			   jsonutils::GetMember(j, "bodyB", bodyIDB))
-				return true;
+			if(!jsonutils::GetMember(j, "bodyA", bodyIDA) ||
+			   !jsonutils::GetMember(j, "bodyB", bodyIDB))
+				return false;
 			Body *bodyA = GetBodyByID(bodyIDA);
 			Body *bodyB = GetBodyByID(bodyIDB);
 			if(!bodyA || !bodyB)
-				return true;
+				return false;
 			Joint *joint;
 			const char *ctype;
-			if(jsonutils::GetMember(j, "type", ctype))
-				return true;
+			if(!jsonutils::GetMember(j, "type", ctype))
+				return false;
 			if(strcmp(ctype, "weld") == 0)
 				joint = new WeldJoint();
 			else if(strcmp(ctype, "revolute") == 0)
@@ -404,39 +404,39 @@ bool Level::Load(const rapidjson::Value &value){
 				joint = new DistanceJoint();
 			else if(strcmp(ctype, "pulley") == 0)
 				joint = new PulleyJoint();
-			else return true;
+			else return false;
 			AddLoadObject(joint);
-			if(joint->Load(j))
-				return true;
+			if(!joint->FromJSON(j))
+				return false;
 			joint->SetBodies(bodyA, bodyB);
 		}
 	}
 	if(value.HasMember("images")){
 		const rapidjson::Value &imageArray = value["images"];
 		if(!imageArray.IsArray())
-			return true;
+			return false;
 		for(int i=0; i<imageArray.Size(); i++){
 			const rapidjson::Value &j = imageArray[i];
 			wxString bindID, textureID;
 			Body *bind = nullptr;
 			if(j.HasMember("bindBody")){
-				if(jsonutils::GetMember(j, "bindBody", bindID))
-					return true;
+				if(!jsonutils::GetMember(j, "bindBody", bindID))
+					return false;
 				bind = GetBodyByID(bindID);
 				if(!bind)
-					return true;
+					return false;
 			}
-			if(jsonutils::GetMember(j, "texture", textureID))
-				return true;
+			if(!jsonutils::GetMember(j, "texture", textureID))
+				return false;
 			Texture *texture = GetTextureByID(textureID);
 			if(!texture)
 				texture = AddTexture(textureID);
 			Image *image = new Image(texture, bind, textureScale);
 			AddLoadObject(image);
-			if(image->Load(j))
-				return true;
+			if(!image->FromJSON(j))
+				return false;
 		}
 	}
 	UnselectAll();
-	return false;
+	return true;
 }

@@ -61,16 +61,16 @@ void Circle::OnPropertyGridChange(const wxString &name, const wxVariant &value){
 		radius = value.GetDouble();
 	Fixture::OnPropertyGridChange(name,value);
 }
-void Circle::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void Circle::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("type", "circle", allocator);
 	value.AddMember("position", jsonutils::Value(position, allocator), allocator);
 	value.AddMember("radius", radius, allocator);
-	Fixture::Save(value, allocator);
+	Fixture::ToJSON(value, allocator);
 }
-bool Circle::Load(const rapidjson::Value &value){
+bool Circle::FromJSON(const rapidjson::Value &value){
 	return
-		jsonutils::GetMember(value, "position", position) ||
-		jsonutils::GetMember(value, "radius", radius) ||
-		Fixture::Load(value);
+		jsonutils::GetMember(value, "position", position) &&
+		jsonutils::GetMember(value, "radius", radius) &&
+		Fixture::FromJSON(value);
 }
 

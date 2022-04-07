@@ -109,11 +109,23 @@ rapidjson::Value Value(const T &data, Allocator &allocator){
 template<typename T>
 bool GetMember(const rapidjson::Value &parent, const char *name, T &data){
 	if(!parent.IsObject() || !parent.HasMember(name))
-		return true;
+		return false;
 	const rapidjson::Value &value = parent[name];
 	if(!Is<T>(value))
-		return true;
+		return false;
 	data = Get<T>(value);
+	return true;
+}
+template<typename T>
+bool GetMember(const rapidjson::Value &parent, const char *name, const char **values, size_t count, T &data){
+	const char *str;
+	if(!GetMember(parent, name, str))
+		return false;
+	for(int i = 0; i < count; i++)
+		if(strcmp(values[i], str) == 0){
+			data = (T)i;
+			return true;
+		}
 	return false;
 }
 

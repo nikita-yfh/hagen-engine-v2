@@ -34,7 +34,7 @@ void RevoluteJoint::OnPropertyGridChange(const wxString &name, const wxVariant &
 		motorSpeed = value.GetDouble();
 	PointJoint::OnPropertyGridChange(name, value);
 }
-void RevoluteJoint::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void RevoluteJoint::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("type", "revolute", allocator);
 	value.AddMember("enableLimit", enableLimit, allocator);
 	value.AddMember("lowerAngle", lowerAngle, allocator);
@@ -42,17 +42,17 @@ void RevoluteJoint::Save(rapidjson::Value &value, jsonutils::Allocator &allocato
 	value.AddMember("enableMotor", enableMotor, allocator);
 	value.AddMember("maxMotorTorque", maxMotorTorque, allocator);
 	value.AddMember("motorSpeed", motorSpeed, allocator);
-	PointJoint::Save(value, allocator);
+	PointJoint::ToJSON(value, allocator);
 }
-bool RevoluteJoint::Load(const rapidjson::Value &value){
+bool RevoluteJoint::FromJSON(const rapidjson::Value &value){
 	return
-		jsonutils::GetMember(value, "enableLimit", enableLimit) ||
-		jsonutils::GetMember(value, "lowerAngle", lowerAngle) ||
-		jsonutils::GetMember(value, "upperAngle", upperAngle) ||
-		jsonutils::GetMember(value, "enableMotor", enableMotor) ||
-		jsonutils::GetMember(value, "maxMotorTorque", maxMotorTorque) ||
-		jsonutils::GetMember(value, "motorSpeed", motorSpeed) ||
-		PointJoint::Load(value);
+		jsonutils::GetMember(value, "enableLimit", enableLimit) &&
+		jsonutils::GetMember(value, "lowerAngle", lowerAngle) &&
+		jsonutils::GetMember(value, "upperAngle", upperAngle) &&
+		jsonutils::GetMember(value, "enableMotor", enableMotor) &&
+		jsonutils::GetMember(value, "maxMotorTorque", maxMotorTorque) &&
+		jsonutils::GetMember(value, "motorSpeed", motorSpeed) &&
+		PointJoint::FromJSON(value);
 }
 
 

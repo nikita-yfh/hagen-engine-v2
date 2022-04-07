@@ -30,12 +30,12 @@ void PointJoint::OnPropertyGridChange(const wxString &name, const wxVariant &val
 		position << value;
 	OnPropertyGridChange(name,value);
 }
-void PointJoint::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
+void PointJoint::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
 	value.AddMember("position", jsonutils::Value(position, allocator), allocator);
-	Joint::Save(value, allocator);
+	Joint::ToJSON(value, allocator);
 }
-bool PointJoint::Load(const rapidjson::Value &value){
+bool PointJoint::FromJSON(const rapidjson::Value &value){
 	return
-		jsonutils::GetMember(value, "position", position) ||
-		Joint::Load(value);
+		jsonutils::GetMember(value, "position", position) &&
+		Joint::FromJSON(value);
 }

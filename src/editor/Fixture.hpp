@@ -18,8 +18,8 @@ public:
 	virtual bool TestPoint(const b2Vec2 &point) const = 0;
 	virtual void Reverse() {};
 
-	virtual void Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
-	virtual bool Load(const rapidjson::Value &value);
+	virtual void ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+	virtual bool FromJSON(const rapidjson::Value &value);
 protected:
 	void ApplyFill(const Colors &colors) const;
 	void ApplyBorder(const Colors &colors) const;

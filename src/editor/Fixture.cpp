@@ -69,7 +69,7 @@ void Fixture::OnPropertyGridChange(const wxString &name, const wxVariant &value)
 		filter << value;
 	Object::OnPropertyGridChange(name, value);
 }
-void Fixture::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void Fixture::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("friction", friction, allocator);
 	value.AddMember("restitution", restitution, allocator);
 	value.AddMember("restitutionThreshold", restitutionThreshold, allocator);
@@ -80,23 +80,23 @@ void Fixture::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) con
 	f.AddMember("mask", filter.maskBits, allocator);
 	f.AddMember("group", filter.groupIndex, allocator);
 	value.AddMember("filter", f, allocator);
-	Object::Save(value, allocator);
+	Object::ToJSON(value, allocator);
 }
-bool Fixture::Load(const rapidjson::Value &value){
+bool Fixture::FromJSON(const rapidjson::Value &value){
 	if(value.HasMember("filter")){
 		const rapidjson::Value &f = value["filter"];
 		if(!f.IsObject())
-			return true;
-		if(jsonutils::GetMember(f, "category", filter.categoryBits) ||
-			jsonutils::GetMember(f, "mask", filter.maskBits) ||
-			jsonutils::GetMember(f, "group", filter.groupIndex))
-			return true;
+			return false;
+		if(!jsonutils::GetMember(f, "category", filter.categoryBits) ||
+			!jsonutils::GetMember(f, "mask", filter.maskBits) ||
+			!jsonutils::GetMember(f, "group", filter.groupIndex))
+			return false;
 	}
 	return 
-		jsonutils::GetMember(value, "friction", friction) ||
-		jsonutils::GetMember(value, "restitution", restitution) ||
-		jsonutils::GetMember(value, "restitutionThreshold", restitutionThreshold) ||
-		jsonutils::GetMember(value, "density", density) ||
-		jsonutils::GetMember(value, "isSensor", isSensor) ||
-		Object::Load(value);
+		jsonutils::GetMember(value, "friction", friction) &&
+		jsonutils::GetMember(value, "restitution", restitution) &&
+		jsonutils::GetMember(value, "restitutionThreshold", restitutionThreshold) &&
+		jsonutils::GetMember(value, "density", density) &&
+		jsonutils::GetMember(value, "isSensor", isSensor) &&
+		Object::FromJSON(value);
 }

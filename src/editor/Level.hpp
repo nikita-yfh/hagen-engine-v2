@@ -61,8 +61,8 @@ public:
 	}
 	void ResolveID(Object *object) const;
 
-	void Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
-	bool Load(const rapidjson::Value &value);
+	void ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+	bool FromJSON(const rapidjson::Value &value);
 private:
 	void AddLoadObject(Object *object);
 	void DeleteDeps(const void *object);

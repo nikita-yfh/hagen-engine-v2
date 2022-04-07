@@ -57,10 +57,10 @@ void Object::OnPropertyGridChange(const wxString &name, const wxVariant &value){
 	if(name == "id")
 		id = value.GetString();
 }
-void Object::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
+void Object::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const {
 	value.AddMember("id", jsonutils::Value(id), allocator);
 }
-bool Object::Load(const rapidjson::Value &value){
+bool Object::FromJSON(const rapidjson::Value &value){
 	return jsonutils::GetMember(value, "id", id);
 }
 

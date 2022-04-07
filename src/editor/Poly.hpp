@@ -30,8 +30,8 @@ public:
 	void ClearPoints();
 	void SavePoints(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
 
-	virtual void Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const override;
-	virtual bool Load(const rapidjson::Value &value) override;
+	virtual void ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const override;
+	virtual bool FromJSON(const rapidjson::Value &value) override;
 protected:
 	int GetPointCount() const;
 	Point *points;

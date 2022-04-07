@@ -2,6 +2,12 @@
 #include "GLUtils.hpp"
 #include "EditorMain.hpp"
 
+static const char *bodyTypes[] = {
+	"static",
+	"kinematic",
+	"dynamic"
+};
+
 Body::Body(b2BodyType _type) :
 	type(_type),
 	linearVelocity(b2Vec2_zero),
@@ -96,15 +102,8 @@ void Body::OnPropertyGridChange(const wxString& name, const wxVariant& value){
 	Object::OnPropertyGridChange(name,value);
 }
 
-void Body::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
-	const char *ctype;
-	switch(type){
-	case b2_staticBody: ctype = "static"; break;
-	case b2_dynamicBody: ctype = "dynamic"; break;
-	case b2_kinematicBody: ctype = "kinematic"; break;
-	}
-	Rotatable::Save(value, allocator);
-	value.AddMember("type", jsonutils::String(ctype), allocator);
+void Body::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	value.AddMember("type", jsonutils::String(bodyTypes[type]), allocator);
 	value.AddMember("linearVelocity", jsonutils::Value(linearVelocity, allocator), allocator);
 	value.AddMember("linearDamping", linearDamping, allocator);
 	value.AddMember("angularVelocity", angularVelocity, allocator);
@@ -114,30 +113,22 @@ void Body::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("bullet", bullet, allocator);
 	value.AddMember("enabled", enabled, allocator);
 	value.AddMember("gravityScale", gravityScale, allocator);
-	Object::Save(value, allocator);
+	Rotatable::ToJSON(value, allocator);
+	Object::ToJSON(value, allocator);
 }
-bool Body::Load(const rapidjson::Value &value){
-	const char *ctype;
-	if(jsonutils::GetMember(value, "type", ctype))
-		return true;
-	if(strcmp(ctype, "static") == 0)
-		type = b2_staticBody;
-	else if(strcmp(ctype, "dynamic") == 0)
-		type = b2_dynamicBody;
-	else if(strcmp(ctype, "kinematic") == 0)
-		type = b2_kinematicBody;
-	else return true;
+bool Body::FromJSON(const rapidjson::Value &value){
 	return
-		Rotatable::Load(value) ||
-		jsonutils::GetMember(value, "linearVelocity", linearVelocity) ||
-		jsonutils::GetMember(value, "angularVelocity", angularVelocity) ||
-		jsonutils::GetMember(value, "linearDamping", linearDamping) ||
-		jsonutils::GetMember(value, "allowSleep", allowSleep) ||
-		jsonutils::GetMember(value, "awake", awake) ||
-		jsonutils::GetMember(value, "fixedRotation", fixedRotation) ||
-		jsonutils::GetMember(value, "bullet", bullet) ||
-		jsonutils::GetMember(value, "enabled", enabled) ||
-		jsonutils::GetMember(value, "gravityScale", gravityScale) ||
-		Object::Load(value);
+		jsonutils::GetMember(value, "type", bodyTypes, 3, type) &&
+		jsonutils::GetMember(value, "linearVelocity", linearVelocity) &&
+		jsonutils::GetMember(value, "angularVelocity", angularVelocity) &&
+		jsonutils::GetMember(value, "linearDamping", linearDamping) &&
+		jsonutils::GetMember(value, "allowSleep", allowSleep) &&
+		jsonutils::GetMember(value, "awake", awake) &&
+		jsonutils::GetMember(value, "fixedRotation", fixedRotation) &&
+		jsonutils::GetMember(value, "bullet", bullet) &&
+		jsonutils::GetMember(value, "enabled", enabled) &&
+		jsonutils::GetMember(value, "gravityScale", gravityScale) &&
+		Rotatable::FromJSON(value) &&
+		Object::FromJSON(value);
 }
 

@@ -39,13 +39,13 @@ void Rotatable::OnPropertyGridChange(const wxString& name, const wxVariant& valu
 	else if(name == "angle")
 		SetAngle(glutils::DegToRad(value.GetDouble()));
 }
-void Rotatable::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void Rotatable::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("position", jsonutils::Value(position, allocator), allocator);
 	value.AddMember("angle", angle, allocator);
 }
-bool Rotatable::Load(const rapidjson::Value &value){
+bool Rotatable::FromJSON(const rapidjson::Value &value){
 	return
-		jsonutils::GetMember(value, "position", position) ||
+		jsonutils::GetMember(value, "position", position) &&
 		jsonutils::GetMember(value, "angle", angle);
 }
 

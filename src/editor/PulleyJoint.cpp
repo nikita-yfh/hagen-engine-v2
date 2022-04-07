@@ -69,23 +69,23 @@ void PulleyJoint::OnPropertyGridChange(const wxString &name, const wxVariant &va
 		ratio = value.GetDouble();
 	Joint::OnPropertyGridChange(name,value);
 }
-void PulleyJoint::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void PulleyJoint::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("type", "pulley", allocator);
 	value.AddMember("groundA", jsonutils::Value(groundA, allocator), allocator);
 	value.AddMember("groundB", jsonutils::Value(groundB, allocator), allocator);
 	value.AddMember("localA", jsonutils::Value(localA, allocator), allocator);
 	value.AddMember("localB", jsonutils::Value(localB, allocator), allocator);
 	value.AddMember("ratio", ratio, allocator);
-	Joint::Save(value, allocator);
+	Joint::ToJSON(value, allocator);
 }
-bool PulleyJoint::Load(const rapidjson::Value &value){
+bool PulleyJoint::FromJSON(const rapidjson::Value &value){
 	return
-		jsonutils::GetMember(value, "groundA", groundA) ||
-		jsonutils::GetMember(value, "groundB", groundB) ||
-		jsonutils::GetMember(value, "localA", localA) ||
-		jsonutils::GetMember(value, "localB", localB) ||
-		jsonutils::GetMember(value, "ratio", ratio) ||
-		Joint::Load(value);
+		jsonutils::GetMember(value, "groundA", groundA) &&
+		jsonutils::GetMember(value, "groundB", groundB) &&
+		jsonutils::GetMember(value, "localA", localA) &&
+		jsonutils::GetMember(value, "localB", localB) &&
+		jsonutils::GetMember(value, "ratio", ratio) &&
+		Joint::FromJSON(value);
 }
 
 

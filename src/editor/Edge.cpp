@@ -62,16 +62,16 @@ void Edge::OnPropertyGridChange(const wxString &name, const wxVariant &value){
 		p2 << value;
 	Fixture::OnPropertyGridChange(name,value);
 }
-void Edge::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void Edge::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("type", "edge", allocator);
 	value.AddMember("point1", jsonutils::Value(p1, allocator), allocator);
 	value.AddMember("point2", jsonutils::Value(p2, allocator), allocator);
-	Fixture::Save(value, allocator);
+	Fixture::ToJSON(value, allocator);
 }
-bool Edge::Load(const rapidjson::Value &value){
+bool Edge::FromJSON(const rapidjson::Value &value){
 	return
-		jsonutils::GetMember(value, "point1", p1) ||
-		jsonutils::GetMember(value, "point2", p2) ||
-		Fixture::Load(value);
+		jsonutils::GetMember(value, "point1", p1) &&
+		jsonutils::GetMember(value, "point2", p2) &&
+		Fixture::FromJSON(value);
 }
 

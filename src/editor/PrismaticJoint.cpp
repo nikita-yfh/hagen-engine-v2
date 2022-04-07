@@ -92,7 +92,7 @@ void PrismaticJoint::OnPropertyGridChange(const wxString &name, const wxVariant 
 		motorSpeed = value.GetDouble();
 	Joint::OnPropertyGridChange(name, value);
 }
-void PrismaticJoint::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void PrismaticJoint::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("type", "prismatic", allocator);
 	value.AddMember("enableLimit", enableLimit, allocator);
 	value.AddMember("lowerTranslation", lowerTranslation, allocator);
@@ -100,19 +100,19 @@ void PrismaticJoint::Save(rapidjson::Value &value, jsonutils::Allocator &allocat
 	value.AddMember("enableMotor", enableMotor, allocator);
 	value.AddMember("maxMotorForce", maxMotorForce, allocator);
 	value.AddMember("motorSpeed", motorSpeed, allocator);
-	Rotatable::Save(value, allocator);
-	Joint::Save(value, allocator);
+	Rotatable::ToJSON(value, allocator);
+	Joint::ToJSON(value, allocator);
 }
-bool PrismaticJoint::Load(const rapidjson::Value &value){
+bool PrismaticJoint::FromJSON(const rapidjson::Value &value){
 	return
-		jsonutils::GetMember(value, "enableLimit", enableLimit) ||
-		jsonutils::GetMember(value, "lowerTranslation", lowerTranslation) ||
-		jsonutils::GetMember(value, "upperTranslation", upperTranslation) ||
-		jsonutils::GetMember(value, "enableMotor", enableMotor) ||
-		jsonutils::GetMember(value, "maxMotorForce", maxMotorForce) ||
-		jsonutils::GetMember(value, "motorSpeed", motorSpeed) ||
-		Rotatable::Load(value) ||
-		Joint::Load(value);
+		jsonutils::GetMember(value, "enableLimit", enableLimit) &&
+		jsonutils::GetMember(value, "lowerTranslation", lowerTranslation) &&
+		jsonutils::GetMember(value, "upperTranslation", upperTranslation) &&
+		jsonutils::GetMember(value, "enableMotor", enableMotor) &&
+		jsonutils::GetMember(value, "maxMotorForce", maxMotorForce) &&
+		jsonutils::GetMember(value, "motorSpeed", motorSpeed) &&
+		Rotatable::FromJSON(value) &&
+		Joint::FromJSON(value);
 }
 
 

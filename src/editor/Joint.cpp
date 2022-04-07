@@ -60,14 +60,14 @@ void Joint::OnPropertyGridChange(const wxString &name, const wxVariant &value){
 		collideConnected = value.GetBool();
 	Object::OnPropertyGridChange(name, value);
 }
-void Joint::Save(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void Joint::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("bodyA", jsonutils::Value(a->GetID()), allocator);
 	value.AddMember("bodyB", jsonutils::Value(b->GetID()), allocator);
 	value.AddMember("collideConnected", collideConnected, allocator);
-	Object::Save(value, allocator);
+	Object::ToJSON(value, allocator);
 }
-bool Joint::Load(const rapidjson::Value &value){
+bool Joint::FromJSON(const rapidjson::Value &value){
 	return
-		jsonutils::GetMember(value, "collideConnected", collideConnected) ||
-		Object::Load(value);
+		jsonutils::GetMember(value, "collideConnected", collideConnected) &&
+		Object::FromJSON(value);
 }

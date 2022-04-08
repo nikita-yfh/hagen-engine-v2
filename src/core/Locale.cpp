@@ -8,6 +8,8 @@ struct TextEntry{
 	TextEntry *next;
 };
 
+Locale::Locale() : entries(nullptr) {}
+
 Locale::~Locale(){
 	while(entries){
 		TextEntry *next = entries->next;

@@ -11,9 +11,9 @@ extern "C" {
 
 class GUIConsole : public Window{
 public:
-	GUIConsole(const Locale &loc, lua_State *L);
+	GUIConsole(lua_State *_L) : L(_L) {}
 
-	bool Render();
+	bool Render(const Locale &loc);
 private:
     char inputBuf[256];
     int historyPos;    // -1: new line, 0..History.Size-1 browsing history.
@@ -22,5 +22,4 @@ private:
     bool scrollToBottom;
 
     lua_State *L;
-	const Locale &loc;
 };

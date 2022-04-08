@@ -13,7 +13,6 @@ extern "C" {
 #include "ResourceManager.hpp"
 #include "SavesManager.hpp"
 #include "Interface.hpp"
-#include "Locale.hpp"
 
 class Engine{
 public:
@@ -38,9 +37,6 @@ public:
 		Error
 	};
 
-	lua_State *L;
-	Settings settings;
-	Locale *loc;
 private:
 	bool CreateWindow(const GameConfig &config);
 	void DestroyWindow();
@@ -56,6 +52,8 @@ private:
 	SDL_Event event;
 	SDL_Window *window;
 	SDL_GLContext context;
+	lua_State *L;
+	Settings settings;
 
 	ResourceManager *resManager;
 	SavesManager *savesManager;

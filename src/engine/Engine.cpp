@@ -3,7 +3,6 @@
 #include "Logger.hpp"
 #include "Camera.hpp"
 #include "Color.hpp"
-#include "Locale.hpp"
 #include "Texture.hpp"
 #include "Surface.hpp"
 #include "GUIConsole.hpp"
@@ -29,11 +28,6 @@ Engine::Engine(const char*const*storages,size_t num) {
 	if(!savesManager->LoadJSON("settings.json", settings))
 		if(!settings.SetDefault() || !savesManager->SaveJSON("settings.json", settings))
 			return;
-
-	loc = resManager->LoadResource<Locale>(String::Format("locales/%s/locale.json",
-				settings.language.c_str()));
-	if(loc == nullptr)
-		return;
 
 	if(!CreateWindow(gameConfig))
 		return;
@@ -76,8 +70,8 @@ bool Engine::CreateWindow(const GameConfig &config){
 
 	gladLoadGL();
 
-	interface = new Interface(resManager, window, context);
-	interface->AddWindow(new GUIConsole(*loc, L));
+	interface = new Interface(resManager, window, context, settings.language);
+	interface->AddWindow(new GUIConsole(L));
 
 	return true;
 }
@@ -98,8 +92,6 @@ Engine::~Engine() {
 		delete savesManager;
 	if(resManager)
 		delete resManager;
-	if(interface)
-		delete interface;
 	DestroyWindow();
 }
 

@@ -9,6 +9,7 @@ struct TextEntry;
 
 class Locale : public Resource{
 public:
+	Locale();
 	~Locale();
 
 	virtual bool Load(SDL_RWops *file) override;

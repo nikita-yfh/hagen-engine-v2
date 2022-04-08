@@ -51,7 +51,7 @@ bool Locale::Load(SDL_RWops *file){
 		ProcessJSONValue("", res.document);
 }
 
-const char *Locale::operator[](const char *name){
+const char *Locale::operator[](const char *name) const{
 	for(TextEntry *entry = entries; entry; entry = entry->next)
 		if(entry->name == name)
 			return entry->value;

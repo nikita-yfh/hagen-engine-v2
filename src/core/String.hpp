@@ -58,8 +58,8 @@ public:
 	static String Format(const char *format, ...){
 		va_list args;
 		va_start(args, format);
-		char buf[4096];
-		vsnprintf(buf, 4096, format, args);
+		char buf[1024];
+		vsnprintf(buf, 1024, format, args);
 		va_end(args);
 		return String(buf);
 	}

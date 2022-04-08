@@ -16,7 +16,7 @@ public:
 	bool Render(const Locale &loc);
 private:
     char inputBuf[256];
-    int historyPos;    // -1: new line, 0..History.Size-1 browsing history.
+    int historyPos;
     ImGuiTextFilter filter;
     bool autoScroll;
     bool scrollToBottom;

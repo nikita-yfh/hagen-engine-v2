@@ -1,5 +1,6 @@
 #pragma once
 #include "imgui.h"
+#include "String.hpp"
 
 enum {
 	LEVEL_DEBUG,
@@ -11,12 +12,9 @@ enum {
 	LEVEL_COUNT
 };
 struct LogEntry{
-	LogEntry(int _time,int _level,const char *_message,LogEntry *_next);
-	~LogEntry();
-
 	int time;
 	int level;
-	char *message;
+	String message;
 
 	ImVec4 GetColor() const;
 
@@ -26,16 +24,17 @@ class Logger{
 public:
 	~Logger();
 
-	void Log(int level,const char *format, ...);
-	void Log(int level,const char *format,va_list args);
+	void Log(int level, const char *format, ...);
+	void Log(int level, const char *format, va_list args);
 	void Clear();
 
 	static Logger &Instance();
 
 	LogEntry *items;
 private:
-	const int maxSize=100;
+	void AddEntry(LogEntry *entry);
+	static const int maxSize = 100;
 	Logger();
 };
 
-void Log(int level,const char *format, ...);
+void Log(int level, const char *format, ...);

@@ -16,7 +16,7 @@ public:
 
 	void Clear();
 
-	const char *operator[](const char *index);
+	const char *operator[](const char *index) const;
 private:
 	bool ProcessJSONValue(const char *prefix, const rapidjson::Value &value);
 	TextEntry *entries;

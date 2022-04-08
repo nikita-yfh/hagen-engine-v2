@@ -8,11 +8,11 @@ Texture::Texture()
 Texture::~Texture() {
 	glDeleteTextures(1,&texture);
 }
-int Texture::Load(SDL_RWops *file){
+bool Texture::Load(SDL_RWops *file){
 	Surface srcRes;
 
 	if(srcRes.Load(file))
-		return 1;
+		return false;
 
 	SDL_Surface *&surface=srcRes.surface;
 
@@ -27,7 +27,7 @@ int Texture::Load(SDL_RWops *file){
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	return 0;
+	return true;
 }
 void Texture::Bind() const{
 	glBindTexture(type,texture);

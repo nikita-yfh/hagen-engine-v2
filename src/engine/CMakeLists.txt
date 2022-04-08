@@ -1,6 +1,5 @@
 set(ENGINE "engine")
 set(ENGINE_SOURCES
-	"AudioManager.cpp"
 	"Color.cpp"
 	"Camera.cpp"
 	"Controls.cpp"
@@ -14,7 +13,6 @@ set(ENGINE_SOURCES
 	"Settings.cpp"
 )
 set(ENGINE_HEADERS
-	"AudioManager.hpp"
 	"b2_user_settings.h"
 	"Color.hpp"
 	"Camera.hpp"

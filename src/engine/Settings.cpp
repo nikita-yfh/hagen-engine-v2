@@ -4,24 +4,22 @@
 #include "Logger.hpp"
 #include "Utility.hpp"
 
-Settings::Settings()
-	:language(nullptr) {}
+static const char *windowModes[] = {
+	"fullscreen",
+	"fullscreenDesktop",
+	"windowed"
+};
 
-Settings::~Settings(){
-	if(language)
-		free(language);
-}
-
-int Settings::SetDefault(){
-	language=cstrdup("en");
-	return graphics.SetDefault() ||
+bool Settings::SetDefault(){
+	language = "en";
+	return graphics.SetDefault() &&
 			audio.SetDefault();
 }
-int Settings::GraphicsSettings::SetDefault(){
+bool Settings::GraphicsSettings::SetDefault(){
 	SDL_DisplayMode dm;
 	if (SDL_GetDesktopDisplayMode(0, &dm) != 0){
 		Log(LEVEL_ERROR,SDL_GetError());
-		return 1;
+		return false;
 	}
 	windowSize.Set(dm.w,dm.h);
 	doubleBuffer=true;
@@ -29,12 +27,12 @@ int Settings::GraphicsSettings::SetDefault(){
 	maxFPS=0;
 	MSAASamples=4;
 	windowMode=FULLSCREEN;
-	return 0;
+	return true;
 }
-int Settings::AudioSettings::SetDefault(){
+bool Settings::AudioSettings::SetDefault(){
 	soundVolume=1.0f;
 	musicVolume=1.0f;
-	return 0;
+	return true;
 }
 
 int Settings::GraphicsSettings::GetWindowFlags() const {
@@ -50,49 +48,42 @@ int Settings::GraphicsSettings::GetWindowFlags() const {
 	return windowFlags;
 }
 
-int Settings::SaveJSON(Archive *archive) const{
-	return
-		archive->SaveObject("graphics", &graphics) ||
-		archive->SaveObject("audio",	&audio) ||
-		archive->SaveString("language",	language);
+void Settings::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	value.SetObject();
+	graphics.ToJSON(value, allocator);
+	audio.ToJSON(value, allocator);
+	value.AddMember("language",	jsonutils::ToJSON(language), allocator);
 }
-int Settings::LoadJSON(Archive *archive){
+bool Settings::FromJSON(const rapidjson::Value &value){
 	return
-		archive->LoadObject("graphics",	&graphics) ||
-		archive->LoadObject("audio",	&audio) ||
-		archive->LoadString("language",	language);
+		jsonutils::CheckObject(value) &&
+		graphics.FromJSON(value) &&
+		audio.FromJSON(value) &&
+		jsonutils::GetMember(value, "language",	language);
 }
-int Settings::GraphicsSettings::SaveJSON(Archive *archive) const{
-	return
-		archive->SaveValue("doubleBuffer",	doubleBuffer) ||
-		archive->SaveValue("verticalSync",	verticalSync) ||
-		archive->SaveValue("maxFPS",		maxFPS) ||
-		archive->SaveValue("MSAASamples",	MSAASamples) ||
-		archive->SaveValue("windowMode",	windowMode) ||
-		archive->PushSaveObject() ||
-			archive->SaveValue("x",			windowSize.x) ||
-			archive->SaveValue("y",			windowSize.y) ||
-		archive->PopSaveObject("windowSize");
+void Settings::GraphicsSettings::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	value.AddMember("windowSize", jsonutils::ToJSON(windowSize, allocator), allocator);
+	value.AddMember("doubleBuffer",	doubleBuffer, allocator);
+	value.AddMember("verticalSync", verticalSync, allocator);
+	value.AddMember("maxFPS", maxFPS, allocator);
+	value.AddMember("windowMode", jsonutils::StringType(windowModes[windowMode]), allocator);
 }
-int Settings::GraphicsSettings::LoadJSON(Archive *archive){
+bool Settings::GraphicsSettings::FromJSON(const rapidjson::Value &value){
+	const char *windowModeStr;
 	return
-		archive->LoadValue("doubleBuffer",	doubleBuffer) ||
-		archive->LoadValue("verticalSync",	verticalSync) ||
-		archive->LoadValue("maxFPS",		maxFPS) ||
-		archive->LoadValue("MSAASamples",	MSAASamples) ||
-		archive->LoadValue("windowMode",	windowMode) ||
-		archive->PushLoadObject("windowSize") ||
-			archive->LoadValue("x",			windowSize.x) ||
-			archive->LoadValue("y",			windowSize.y) ||
-		archive->PopLoadObject();
+		jsonutils::GetMember(value, "windowSize", windowSize) &&
+		jsonutils::GetMember(value, "doubleBuffer", doubleBuffer) &&
+		jsonutils::GetMember(value, "verticalSync", verticalSync) &&
+		jsonutils::GetMember(value, "maxFPS", maxFPS) &&
+		jsonutils::GetMember(value, "windowMode", windowModeStr) &&
+		(windowMode = jsonutils::GetEnum(windowModeStr, windowModes, 3)) != -1;
 }
-int Settings::AudioSettings::SaveJSON(Archive *archive) const {
-	return
-		archive->SaveValue("soundVolume",	soundVolume) ||
-		archive->SaveValue("musicVolume",	musicVolume);
+void Settings::AudioSettings::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	value.AddMember("soundVolume", soundVolume, allocator);
+	value.AddMember("musicVolume", musicVolume, allocator);
 }
-int Settings::AudioSettings::LoadJSON(Archive *archive){
+bool Settings::AudioSettings::FromJSON(const rapidjson::Value &value){
 	return
-		archive->LoadValue("soundVolume",	soundVolume) ||
-		archive->LoadValue("musicVolume",	musicVolume);
+		jsonutils::GetMember(value, "soundVolume", soundVolume) &&
+		jsonutils::GetMember(value, "musicVolume", musicVolume);
 }

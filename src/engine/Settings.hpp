@@ -1,15 +1,14 @@
 #pragma once
 
 #include "box2d.h"
-#include "Serializer.hpp"
+#include "String.hpp"
+#include "JSONUtils.hpp"
+#include "Point.hpp"
 
 struct Settings{
 public:
-	Settings();
-	~Settings();
-
 	struct GraphicsSettings {
-		b2Vec2 windowSize;
+		IntPoint windowSize;
 
 		bool doubleBuffer;
 		bool verticalSync;
@@ -26,28 +25,26 @@ public:
 
 		int GetWindowFlags() const;
 
-		int SetDefault();
-		int SaveJSON(Archive *archive) const;
-		int LoadJSON(Archive *archive);
+		bool SetDefault();
+
+		void ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+		bool FromJSON(const rapidjson::Value &value);
 	} graphics;
 
 	struct AudioSettings {
 		float soundVolume;
 		float musicVolume;
 
-		int SetDefault();
+		bool SetDefault();
 
-		int SaveJSON(Archive *archive) const;
-		int LoadJSON(Archive *archive);
+		void ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+		bool FromJSON(const rapidjson::Value &value);
 	} audio;
 
-	struct InputSettings {
-	};
+	String language;
 
-	char *language;
+	bool SetDefault();
 
-	int SetDefault();
-
-	int SaveJSON(Archive *archive) const;
-	int LoadJSON(Archive *archive);
+	void ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+	bool FromJSON(const rapidjson::Value &value);
 };

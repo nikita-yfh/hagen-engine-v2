@@ -7,8 +7,7 @@ struct Surface : Resource{
 	Surface();
 	~Surface();
 
-	int Load(SDL_RWops *file);
-	int Save(SDL_RWops *file) const;
+	bool Load(SDL_RWops *file);
 
 	SDL_Surface *surface;
 };

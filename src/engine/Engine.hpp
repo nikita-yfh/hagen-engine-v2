@@ -13,7 +13,6 @@ extern "C" {
 #include "Settings.hpp"
 #include "ResourceManager.hpp"
 #include "SavesManager.hpp"
-#include "AudioManager.hpp"
 #include "RenderManager.hpp"
 #include "Interface.hpp"
 #include "Controls.hpp"
@@ -24,26 +23,34 @@ public:
 	Engine(const char*const*storages,size_t num);
 	~Engine();
 
+	static Version GetVersion();
+
+	inline bool HasError() const{
+		return state == State::Error;
+	}
+	inline bool NeedQuit() const{
+		return state == State::Quit;
+	}
+
 	void Run();
 
 	enum class State{
 		Run,
 		Quit,
-		Restart
+		Restart,
+		Error
 	};
-
-	State state;
 
 	lua_State *L;
 	GameConfig gameConfig;
 	Settings settings;
 	//Locale *loc;
-
 private:
-	int BindLua();
-	int BindLuaAll();
+	bool BindLua();
+	bool BindLuaAll();
 
-	AudioManager *audioManager;
+	State state;
+
 	ResourceManager *resManager;
 	SavesManager *savesManager;
 	RenderManager *renderManager;

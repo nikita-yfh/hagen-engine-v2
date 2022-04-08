@@ -9,7 +9,7 @@ public:
 	Texture();
 	~Texture();
 
-	int Load(SDL_RWops *file);
+	bool Load(SDL_RWops *file);
 
 	void Bind() const;
 	void Activate() const;

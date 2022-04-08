@@ -12,28 +12,22 @@ RenderManager::RenderManager(ResourceManager &resManager,
 			settings.MSAASamples);
 	SDL_GL_SetSwapInterval(settings.verticalSync);
 
-	const int windowNameSize=256;
-	char windowName[windowNameSize];
-	snprintf(windowName,windowNameSize,"%s %d.%d.%d",gameConfig.name,
-		gameConfig.version.major,
-		gameConfig.version.minor,
-		gameConfig.version.patch);
-
-	int flags=settings.GetWindowFlags();
-	window=SDL_CreateWindow(windowName,SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,
-							settings.windowSize.x,settings.windowSize.y,flags);
+	int flags = settings.GetWindowFlags();
+	window = SDL_CreateWindow(gameConfig.GetFullGameName(),
+		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+		settings.windowSize.x, settings.windowSize.y, settings.GetWindowFlags());
 
 	if(!window){
 		Log(LEVEL_ERROR,SDL_GetError());
 		return;
 	}
 
-	context=SDL_GL_CreateContext(window);
+	context = SDL_GL_CreateContext(window);
 	SDL_GL_MakeCurrent(window,context);
 
 	gladLoadGL();
 
-	interface=new Interface(resManager,window,context);
+	interface = new Interface(resManager, window, context);
 }
 RenderManager::~RenderManager(){
 	delete interface;

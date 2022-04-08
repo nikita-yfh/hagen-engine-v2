@@ -1,23 +1,28 @@
 #pragma once
 
-#include "Serializer.hpp"
+#include "String.hpp"
+#include "JSONUtils.hpp"
 
 struct Version {
-	int major;
-	int minor;
-	int patch;
+	Version() {}
+	Version(const char *str);
 
-	int LoadJSON(Archive *archive);
+	unsigned short major;
+	unsigned short minor;
+	unsigned short patch;
+
+	bool FromString(const char *str);
+	String ToString() const;
 };
+
 struct GameConfig {
-	GameConfig();
-	~GameConfig();
-	char name[256];
-	char icon[256];
+	String name;
+	String icon;
+
 	Version version;
 	int versionCode;
 
-	char **languages;
+	String GetFullGameName() const;
 
-	int LoadJSON(Archive *archive);
+	bool FromJSON(const rapidjson::Value &value);
 };

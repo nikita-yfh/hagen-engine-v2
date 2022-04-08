@@ -1,11 +1,6 @@
 {
 	"name": "Kolobator",
 	"icon": "icon.png",
-	"version": {
-		"major": 0,
-		"minor": 0,
-		"patch": 1
-	},
-	"versionCode": 0,
-	"languages": ["en"]
+	"version": "0.0.1",
+	"versionCode": 0
 }

@@ -4,95 +4,52 @@
 #include "miniz.h"
 #include "Logger.hpp"
 #include "Resource.hpp"
-#include "Serializer.hpp"
+#include "Storage.hpp"
+#include "String.hpp"
+#include "JSONUtils.hpp"
 
-struct _Resource{
-	char *path;
+struct ResourceEntry{
+	String path;
 	Resource *resource;
-	_Resource *next;
-};
-
-class Storage {
-public:
-	Storage(const char *path);
-	virtual ~Storage();
-
-	virtual int Init() = 0;
-	virtual int Quit() = 0;
-
-	virtual SDL_RWops *OpenFile(const char *file) = 0;
-	virtual bool ExistFile(const char *file) = 0;
-
-protected:
-	char *path;
-private:
-	Storage *next;
-	friend class ResourceManager;
-};
-
-class Directory : public Storage {
-public:
-	Directory(const char *path) : Storage(path) {}
-
-	int Init();
-	int Quit();
-
-	SDL_RWops *OpenFile(const char *file);
-	bool ExistFile(const char *file);
-
-	static bool Is(const char *path);
-private:
-	SDL_RWops *Open(const char *file);
-};
-
-
-class ZIPFile : public Storage {
-public:
-	ZIPFile(const char *path) : Storage(path), data(nullptr), dataSize(0) {}
-
-	int Init();
-	int Quit();
-
-	SDL_RWops *OpenFile(const char *path);
-	bool ExistFile(const char *path);
-
-	static bool Is(const char *path);
-private:
-	static const char *ErrorToString(mz_zip_error);
-
-	void *data;
-	size_t dataSize;
-
-	mz_zip_archive zip;
+	ResourceEntry *next;
 };
 
 class ResourceManager {
 public:
-	ResourceManager(const char*const*storages,size_t num);
 	~ResourceManager();
 
-	int AddStorage(const char *path);
-	int RemoveStorage(const char *path);
+	bool AddStorage(const char *path);
+	bool RemoveStorage(const char *path);
 	bool HasStorages() const;
 	void ClearStorages();
 
 	template<class T>
-	int LoadJSON(const char *path, T *archivable){
-		Archive archive;
-		return LoadResource(path,&archive) ||
-			archivable->LoadJSON(&archive);
+	T *LoadResource(const char *path){
+		T *resource = new T();
+		if(!LoadResource(path, resource)){
+			delete resource;
+			return nullptr;
+		}
+		AddResource(path, resource);
+		return resource;
 	}
 
-	int LoadResource(const char *path, Resource *res);
-
-	void AddResource(const char *path,Resource *res);
-	void ClearResources();
+	template<class T>
+	bool LoadJSON(const char *path, T &object){
+		JSONResource res;
+		return
+			LoadResource(path, &res) &&
+			res.FromJSON(object);
+	}
 private:
+	bool LoadResource(const char *path, Resource *res);
+	void AddResource(const char *path, Resource *res);
+	void ClearResources();
+
 	Resource *FindResource(const char *path) const;
-	void AddResource(Resource *res);
 	SDL_RWops *OpenFile(const char *path);
 
 	Storage *storages;
 
-	_Resource *resources;
+	ResourceEntry *resources;
 };

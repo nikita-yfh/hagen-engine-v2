@@ -5,26 +5,25 @@
 #include "GameConfig.hpp"
 
 int main(int argc,char **argv){
-	//Version hagenVersion("2.0.0");
-	//Log(LEVEL_INFO,"Hagen Engine %s",hagenVersion.toString().c_str());
+	Log(LEVEL_INFO,"Hagen Engine %s",Engine::GetVersion().ToString().c_str());
 
 	if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_GAMECONTROLLER | SDL_INIT_VIDEO))
-		Log(LEVEL_FATAL,SDL_GetError());
+		Log(LEVEL_FATAL, SDL_GetError());
 	else
-		Log(LEVEL_INFO,"SDL inited");
+		Log(LEVEL_INFO, "SDL inited");
 
-	argv[0]="game";
-	const char*const*storages=argv;
-	size_t storagesNum=argc;
+	const char*const*storages = argv + 1;
+	size_t storagesNum = argc - 1;
 
 	while(true){
-		Engine engine(storages,storagesNum);
-		/*if(engine.Init(storages,storagesNum)){
+		Engine engine(storages, storagesNum);
+		if(engine.HasError()){
 			Log(LEVEL_FATAL,"Failed to initilize engine");
 			break;
-		}*/
+		}
+		Log(LEVEL_INFO,"Engine initilized");
 		engine.Run();
-		if(engine.state==Engine::State::Quit)
+		if(engine.NeedQuit())
 			break;
 		Log(LEVEL_INFO,"Restarting engine...");
 	}

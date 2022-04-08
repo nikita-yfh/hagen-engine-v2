@@ -15,6 +15,7 @@ set(EDITOR_SOURCES
 	"Body.cpp"
 	"Fixture.cpp"
 	"Camera.cpp"
+	"JSONUtils.cpp"
 	"Texture.cpp"
 	"Image.cpp"
 	"Edge.cpp"

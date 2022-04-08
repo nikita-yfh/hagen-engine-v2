@@ -8,31 +8,33 @@
 #include "Texture.hpp"
 #include "GUIConsole.hpp"
 #include "GUISettings.hpp"
-#include "Sound.hpp"
-#include "Music.hpp"
 
 Engine::Engine(const char*const*storages,size_t num) {
-	state=State::Run;
+	state = State::Error;
+	L = nullptr;
 
-	resManager=new ResourceManager(storages,num);
-
-	if(resManager->LoadJSON("game.json",&gameConfig))
+	resManager = new ResourceManager();
+	for(int i = 0; i < num; i++)
+		resManager->AddStorage(storages[i]);
+	if(!resManager->HasStorages()){
+		Log(LEVEL_FATAL, "No resources to load");
 		return;
-	savesManager=new SavesManager(gameConfig.name);
-
-	if(savesManager->LoadJSON("settings.json",&settings)){
-		if(settings.SetDefault() ||
-				savesManager->SaveJSON("settings.json",&settings))
-			return;
 	}
-	//loc=resManager.LoadResource<Locale>("locales/"+settings.language+"/locale.json");
-	//if(loc==nullptr)
+
+	if(!resManager->LoadJSON("game.json", gameConfig))
+		return;
+	savesManager = new SavesManager(gameConfig.name);
+
+	if(!savesManager->LoadJSON("settings.json", settings))
+		if(!settings.SetDefault() || !savesManager->SaveJSON("settings.json", settings))
+			return;
+	//loc = resManager.LoadResource<Locale>("locales/"+settings.language+"/locale.json");
+	//if(loc = =nullptr)
 	//	return;
 
-	renderManager=new RenderManager(*resManager,gameConfig,settings.graphics,interface);
+	renderManager = new RenderManager(*resManager, gameConfig, settings.graphics, interface);
 
-	eventManager=new EventManager(*interface);
-	audioManager=new AudioManager(settings.audio);
+	eventManager = new EventManager(*interface);
 
 	L = luaL_newstate();
 	Log(LEVEL_INFO,"Created lua state");
@@ -44,25 +46,28 @@ Engine::Engine(const char*const*storages,size_t num) {
 //	interface.AddWindow(new GUIConsole (*loc,L));
 	//interface.AddWindow(new GUISettings(*loc,settings,gameConfig));
 
-	Log(LEVEL_INFO,"Engine initilized");
+	state = State::Run;
 }
-int Engine::BindLuaAll(){
-	return 0;
+Version Engine::GetVersion(){
+	return Version("2.0.0");
 }
-int Engine::BindLua(){
-	return 0;
+bool Engine::BindLuaAll(){
+	return true;
+}
+bool Engine::BindLua(){
+	return true;
 }
 Engine::~Engine() {
-
-	lua_close(L);
+	if(L)
+		lua_close(L);
 }
 
 
 void Engine::Run() {
-	while (state==State::Run) {
-		int t=SDL_GetTicks();
+	while (state == State::Run) {
+		int t = SDL_GetTicks();
 		if(eventManager->ProcessEvents())
-			state=State::Quit;
+			state = State::Quit;
 		renderManager->Render();
 	}
 }

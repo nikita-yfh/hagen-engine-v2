@@ -1,7 +1,7 @@
 #pragma once
 
 #include "imgui.h"
-#include "Serializer.hpp"
+#include "JSONUtils.hpp"
 
 class Color{
 public:
@@ -20,7 +20,6 @@ public:
 	float b;
 	float a;
 
-	int SaveJSON(Archive *archive) const;
-	int LoadJSON(Archive *archive);
-
+	rapidjson::Value ToJSON(jsonutils::Allocator &allocator) const;
+	bool FromJSON(const rapidjson::Value &value);
 };

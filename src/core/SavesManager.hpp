@@ -2,34 +2,41 @@
 
 #include "SDL.h"
 #include "Resource.hpp"
-#include "Serializer.hpp"
 #include "Logger.hpp"
+#include "String.hpp"
 
 class SavesManager{
 public:
 	SavesManager(const char *gameName);
-	~SavesManager();
 
+	bool LoadResource(const char *file, Resource *res) const;
+	bool SaveResource(const char *file, const Resource *res) const;
 
 	template<class T>
-	int LoadJSON(const char *file, T *archivable) const{
-		Archive archive;
-		if(LoadResource(file, &archive))
-			return 1;
-		return archivable->LoadJSON(&archive);
+	T *LoadResource(const char *path){
+		T *resource = new T();
+		if(LoadResource(path, resource))
+			return resource;
+		delete resource;
+		return nullptr;
 	}
 
-	template<typename T>
-	int SaveJSON(const char *file, const T *archivable) const{
-		Archive archive;
-		return archivable->SaveJSON(&archive) ||
-				SaveResource(file,&archive);
+	template<class T>
+	bool LoadJSON(const char *path, T &object){
+		JSONResource res;
+		return
+			LoadResource(path, &res) &&
+			res.FromJSON(object);
 	}
-	int LoadResource(const char *file, Resource *res) const;
-	int SaveResource(const char *file, const Resource *res) const;
+	template<class T>
+	bool SaveJSON(const char *path, const T &object){
+		JSONResource res;
+		res.ToJSON(object);
+		return SaveResource(path, &res);
+	}
 private:
-	SDL_RWops *OpenFile(const char *file,const char *mode) const;
-	int CreateDirectory(const char *dir) const;
+	SDL_RWops *OpenFile(const char *file, const char *mode) const;
+	bool CreateDirectory(const char *dir) const;
 
-	char *saves;
+	String saves;
 };

@@ -7,27 +7,26 @@
 Surface::Surface()
 	:surface(nullptr) {}
 
-int Surface::Load(SDL_RWops *file){
+bool Surface::Load(SDL_RWops *file){
 	TextResource textRes;
 	if(textRes.Load(file))
-		return 1;
-	int width,height,channels;
-	unsigned char *image=stbi_load_from_memory((unsigned char*)textRes.data,textRes.size,&width,&height,&channels,STBI_rgb_alpha);
+		return false;
+	int width, height, channels;
+	unsigned char *image = stbi_load_from_memory((unsigned char*)textRes.data,
+		textRes.size, &width, &height, &channels, STBI_rgb_alpha);
 	if(!image){
-		Log(LEVEL_ERROR,stbi_failure_reason());
-		return 1;
+		Log(LEVEL_ERROR, stbi_failure_reason());
+		return false;
 	}
-	surface=SDL_CreateRGBSurfaceWithFormatFrom(image,width,height,32,4*width,SDL_PIXELFORMAT_RGBA32);
+	surface = SDL_CreateRGBSurfaceWithFormatFrom(image, width, height,
+		32, 4*width, SDL_PIXELFORMAT_RGBA32);
 	if(!surface){
-		Log(LEVEL_ERROR,SDL_GetError());
-		return 1;
+		Log(LEVEL_ERROR, SDL_GetError());
+		return false;
 	}
-	return 0;
-}
-int Surface::Save(SDL_RWops *file) const{
-	return 1;
+	return true;
 }
 Surface::~Surface(){
-	if(surface!=nullptr)
+	if(surface != nullptr)
 		SDL_FreeSurface(surface);
 }

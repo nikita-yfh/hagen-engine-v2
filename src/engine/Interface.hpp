@@ -3,7 +3,6 @@
 #include "glad/glad.h"
 #include "imgui.h"
 #include "SDL.h"
-#include "Serializer.hpp"
 #include "ResourceManager.hpp"
 
 class Window{
@@ -20,6 +19,7 @@ public:
 
 	Window *next;
 };
+
 class Interface{
 public:
 	Interface(ResourceManager &resManager,SDL_Window*,SDL_GLContext);

@@ -7,13 +7,13 @@ extern "C" {
 }
 
 #include "Interface.hpp"
+#include "Locale.hpp"
 
-class GUIConsole : Window{
+class GUIConsole : public Window{
 public:
-	GUIConsole(lua_State *L);
-	~GUIConsole();
+	GUIConsole(const Locale &loc, lua_State *L);
 
-	void Render();
+	bool Render();
 private:
     char inputBuf[256];
     int historyPos;    // -1: new line, 0..History.Size-1 browsing history.
@@ -22,4 +22,5 @@ private:
     bool scrollToBottom;
 
     lua_State *L;
+	const Locale &loc;
 };

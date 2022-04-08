@@ -1,11 +1,11 @@
 #include "Engine.hpp"
 
-#include "SDL_image.h"
 #include "Logger.hpp"
 #include "Camera.hpp"
 #include "Color.hpp"
 #include "Locale.hpp"
 #include "Texture.hpp"
+#include "Surface.hpp"
 #include "GUIConsole.hpp"
 #include "GUISettings.hpp"
 
@@ -21,6 +21,7 @@ Engine::Engine(const char*const*storages,size_t num) {
 		return;
 	}
 
+	GameConfig gameConfig;
 	if(!resManager->LoadJSON("game.json", gameConfig))
 		return;
 	savesManager = new SavesManager(gameConfig.name);
@@ -34,9 +35,8 @@ Engine::Engine(const char*const*storages,size_t num) {
 	if(loc == nullptr)
 		return;
 
-	renderManager = new RenderManager(*resManager, gameConfig, settings.graphics, interface);
-
-	eventManager = new EventManager(*interface);
+	if(!CreateWindow(gameConfig))
+		return;
 
 	L = luaL_newstate();
 	Log(LEVEL_INFO,"Created lua state");
@@ -45,11 +45,43 @@ Engine::Engine(const char*const*storages,size_t num) {
 
 	BindLuaAll();
 
-//	interface.AddWindow(new GUIConsole (*loc,L));
-	//interface.AddWindow(new GUISettings(*loc,settings,gameConfig));
-
 	state = State::Run;
 }
+bool Engine::CreateWindow(const GameConfig &config){
+	const Settings::GraphicsSettings &graphics = settings.graphics;
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,
+			graphics.doubleBuffer);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,
+			graphics.MSAASamples);
+	SDL_GL_SetSwapInterval(graphics.verticalSync);
+
+	int flags = graphics.GetWindowFlags();
+	window = SDL_CreateWindow(config.GetFullGameName(),
+		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+		graphics.windowSize.x, graphics.windowSize.y, graphics.GetWindowFlags());
+
+	if(!window){
+		Log(LEVEL_ERROR, SDL_GetError());
+		return false;
+	}
+
+	Surface icon;
+	if(resManager->LoadResource(config.icon, &icon))
+		icon.SetWindowIcon(window);
+	else
+		Log(LEVEL_WARNING, "Failed to set window icon");
+
+	context = SDL_GL_CreateContext(window);
+	SDL_GL_MakeCurrent(window,context);
+
+	gladLoadGL();
+
+	interface = new Interface(resManager, window, context);
+	interface->AddWindow(new GUIConsole(*loc, L));
+
+	return true;
+}
+
 Version Engine::GetVersion(){
 	return Version("2.0.0");
 }
@@ -66,19 +98,38 @@ Engine::~Engine() {
 		delete savesManager;
 	if(resManager)
 		delete resManager;
-	if(renderManager)
-		delete renderManager;
-	if(eventManager)
-		delete eventManager;
+	if(interface)
+		delete interface;
+	DestroyWindow();
 }
 
+void Engine::DestroyWindow(){
+	if(window)
+		SDL_DestroyWindow(window);
+	if(context)
+		SDL_GL_DeleteContext(context);
+}
+
+void Engine::ProcessEvents(){
+	while (SDL_PollEvent(&event)) {
+		interface->ProcessEvent(&event);
+		if (event.type == SDL_QUIT)
+			state = State::Quit;
+	}
+}
+void Engine::Render(){
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	interface->Render();
+
+	SDL_GL_SwapWindow(window);
+}
 
 void Engine::Run() {
 	while (state == State::Run) {
 		int t = SDL_GetTicks();
-		if(eventManager->ProcessEvents())
-			state = State::Quit;
-		renderManager->Render();
+		ProcessEvents();
+		Render();
 	}
 }
 

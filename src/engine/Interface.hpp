@@ -8,13 +8,13 @@
 class Window{
 public:
 	virtual ~Window() {}
-	virtual void Render() = 0;
+	virtual bool Render() = 0;
 	Window *next;
 };
 
 class Interface{
 public:
-	Interface(ResourceManager &resManager,SDL_Window*,SDL_GLContext);
+	Interface(ResourceManager *resManager, SDL_Window*, SDL_GLContext);
 	~Interface();
 
 	void Render();

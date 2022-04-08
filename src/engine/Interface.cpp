@@ -9,7 +9,7 @@
 
 using namespace ImGui;
 
-Interface::Interface(ResourceManager &resManager,SDL_Window *window,SDL_GLContext glcontext)
+Interface::Interface(ResourceManager *resManager,SDL_Window *window,SDL_GLContext glcontext)
 		:windows(nullptr){
 	IMGUI_CHECKVERSION();
     CreateContext();
@@ -46,8 +46,21 @@ void Interface::Render(){
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
 
-	for(Window *window = windows; window; window = window->next)
-		window->Render();
+	Window *prev = nullptr;
+	for(Window *window = windows; window;){
+		if(!window->Render()){
+			Window *next = window->next;
+			delete window;
+			window = next;
+			if(!prev)
+				windows = window;
+			else
+				prev->next = window;
+		}else{
+			prev = window;
+			window = window->next;
+		}
+	}
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(GetDrawData());

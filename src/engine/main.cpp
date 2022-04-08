@@ -7,9 +7,10 @@
 int main(int argc,char **argv){
 	Log(LEVEL_INFO,"Hagen Engine %s",Engine::GetVersion().ToString().c_str());
 
-	if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_GAMECONTROLLER | SDL_INIT_VIDEO))
+	if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_GAMECONTROLLER | SDL_INIT_VIDEO)){
 		Log(LEVEL_FATAL, SDL_GetError());
-	else
+		return -1;
+	} else
 		Log(LEVEL_INFO, "SDL inited");
 
 	const char*const*storages = argv + 1;
@@ -19,7 +20,8 @@ int main(int argc,char **argv){
 		Engine engine(storages, storagesNum);
 		if(engine.HasError()){
 			Log(LEVEL_FATAL,"Failed to initilize engine");
-			break;
+			SDL_Quit();
+			return -1;
 		}
 		Log(LEVEL_INFO,"Engine initilized");
 		engine.Run();

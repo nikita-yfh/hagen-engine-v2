@@ -2,27 +2,23 @@ set(ENGINE "engine")
 set(ENGINE_SOURCES
 	"Color.cpp"
 	"Camera.cpp"
-	"Controls.cpp"
 	"Engine.cpp"
 	"GameConfig.cpp"
 	"GUIConsole.cpp"
 	"GUISettings.cpp"
 	"Interface.cpp"
 	"main.cpp"
-	"RenderManager.cpp"
 	"Settings.cpp"
 )
 set(ENGINE_HEADERS
 	"b2_user_settings.h"
 	"Color.hpp"
 	"Camera.hpp"
-	"Controls.hpp"
 	"Engine.hpp"
 	"GameConfig.hpp"
 	"GUIConsole.hpp"
 	"GUISettings.hpp"
 	"Interface.hpp"
-	"RenderManager.hpp"
 	"Settings.hpp"
 )
 

@@ -6,16 +6,13 @@ extern "C" {
 #include "lualib.h"
 }
 
-#include "SDL_mixer.h"
 #include "SDL.h"
 #include "glad/glad.h"
 #include "GameConfig.hpp"
 #include "Settings.hpp"
 #include "ResourceManager.hpp"
 #include "SavesManager.hpp"
-#include "RenderManager.hpp"
 #include "Interface.hpp"
-#include "Controls.hpp"
 #include "Locale.hpp"
 
 class Engine{
@@ -42,18 +39,25 @@ public:
 	};
 
 	lua_State *L;
-	GameConfig gameConfig;
 	Settings settings;
 	Locale *loc;
 private:
+	bool CreateWindow(const GameConfig &config);
+	void DestroyWindow();
+
+	void ProcessEvents();
+	void Render();
+
 	bool BindLua();
 	bool BindLuaAll();
 
 	State state;
 
+	SDL_Event event;
+	SDL_Window *window;
+	SDL_GLContext context;
+
 	ResourceManager *resManager;
 	SavesManager *savesManager;
-	RenderManager *renderManager;
 	Interface *interface;
-	EventManager *eventManager;
 };

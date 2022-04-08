@@ -1,11 +1,12 @@
 #include "GUIConsole.hpp"
 
-GUIConsole::GUIConsole(lua_State *L){
+GUIConsole::GUIConsole(const Locale &_loc, lua_State *_L)
+					:loc(_loc), L(_L) {}
 
-}
-GUIConsole::~GUIConsole(){
-
-}
-void GUIConsole::Render(){
-
+bool GUIConsole::Render(){
+	bool shown = true;
+	ImGui::Begin("Console", &shown);
+	ImGui::Text("Text");
+	ImGui::End();
+	return shown;
 }

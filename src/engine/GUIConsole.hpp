@@ -15,11 +15,11 @@ public:
 
 	void Render();
 private:
-    char                  inputBuf[256];
-    int                   historyPos;    // -1: new line, 0..History.Size-1 browsing history.
-    ImGuiTextFilter       filter;
-    bool                  autoScroll;
-    bool                  scrollToBottom;
+    char inputBuf[256];
+    int historyPos;    // -1: new line, 0..History.Size-1 browsing history.
+    ImGuiTextFilter filter;
+    bool autoScroll;
+    bool scrollToBottom;
 
     lua_State *L;
 };

@@ -44,7 +44,7 @@ public:
 	lua_State *L;
 	GameConfig gameConfig;
 	Settings settings;
-	//Locale *loc;
+	Locale *loc;
 private:
 	bool BindLua();
 	bool BindLuaAll();

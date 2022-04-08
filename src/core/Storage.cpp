@@ -12,16 +12,19 @@ int Directory::Open() {
 int Directory::Close() {
 	return 0;
 }
+SDL_RWops *Directory::OpenFile(const char *file, const char *mode) {
+	SDL_RWops *rw = SDL_RWFromFile(String::Format("%s/%s",
+		path.c_str(), file), mode);
+	return rw;
+}
 SDL_RWops *Directory::OpenFile(const char *file) {
-	char _path[4096];
-	sprintf(_path,"%s/%s", path.c_str(), file);
-	SDL_RWops *rw = SDL_RWFromFile(_path, "rb");
+	SDL_RWops *rw = OpenFile(file, "rb");
 	if(!rw)
 		Log(LEVEL_ERROR,"Failed to open file \"%s\": %s", file, SDL_GetError());
 	return rw;
 }
 bool Directory::ExistFile(const char *file) {
-	SDL_RWops *rw = OpenFile(file);
+	SDL_RWops *rw = OpenFile(file, "r");
 	if(rw == nullptr)
 		return false;
 	SDL_RWclose(rw);
@@ -29,7 +32,7 @@ bool Directory::ExistFile(const char *file) {
 }
 bool Directory::Is(const char *path) {
 #ifdef ANDROID
-	if(strcmp(path,"")==0)
+	if(*path == '\0')
 		return true; //assets path must be empty for Android
 #endif
 	struct stat info;

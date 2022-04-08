@@ -14,8 +14,8 @@ public:
 	TextResource();
 	~TextResource();
 
-	virtual bool Save(SDL_RWops *file) const;
-	virtual bool Load(SDL_RWops *file);
+	virtual bool Save(SDL_RWops *file) const override;
+	virtual bool Load(SDL_RWops *file) override;
 
 	bool Load(const char *text);
 
@@ -28,8 +28,8 @@ struct JSONResource : Resource{
 public:
 	JSONResource();
 
-	virtual bool Save(SDL_RWops *file) const;
-	virtual bool Load(SDL_RWops *file);
+	virtual bool Save(SDL_RWops *file) const override;
+	virtual bool Load(SDL_RWops *file) override;
 
 	bool Load(const char *text, size_t size);
 	bool Load(const char *text);

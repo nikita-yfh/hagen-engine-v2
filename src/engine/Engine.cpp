@@ -28,9 +28,11 @@ Engine::Engine(const char*const*storages,size_t num) {
 	if(!savesManager->LoadJSON("settings.json", settings))
 		if(!settings.SetDefault() || !savesManager->SaveJSON("settings.json", settings))
 			return;
-	//loc = resManager.LoadResource<Locale>("locales/"+settings.language+"/locale.json");
-	//if(loc = =nullptr)
-	//	return;
+
+	loc = resManager->LoadResource<Locale>(String::Format("locales/%s/locale.json",
+				settings.language.c_str()));
+	if(loc == nullptr)
+		return;
 
 	renderManager = new RenderManager(*resManager, gameConfig, settings.graphics, interface);
 
@@ -60,6 +62,14 @@ bool Engine::BindLua(){
 Engine::~Engine() {
 	if(L)
 		lua_close(L);
+	if(savesManager)
+		delete savesManager;
+	if(resManager)
+		delete resManager;
+	if(renderManager)
+		delete renderManager;
+	if(eventManager)
+		delete eventManager;
 }
 
 

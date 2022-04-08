@@ -67,6 +67,7 @@ bool ResourceManager::HasStorages() const {
 	return storages != nullptr;
 }
 bool ResourceManager::LoadResource(const char *path, Resource *res){
+	Log(LEVEL_INFO, "Loading file \"%s\"", path);
 	SDL_RWops *rw = OpenFile(path);
 	if(!rw)
 		return false;

@@ -15,7 +15,7 @@ Interface::Interface(ResourceManager &resManager,SDL_Window *window,SDL_GLContex
     CreateContext();
     ImGuiIO& io = GetIO();
 
-    io.IniFilename=nullptr;
+    io.IniFilename = nullptr;
 
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
@@ -29,14 +29,13 @@ Interface::Interface(ResourceManager &resManager,SDL_Window *window,SDL_GLContex
 
 	/*Style style;
 	resManager.LoadJSON("style.json",&style);
-	ImGui::GetStyle()=style;*/
+	ImGui::GetStyle() = style; */
 }
 Interface::~Interface(){
-	Window *window=windows;
-	while(window){
-		Window *temp=window->next;
-		delete window;
-		window=temp;
+	while(windows){
+		Window *next = windows->next;
+		delete windows;
+		windows = next;
 	}
 	ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
@@ -47,23 +46,16 @@ void Interface::Render(){
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
 
-	for(Window *window=windows;window;window=window->next)
-		if(window->shown)
-			window->Render();
+	for(Window *window = windows; window; window = window->next)
+		window->Render();
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(GetDrawData());
 }
 void Interface::AddWindow(Window *window){
-	window->next=windows;
-	windows=window;
+	window->next = windows;
+	windows = window;
 }
 void Interface::ProcessEvent(SDL_Event *event){
 	 ImGui_ImplSDL2_ProcessEvent(event);
-}
-void Window::Hide(){
-	shown=false;
-}
-void Window::Show(){
-	shown=true;
 }

@@ -2,21 +2,21 @@
 
 #include "SDL.h"
 #include "Resource.hpp"
+#include "String.hpp"
+#include "JSONUtils.hpp"
 
-struct TextEntry{
-	const char *str;
-	const char *index;
-	TextEntry *next;
-};
+struct TextEntry;
 
-class Locale : public JSONResource{
+class Locale : public Resource{
 public:
-	Locale(SDL_RWops *file);
 	~Locale();
+
+	virtual bool Load(SDL_RWops *file) override;
 
 	void Clear();
 
 	const char *operator[](const char *index);
 private:
-
+	bool ProcessJSONValue(const char *prefix, const rapidjson::Value &value);
+	TextEntry *entries;
 };

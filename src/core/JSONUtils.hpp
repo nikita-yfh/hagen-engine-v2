@@ -19,6 +19,8 @@ namespace jsonutils{
 
 typedef rapidjson::Document::AllocatorType Allocator;
 typedef rapidjson::Document::StringRefType StringType;
+typedef rapidjson::Document::MemberIterator Iterator;
+typedef rapidjson::Document::ConstMemberIterator ConstIterator;
 using rapidjson::Value;
 
 Value ToJSON(const b2Vec2 &data, Allocator &allocator);

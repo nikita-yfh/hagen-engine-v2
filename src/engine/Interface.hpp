@@ -7,16 +7,8 @@
 
 class Window{
 public:
-	Window() : shown(true), next(nullptr) {}
 	virtual ~Window() {}
-
-	void Show();
-	void Hide();
-
 	virtual void Render() = 0;
-
-	bool shown;
-
 	Window *next;
 };
 

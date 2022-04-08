@@ -33,6 +33,8 @@ public:
 		AddResource(path, resource);
 		return resource;
 	}
+	bool LoadResource(const char *path, Resource *res);
+	void ClearResources();
 
 	template<class T>
 	bool LoadJSON(const char *path, T &object){
@@ -42,9 +44,7 @@ public:
 			res.FromJSON(object);
 	}
 private:
-	bool LoadResource(const char *path, Resource *res);
 	void AddResource(const char *path, Resource *res);
-	void ClearResources();
 
 	Resource *FindResource(const char *path) const;
 	SDL_RWops *OpenFile(const char *path);

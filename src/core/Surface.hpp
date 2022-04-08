@@ -9,5 +9,7 @@ struct Surface : Resource{
 
 	bool Load(SDL_RWops *file) override;
 
+	void SetWindowIcon(SDL_Window *window);
+
 	SDL_Surface *surface;
 };

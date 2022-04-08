@@ -9,7 +9,7 @@ Surface::Surface()
 
 bool Surface::Load(SDL_RWops *file){
 	TextResource textRes;
-	if(textRes.Load(file))
+	if(!textRes.Load(file))
 		return false;
 	int width, height, channels;
 	unsigned char *image = stbi_load_from_memory((unsigned char*)textRes.data,
@@ -25,6 +25,9 @@ bool Surface::Load(SDL_RWops *file){
 		return false;
 	}
 	return true;
+}
+void Surface::SetWindowIcon(SDL_Window *window){
+	SDL_SetWindowIcon(window, surface);
 }
 Surface::~Surface(){
 	if(surface != nullptr)

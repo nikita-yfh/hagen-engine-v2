@@ -1,4 +1,5 @@
 #include "RenderManager.hpp"
+#include "Surface.hpp"
 
 RenderManager::RenderManager(ResourceManager &resManager,
 						const GameConfig &gameConfig,
@@ -21,6 +22,12 @@ RenderManager::RenderManager(ResourceManager &resManager,
 		Log(LEVEL_ERROR,SDL_GetError());
 		return;
 	}
+
+	Surface icon;
+	if(resManager.LoadResource(gameConfig.icon, &icon))
+		icon.SetWindowIcon(window);
+	else
+		Log(LEVEL_WARNING, "Failed to set window icon");
 
 	context = SDL_GL_CreateContext(window);
 	SDL_GL_MakeCurrent(window,context);

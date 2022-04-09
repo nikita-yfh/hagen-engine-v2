@@ -9,17 +9,28 @@ extern "C" {
 #include "Interface.hpp"
 #include "Locale.hpp"
 
+struct HistoryEntry;
+
 class GUIConsole : public Window{
 public:
-	GUIConsole(lua_State *_L) : L(_L) {}
+	GUIConsole(lua_State *L);
+	~GUIConsole();
 
 	bool Render(const Locale &loc);
 private:
+	static int StaticInputCallback(ImGuiInputTextCallbackData *data);
+	int InputCallback(ImGuiInputTextCallbackData *data);
+	void ExecCommand(const char *cmd);
+	void AddHistoryEntry(const char *cmd);
+	void HistoryUp();
+	void HistoryDown();
+
     char inputBuf[256];
-    int historyPos;
     ImGuiTextFilter filter;
     bool autoScroll;
     bool scrollToBottom;
+	HistoryEntry *history;
+	HistoryEntry *historyPos;
 
     lua_State *L;
 };

@@ -15,7 +15,7 @@ struct HistoryEntry;
 
 class GUIConsole : public Window{
 public:
-	GUIConsole(ResourceManager *resManager, lua_State *L);
+	GUIConsole(ResourceManager &resManager, lua_State *L);
 	~GUIConsole();
 
 	void Render(const Locale &loc);

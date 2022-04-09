@@ -18,21 +18,20 @@ Engine::Engine(const char*const*storages,size_t num) {
 	BindLuaAll();
 
 
-	resManager = new ResourceManager();
 	for(int i = 0; i < num; i++)
-		resManager->AddStorage(storages[i]);
-	if(!resManager->HasStorages()){
+		resManager.AddStorage(storages[i]);
+	if(!resManager.HasStorages()){
 		Log(LEVEL_FATAL, "No resources to load");
 		return;
 	}
 
 	GameConfig gameConfig;
-	if(!resManager->LoadJSON("game.json", gameConfig))
+	if(!resManager.LoadJSON("game.json", gameConfig))
 		return;
-	savesManager = new SavesManager(gameConfig.name);
+	savesManager.Set(gameConfig.name);
 
-	if(!savesManager->LoadJSON("settings.json", settings))
-		if(!settings.SetDefault() || !savesManager->SaveJSON("settings.json", settings))
+	if(!savesManager.LoadJSON("settings.json", settings))
+		if(!settings.SetDefault() || !savesManager.SaveJSON("settings.json", settings))
 			return;
 
 	if(!CreateWindow(gameConfig))
@@ -59,7 +58,7 @@ bool Engine::CreateWindow(const GameConfig &config){
 	}
 
 	Surface icon;
-	if(resManager->LoadResource("ui/icon.png", &icon))
+	if(resManager.LoadResource("ui/icon.png", &icon))
 		icon.SetWindowIcon(window);
 	else
 		Log(LEVEL_WARNING, "Failed to set window icon");
@@ -87,10 +86,6 @@ bool Engine::BindLua(){
 Engine::~Engine() {
 	if(L)
 		lua_close(L);
-	if(savesManager)
-		delete savesManager;
-	if(resManager)
-		delete resManager;
 	DestroyWindow();
 }
 

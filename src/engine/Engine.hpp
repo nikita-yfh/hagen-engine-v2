@@ -55,7 +55,7 @@ private:
 	lua_State *L;
 	Settings settings;
 
-	ResourceManager *resManager;
-	SavesManager *savesManager;
+	ResourceManager resManager;
+	SavesManager savesManager;
 	Interface *interface;
 };

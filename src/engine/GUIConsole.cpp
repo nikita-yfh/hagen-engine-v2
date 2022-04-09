@@ -6,11 +6,11 @@ struct HistoryEntry{
 	HistoryEntry *prev;
 };
 
-GUIConsole::GUIConsole(ResourceManager *resManager, lua_State *_L) : L(_L){
+GUIConsole::GUIConsole(ResourceManager &resManager, lua_State *_L) : L(_L){
 	*inputBuf = '\0';
 	history = nullptr;
 	historyPos = nullptr;
-	resManager->LoadJSON("ui/console.json", config);
+	resManager.LoadJSON("ui/console.json", config);
 }
 GUIConsole::~GUIConsole(){
 	while(history){

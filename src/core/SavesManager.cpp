@@ -2,7 +2,7 @@
 #include "Logger.hpp"
 #include "Utility.hpp"
 
-SavesManager::SavesManager(const char *gameName) {
+void SavesManager::Set(const char *gameName) {
 	#ifdef LOCAL_SAVES
 	#ifdef ANDROID
 	saves = SDL_AndroidGetExternalStoragePath();

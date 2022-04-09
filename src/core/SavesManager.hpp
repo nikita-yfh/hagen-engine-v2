@@ -7,7 +7,7 @@
 
 class SavesManager{
 public:
-	SavesManager(const char *gameName);
+	void Set(const char *gameName);
 
 	bool LoadResource(const char *file, Resource *res) const;
 	bool SaveResource(const char *file, const Resource *res) const;

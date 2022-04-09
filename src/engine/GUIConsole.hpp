@@ -16,7 +16,7 @@ public:
 	GUIConsole(lua_State *L);
 	~GUIConsole();
 
-	bool Render(const Locale &loc);
+	void Render(const Locale &loc);
 private:
 	static int StaticInputCallback(ImGuiInputTextCallbackData *data);
 	int InputCallback(ImGuiInputTextCallbackData *data);

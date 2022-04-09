@@ -48,20 +48,9 @@ void Interface::Render(){
 	ImGui::NewFrame();
 
 	Window *prev = nullptr;
-	for(Window *window = windows; window;){
-		if(!window->Render(locale)){
-			Window *next = window->next;
-			delete window;
-			window = next;
-			if(!prev)
-				windows = window;
-			else
-				prev->next = window;
-		}else{
-			prev = window;
-			window = window->next;
-		}
-	}
+	for(Window *window = windows; window; window = window->next)
+		if(window->shown)
+			window->Render(locale);
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(GetDrawData());

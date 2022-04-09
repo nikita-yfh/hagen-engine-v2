@@ -19,8 +19,7 @@ GUIConsole::~GUIConsole(){
 	}
 }
 
-bool GUIConsole::Render(const Locale &locale){
-	bool shown = true;
+void GUIConsole::Render(const Locale &locale){
 	ImGui::Begin(locale["console.title"], &shown);
 
 	const float footerHeightToReserve = ImGui::GetStyle().ItemSpacing.y +
@@ -61,7 +60,6 @@ bool GUIConsole::Render(const Locale &locale){
 	if (reclaimFocus)
         ImGui::SetKeyboardFocusHere(-1);
 	ImGui::End();
-	return shown;
 }
 int GUIConsole::StaticInputCallback(ImGuiInputTextCallbackData *data){
 	GUIConsole *console = (GUIConsole*)data->UserData;

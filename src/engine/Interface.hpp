@@ -8,9 +8,12 @@
 
 class Window{
 public:
+	Window() : shown(true) {}
 	virtual ~Window() {}
-	virtual bool Render(const Locale &locale) = 0;
+	virtual void Render(const Locale &locale) = 0;
 	Window *next;
+
+	bool shown;
 };
 
 class Interface{

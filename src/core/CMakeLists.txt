@@ -16,7 +16,6 @@ set(CORE_SOURCES
 set(CORE_HEADERS
 	"JSONUtils.hpp"
 	"Utility.hpp"
-	"Point.hpp"
 	"Locale.hpp"
 	"Logger.hpp"
 	"Texture.hpp"

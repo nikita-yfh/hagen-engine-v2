@@ -3,12 +3,17 @@
 #include "box2d.h"
 #include "String.hpp"
 #include "JSONUtils.hpp"
-#include "Point.hpp"
 
 struct Settings{
 public:
 	struct GraphicsSettings {
-		IntPoint windowSize;
+		struct Size{
+			int width;
+			int height;
+
+			void ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+			bool FromJSON(const rapidjson::Value &value);
+		} windowSize;
 
 		bool doubleBuffer;
 		bool verticalSync;

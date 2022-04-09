@@ -21,7 +21,8 @@ bool Settings::GraphicsSettings::SetDefault(){
 		Log(LEVEL_ERROR,SDL_GetError());
 		return false;
 	}
-	windowSize.Set(dm.w,dm.h);
+	windowSize.width = dm.w;
+	windowSize.height = dm.h;
 	doubleBuffer=true;
 	verticalSync=false;
 	maxFPS=0;
@@ -77,6 +78,17 @@ bool Settings::GraphicsSettings::FromJSON(const rapidjson::Value &value){
 		jsonutils::GetMember(value, "maxFPS", maxFPS) &&
 		jsonutils::GetMember(value, "windowMode", windowModeStr) &&
 		(windowMode = jsonutils::GetEnum(windowModeStr, windowModes, 3)) != -1;
+}
+void Settings::GraphicsSettings::Size::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	value.SetArray();
+	value.PushBack(width, allocator);
+	value.PushBack(height, allocator);
+}
+bool Settings::GraphicsSettings::Size::FromJSON(const rapidjson::Value &value){
+	return
+		jsonutils::CheckArray(value, 2) &&
+		jsonutils::GetArrayMember(value, 0, width) &&
+		jsonutils::GetArrayMember(value, 1, height);
 }
 void Settings::AudioSettings::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("soundVolume", soundVolume, allocator);

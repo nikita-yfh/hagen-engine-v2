@@ -5,6 +5,7 @@
 #include "Logger.hpp"
 #include "b2_math.h"
 #include "b2_fixture.h"
+#include "imgui.h"
 
 #ifdef Bool //Xlib.h troubles
 #undef Bool
@@ -25,6 +26,8 @@ using rapidjson::Value;
 
 Value ToJSON(const b2Vec2 &data, Allocator &allocator);
 Value ToJSON(const b2Filter &data, Allocator &allocator);
+Value ToJSON(const ImVec2 &data, Allocator &allocator);
+Value ToJSON(const ImVec4 &data, Allocator &allocator);
 Value ToJSON(const String &data);
 
 template<class T>
@@ -48,6 +51,8 @@ bool FromJSON(const Value &value, double &data);
 bool FromJSON(const Value &value, b2Vec2 &data);
 bool FromJSON(const Value &value, b2Filter &data);
 bool FromJSON(const Value &value, String &data);
+bool FromJSON(const Value &value, ImVec2 &data);
+bool FromJSON(const Value &value, ImVec4 &data);
 bool FromJSON(const Value &value, const char *&data);
 
 template<class T>
@@ -55,7 +60,7 @@ inline bool FromJSON(const Value &value, T &object){
 	return object.FromJSON(value);
 }
 
-bool CheckValue(const Value &parent, const char *name);
+bool CheckValue(const Value &parent, const char *name, bool required = true);
 
 bool CheckObject(const Value &value);
 
@@ -65,9 +70,9 @@ bool CheckArray(const Value &array, size_t minSize, size_t maxSize);
 int GetEnum(const char *str, const char **values, size_t count);
 
 template<typename T>
-bool GetMember(const Value &parent, const char *name, T &data){
-	if(!CheckValue(parent, name))
-		return false;
+bool GetMember(const Value &parent, const char *name, T &data, bool required = true){
+	if(!CheckValue(parent, name, required))
+		return !required;
 	const Value &value = parent[name];
 	if(!FromJSON(value, data)){
 		Log(LEVEL_ERROR, "Value \"%s\" has wrong type", name);

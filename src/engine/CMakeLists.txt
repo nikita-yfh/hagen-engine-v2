@@ -1,25 +1,25 @@
 set(ENGINE "engine")
 set(ENGINE_SOURCES
-	"Color.cpp"
 	"Camera.cpp"
 	"Engine.cpp"
 	"GameConfig.cpp"
+	"Settings.cpp"
+	"Interface.cpp"
+	"Style.cpp"
 	"GUIConsole.cpp"
 	"GUISettings.cpp"
-	"Interface.cpp"
 	"main.cpp"
-	"Settings.cpp"
 )
 set(ENGINE_HEADERS
 	"b2_user_settings.h"
-	"Color.hpp"
 	"Camera.hpp"
 	"Engine.hpp"
 	"GameConfig.hpp"
+	"Settings.hpp"
+	"Interface.hpp"
+	"Style.hpp"
 	"GUIConsole.hpp"
 	"GUISettings.hpp"
-	"Interface.hpp"
-	"Settings.hpp"
 )
 
 find_package(OpenGL REQUIRED)

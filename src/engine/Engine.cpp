@@ -2,7 +2,6 @@
 
 #include "Logger.hpp"
 #include "Camera.hpp"
-#include "Color.hpp"
 #include "Texture.hpp"
 #include "Surface.hpp"
 #include "GUIConsole.hpp"
@@ -52,7 +51,7 @@ bool Engine::CreateWindow(const GameConfig &config){
 	int flags = graphics.GetWindowFlags();
 	window = SDL_CreateWindow(config.GetFullGameName(),
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-		graphics.windowSize.x, graphics.windowSize.y, graphics.GetWindowFlags());
+		graphics.windowSize.width, graphics.windowSize.height, graphics.GetWindowFlags());
 
 	if(!window){
 		Log(LEVEL_ERROR, SDL_GetError());

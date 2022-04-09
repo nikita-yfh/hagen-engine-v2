@@ -2,10 +2,10 @@
 
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
-#include "Color.hpp"
 #include "Engine.hpp"
 #include "Logger.hpp"
 #include "Texture.hpp"
+#include "Style.hpp"
 
 using namespace ImGui;
 
@@ -20,18 +20,17 @@ Interface::Interface(ResourceManager *resManager, SDL_Window *window,
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
-    StyleColorsDark();
+	ImGui::StyleColorsDark();
 
     if(!ImGui_ImplSDL2_InitForOpenGL(window, glcontext) ||
-				!ImGui_ImplOpenGL3_Init(nullptr)){
+				!ImGui_ImplOpenGL3_Init(nullptr))
 		Log(LEVEL_ERROR, "Failed to initilize ImGui");
-	}
 
 	resManager->LoadResource(String::Format("locales/%s/gui.json", language), &locale);
 
-	/*Style style;
-	resManager.LoadJSON("style.json",&style);
-	ImGui::GetStyle() = style; */
+	Style style;
+	if(resManager->LoadJSON("style.json", style))
+		ImGui::GetStyle() = style;
 }
 Interface::~Interface(){
 	while(windows){

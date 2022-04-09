@@ -9,6 +9,20 @@ Value ToJSON(const b2Vec2 &data, Allocator &allocator){
 	value.PushBack(data.y, allocator);
 	return value;
 }
+Value ToJSON(const ImVec2 &data, Allocator &allocator){
+	Value value(rapidjson::kArrayType);
+	value.PushBack(data.x, allocator);
+	value.PushBack(data.y, allocator);
+	return value;
+}
+Value ToJSON(const ImVec4 &data, Allocator &allocator){
+	Value value(rapidjson::kArrayType);
+	value.PushBack(data.x, allocator);
+	value.PushBack(data.y, allocator);
+	value.PushBack(data.z, allocator);
+	value.PushBack(data.w, allocator);
+	return value;
+}
 Value ToJSON(const b2Filter &data, Allocator &allocator){
 	Value value(rapidjson::kObjectType);
 	value.AddMember("category",	data.categoryBits,	allocator);
@@ -92,6 +106,20 @@ bool FromJSON(const Value &value, b2Vec2 &data){
 		GetArrayMember(value, 0, data.x) &&
 		GetArrayMember(value, 1, data.y);
 }
+bool FromJSON(const Value &value, ImVec2 &data){
+	return
+		CheckArray(value, 2) &&
+		GetArrayMember(value, 0, data.x) &&
+		GetArrayMember(value, 1, data.y);
+}
+bool FromJSON(const Value &value, ImVec4 &data){
+	return
+		CheckArray(value, 4) &&
+		GetArrayMember(value, 0, data.x) &&
+		GetArrayMember(value, 1, data.y);
+		GetArrayMember(value, 2, data.z);
+		GetArrayMember(value, 3, data.w);
+}
 bool FromJSON(const Value &value, b2Filter &data){
 	return
 		CheckObject(value) &&
@@ -112,9 +140,9 @@ bool FromJSON(const Value &value, const char *&data){
 	data = value.GetString();
 	return true;
 }
-bool CheckValue(const Value &parent, const char *name){
+bool CheckValue(const Value &parent, const char *name, bool required){
 	if(!parent.IsObject() || !parent.HasMember(name)){
-		Log(LEVEL_ERROR, "Value \"%s\" not found", name);
+		Log(required ? LEVEL_ERROR : LEVEL_WARNING, "Value \"%s\" not found", name);
 		return false;
 	}
 	return true;

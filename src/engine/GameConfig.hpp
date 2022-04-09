@@ -17,10 +17,7 @@ struct Version {
 
 struct GameConfig {
 	String name;
-	String icon;
-
 	Version version;
-	int versionCode;
 
 	String GetFullGameName() const;
 

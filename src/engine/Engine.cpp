@@ -59,7 +59,7 @@ bool Engine::CreateWindow(const GameConfig &config){
 	}
 
 	Surface icon;
-	if(resManager->LoadResource(config.icon, &icon))
+	if(resManager->LoadResource("ui/icon.png", &icon))
 		icon.SetWindowIcon(window);
 	else
 		Log(LEVEL_WARNING, "Failed to set window icon");

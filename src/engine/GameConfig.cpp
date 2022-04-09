@@ -20,9 +20,7 @@ bool GameConfig::FromJSON(const rapidjson::Value &value){
 	return
 		jsonutils::CheckObject(value) &&
 		jsonutils::GetMember(value, "name", name) &&
-		jsonutils::GetMember(value, "icon", icon) &&
 		jsonutils::GetMember(value, "version", versionStr) &&
-		jsonutils::GetMember(value, "versionCode", versionCode) &&
 		version.FromString(versionStr);
 }
 

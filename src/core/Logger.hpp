@@ -24,8 +24,8 @@ class Logger{
 public:
 	~Logger();
 
-	void Log(int level, const char *format, ...);
-	void Log(int level, const char *format, va_list args);
+	void Log(int level, const char *message);
+	void LogF(int level, const char *format, va_list args);
 	void Clear();
 
 	static Logger &Instance();
@@ -37,4 +37,5 @@ private:
 	Logger();
 };
 
-void Log(int level, const char *format, ...);
+void LogF(int level, const char *format, ...);
+void Log(int level, const char *message);

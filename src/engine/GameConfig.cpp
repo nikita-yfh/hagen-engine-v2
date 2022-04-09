@@ -6,7 +6,7 @@ Version::Version(const char *str){
 }
 bool Version::FromString(const char *str){
 	if(sscanf(str, "%hu.%hu.%hu", &major, &minor, &patch) != 3){
-		Log(LEVEL_ERROR, "Invalid version \"%s\"", str);
+		LogF(LEVEL_ERROR, "Invalid version \"%s\"", str);
 		return false;
 	}
 	return true;

@@ -20,7 +20,7 @@ bool ResourceManager::AddStorage(const char *path) {
 	else if(ZIPFile::Is(path))
 		res = new ZIPFile(path);
 	else {
-		Log(LEVEL_WARNING, "Resource \"%s\" not found", path);
+		LogF(LEVEL_WARNING, "Resource \"%s\" not found", path);
 		return false;
 	}
 
@@ -32,7 +32,7 @@ bool ResourceManager::AddStorage(const char *path) {
 	res->next = storages;
 	storages = res;
 
-	Log(LEVEL_INFO, "Loaded \"%s\"", path);
+	LogF(LEVEL_INFO, "Loaded \"%s\"", path);
 	return true;
 }
 bool ResourceManager::RemoveStorage(const char *path) {
@@ -67,7 +67,7 @@ bool ResourceManager::HasStorages() const {
 	return storages != nullptr;
 }
 bool ResourceManager::LoadResource(const char *path, Resource *res){
-	Log(LEVEL_INFO, "Loading file \"%s\"", path);
+	LogF(LEVEL_INFO, "Loading file \"%s\"", path);
 	SDL_RWops *rw = OpenFile(path);
 	if(!rw)
 		return false;
@@ -99,6 +99,6 @@ SDL_RWops *ResourceManager::OpenFile(const char *path) {
 	for(Storage *storage = storages; storage; storage = storage->next)
 		if(storage->ExistFile(path))
 			return storage->OpenFile(path);
-	Log(LEVEL_ERROR, "Failed to open file \"%s\": file not found", path);
+	LogF(LEVEL_ERROR, "Failed to open file \"%s\": file not found", path);
 	return nullptr;
 }

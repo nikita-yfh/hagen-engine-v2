@@ -35,7 +35,7 @@ static const int androidLevels[LEVEL_COUNT] = {
 };
 #endif
 
-void Logger::Log(int level, const char *format, va_list args){
+void Logger::Log(int level, const char *message){
 	if(level < 0)
 		level = 0;
 	if(level > LEVEL_FATAL)
@@ -45,9 +45,6 @@ void Logger::Log(int level, const char *format, va_list args){
 	if(level >= LEVEL_WARNING)
 		file = stderr;
 
-	char message[1024];
-	vsnprintf(message, 1024, format, args);
-
 	int time = SDL_GetTicks();
 	char timeStr[24];
 	sprintf(timeStr, timeFormat, time/1000.0f);
@@ -55,7 +52,7 @@ void Logger::Log(int level, const char *format, va_list args){
 	fprintf(file, "%s %s %s\n", timeStr, levels[level], message);
 
 #ifdef ANDROID
-	__android_log_print(androidLevels[level], "HAGEN", "%s\n", message);
+	__android_log_print(androidLevels[level], "HAGEN", message);
 #endif
 	LogEntry *entry = new LogEntry;
 	entry->time = time;
@@ -63,12 +60,12 @@ void Logger::Log(int level, const char *format, va_list args){
 	entry->message = message;
 	AddEntry(entry);
 }
-void Logger::Log(int level, const char *format, ...){
-	va_list args;
-	va_start(args, format);
-	Log(level, format, args);
-	va_end(args);
+void Logger::LogF(int level, const char *format, va_list args){
+	char message[1024];
+	vsnprintf(message, 1024, format, args);
+	Log(level, message);
 }
+
 void Logger::AddEntry(LogEntry *entry){
 	entry->next = nullptr;
 	if(!items){
@@ -117,10 +114,13 @@ ImVec4 LogEntry::GetColor() const{
 	return ImVec4();
 }
 
-void Log(int level, const char *format, ...){
+void LogF(int level, const char *format, ...){
 	va_list args;
 	va_start(args, format);
-	Logger::Instance().Log(level, format, args);
+	Logger::Instance().LogF(level, format, args);
 	va_end(args);
 }
 
+void Log(int level, const char *message){
+	Logger::Instance().Log(level, message);
+}

@@ -142,7 +142,7 @@ bool FromJSON(const Value &value, const char *&data){
 }
 bool CheckValue(const Value &parent, const char *name, bool required){
 	if(!parent.IsObject() || !parent.HasMember(name)){
-		Log(required ? LEVEL_ERROR : LEVEL_WARNING, "Value \"%s\" not found", name);
+		LogF(required ? LEVEL_ERROR : LEVEL_WARNING, "Value \"%s\" not found", name);
 		return false;
 	}
 	return true;
@@ -162,7 +162,7 @@ bool CheckArray(const Value &array, size_t size) {
 		return false;
 	}
 	if(array.Size() != size){
-		Log(LEVEL_ERROR, "Wrong array size (size %zu, need %zu)", array.Size(), size);
+		LogF(LEVEL_ERROR, "Wrong array size (size %zu, need %zu)", array.Size(), size);
 		return false;
 	}
 	return true;
@@ -173,7 +173,7 @@ bool CheckArray(const Value &array, size_t minSize, size_t maxSize) {
 		return false;
 	}
 	if(array.Size() < minSize || array.Size() > maxSize){
-		Log(LEVEL_ERROR, "Wrong array size (size %zu, need %zu-%zu)",
+		LogF(LEVEL_ERROR, "Wrong array size (size %zu, need %zu-%zu)",
 							array.Size(), minSize, maxSize);
 		return false;
 	}
@@ -184,7 +184,7 @@ int GetEnum(const char *str, const char **values, size_t count){
 	for(int i = 0; i < count; i++)
 		if(strcmp(values[i], str) == 0)
 			return i;
-	Log(LEVEL_ERROR, "String \"%s\" does not match avaliable strings", str);
+	LogF(LEVEL_ERROR, "String \"%s\" does not match avaliable strings", str);
 	return -1;
 }
 

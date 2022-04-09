@@ -29,7 +29,7 @@ Interface::Interface(ResourceManager *resManager, SDL_Window *window,
 	resManager->LoadResource(String::Format("locales/%s/gui.json", language), &locale);
 
 	Style style;
-	if(resManager->LoadJSON("style.json", style))
+	if(resManager->LoadJSON("ui/style.json", style))
 		ImGui::GetStyle() = style;
 }
 Interface::~Interface(){

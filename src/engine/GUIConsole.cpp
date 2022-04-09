@@ -36,7 +36,7 @@ bool GUIConsole::Render(const Locale &locale){
 		if (!filter.PassFilter(entry->message))
 			continue;
 		ImGui::PushStyleColor(ImGuiCol_Text, entry->GetColor());
-		ImGui::TextWrapped(entry->message.c_str());
+		ImGui::TextWrapped("%s", entry->message.c_str());
 		ImGui::PopStyleColor();
 	}
 	if (scrollToBottom && (ImGui::GetScrollY() >= ImGui::GetScrollMaxY() || autoScroll))
@@ -99,6 +99,8 @@ void GUIConsole::HistoryDown(){
 
 void GUIConsole::ExecCommand(const char *cmd){
 	Log(LEVEL_DEBUG, cmd);
+	if(luaL_dostring(L, cmd));
+		Log(LEVEL_ERROR, lua_tostring(L, -1));
 }
 void GUIConsole::AddHistoryEntry(const char *cmd){
 	HistoryEntry *entry = new HistoryEntry;

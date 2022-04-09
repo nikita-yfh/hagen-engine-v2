@@ -20,7 +20,7 @@ SDL_RWops *Directory::OpenFile(const char *file, const char *mode) {
 SDL_RWops *Directory::OpenFile(const char *file) {
 	SDL_RWops *rw = OpenFile(file, "rb");
 	if(!rw)
-		Log(LEVEL_ERROR,"Failed to open file \"%s\": %s", file, SDL_GetError());
+		LogF(LEVEL_ERROR,"Failed to open file \"%s\": %s", file, SDL_GetError());
 	return rw;
 }
 bool Directory::ExistFile(const char *file) {
@@ -46,7 +46,7 @@ bool Directory::Is(const char *path) {
 int ZIPFile::Open() {
 	SDL_RWops *rw = SDL_RWFromFile(path, "rb");
 	if(!rw){
-		Log(LEVEL_ERROR,"Failed to load file \"%s\": %s",
+		LogF(LEVEL_ERROR,"Failed to load file \"%s\": %s",
 			path, SDL_GetError());
 		return 1;
 	}
@@ -62,7 +62,7 @@ int ZIPFile::Open() {
 
 	if(!mz_zip_reader_init_mem(&zip, textRes.data, textRes.size,
 			MZ_DEFAULT_LEVEL | MZ_ZIP_FLAG_DO_NOT_SORT_CENTRAL_DIRECTORY)) {
-		Log(LEVEL_ERROR,"Failed to load archive \"%s\": %s",
+		LogF(LEVEL_ERROR,"Failed to load archive \"%s\": %s",
 			path, ErrorToString(zip.m_last_error));
 		return 1;
 	}
@@ -81,7 +81,7 @@ SDL_RWops *ZIPFile::OpenFile(const char *path) {
 
 	int entryIndex = mz_zip_reader_locate_file(&zip, path, NULL, 0);
 	if(entryIndex == -1) {
-		Log(LEVEL_ERROR,"Failed to load file \"%s\": file not found", path);
+		LogF(LEVEL_ERROR, "Failed to load file \"%s\": file not found", path);
 		return nullptr;
 	}
 
@@ -91,7 +91,7 @@ SDL_RWops *ZIPFile::OpenFile(const char *path) {
 
 	SDL_RWops *rw = SDL_RWFromMem(file, fileSize);
 	if(!rw)
-		Log(LEVEL_ERROR,"Failed to load file \"%s\": %s", path, SDL_GetError());
+		LogF(LEVEL_ERROR, "Failed to load file \"%s\": %s", path, SDL_GetError());
 	return rw;
 }
 bool ZIPFile::ExistFile(const char *path) {

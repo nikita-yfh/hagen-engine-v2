@@ -31,27 +31,27 @@ SavesManager::SavesManager(const char *gameName) {
 	saves = String::Format("%s/Library/Application Support/hagen/%s", homeEnv, gameName);
 	#endif
 	#endif
-	Log(LEVEL_INFO, "Saves directory set to \"%s\"", saves.c_str());
+	LogF(LEVEL_INFO, "Saves directory set to \"%s\"", saves.c_str());
 	CreateDirectory(saves);
 };
 bool SavesManager::CreateDirectory(const char *dir) const {
 	if(isdir(dir))
 		return true;
 	if(mkpath(dir, 0755)) {
-		Log(LEVEL_ERROR, "Failed to create directory \"%s\"", dir);
+		LogF(LEVEL_ERROR, "Failed to create directory \"%s\"", dir);
 		return false;
 	}
-	Log(LEVEL_INFO, "Created directory \"%s\"", dir);
+	LogF(LEVEL_INFO, "Created directory \"%s\"", dir);
 	return true;
 }
 SDL_RWops *SavesManager::OpenFile(const char *file, const char *mode) const{
 	SDL_RWops *rw = SDL_RWFromFile(String::Format("%s/%s", saves.c_str(), file), mode);
 	if(!rw)
-		Log(LEVEL_ERROR, "Failed to open file \"%s\": %s", file, SDL_GetError());
+		LogF(LEVEL_ERROR, "Failed to open file \"%s\": %s", file, SDL_GetError());
 	return rw;
 }
 bool SavesManager::SaveResource(const char *file, const Resource *res) const{
-	Log(LEVEL_INFO, "Saving file \"%s\"", file);
+	LogF(LEVEL_INFO, "Saving file \"%s\"", file);
 	SDL_RWops *rw = OpenFile(file, "wb");
 	if(!rw)
 		return false;
@@ -60,7 +60,7 @@ bool SavesManager::SaveResource(const char *file, const Resource *res) const{
 	return true;
 }
 bool SavesManager::LoadResource(const char *file, Resource *res) const{
-	Log(LEVEL_INFO, "Loading file \"%s\"", file);
+	LogF(LEVEL_INFO, "Loading file \"%s\"", file);
 	SDL_RWops *rw = OpenFile(file, "rb");
 	if(!rw)
 		return false;

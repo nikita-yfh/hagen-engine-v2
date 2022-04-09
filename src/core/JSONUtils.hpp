@@ -75,7 +75,7 @@ bool GetMember(const Value &parent, const char *name, T &data, bool required = t
 		return !required;
 	const Value &value = parent[name];
 	if(!FromJSON(value, data)){
-		Log(LEVEL_ERROR, "Value \"%s\" has wrong type", name);
+		LogF(LEVEL_ERROR, "Value \"%s\" has wrong type", name);
 		return false;
 	}
 	return true;
@@ -84,7 +84,7 @@ template<typename T>
 bool GetArrayMember(const Value &parent, size_t n, T &data){
 	const Value &value = parent[n];
 	if(!FromJSON(value, data)){
-		Log(LEVEL_ERROR, "Value of index %s has wrong type", n);
+		LogF(LEVEL_ERROR, "Value of index %s has wrong type", n);
 		return false;
 	}
 	return true;

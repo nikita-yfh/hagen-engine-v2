@@ -9,7 +9,14 @@
 
 Engine::Engine(const char*const*storages,size_t num) {
 	state = State::Error;
-	L = nullptr;
+
+	L = luaL_newstate();
+	Log(LEVEL_INFO,"Created lua state");
+
+	luaL_openlibs(L);
+
+	BindLuaAll();
+
 
 	resManager = new ResourceManager();
 	for(int i = 0; i < num; i++)
@@ -30,13 +37,6 @@ Engine::Engine(const char*const*storages,size_t num) {
 
 	if(!CreateWindow(gameConfig))
 		return;
-
-	L = luaL_newstate();
-	Log(LEVEL_INFO,"Created lua state");
-
-	luaL_openlibs(L);
-
-	BindLuaAll();
 
 	state = State::Run;
 }

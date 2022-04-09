@@ -22,7 +22,7 @@ bool TextResource::Load(SDL_RWops *file){
 		buf += read;
 	}
 	if (readTotal != size) {
-		Log(LEVEL_ERROR, "Failed to load file: %s", SDL_GetError());
+		LogF(LEVEL_ERROR, "Failed to load file: %s", SDL_GetError());
 		free(data);
 		data = nullptr;
 		return false;
@@ -97,7 +97,7 @@ bool JSONResource::LogError(const char *text) const{
 			}else
 				col++;
 		}
-		Log(LEVEL_ERROR, "Failed to parse JSON (string %d, column %d): %s",
+		LogF(LEVEL_ERROR, "Failed to parse JSON (string %d, column %d): %s",
 			str, col, GetParseError_En(document.GetParseError()));
 		return false;
 	}

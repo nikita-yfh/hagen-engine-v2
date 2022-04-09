@@ -55,6 +55,6 @@ const char *Locale::operator[](const char *name) const{
 	for(TextEntry *entry = entries; entry; entry = entry->next)
 		if(entry->name == name)
 			return entry->value;
-	Log(LEVEL_WARNING, "Value \"%s\" not found", name);
+	LogF(LEVEL_WARNING, "Value \"%s\" not found", name);
 	return "";
 }

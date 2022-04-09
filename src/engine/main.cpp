@@ -5,7 +5,7 @@
 #include "GameConfig.hpp"
 
 int main(int argc,char **argv){
-	Log(LEVEL_INFO,"Hagen Engine %s",Engine::GetVersion().ToString().c_str());
+	LogF(LEVEL_INFO, "Hagen Engine %s", Engine::GetVersion().ToString().c_str());
 
 	if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_GAMECONTROLLER | SDL_INIT_VIDEO)){
 		Log(LEVEL_FATAL, SDL_GetError());
@@ -19,15 +19,15 @@ int main(int argc,char **argv){
 	while(true){
 		Engine engine(storages, storagesNum);
 		if(engine.HasError()){
-			Log(LEVEL_FATAL,"Failed to initilize engine");
+			Log(LEVEL_FATAL, "Failed to initilize engine");
 			SDL_Quit();
 			return -1;
 		}
-		Log(LEVEL_INFO,"Engine initilized");
+		Log(LEVEL_INFO, "Engine initilized");
 		engine.Run();
 		if(engine.NeedQuit())
 			break;
-		Log(LEVEL_INFO,"Restarting engine...");
+		Log(LEVEL_INFO, "Restarting engine...");
 	}
 
 	SDL_Quit();

@@ -10,13 +10,8 @@
 Engine::Engine(const char*const*storages,size_t num) {
 	state = State::Error;
 
-	L = luaL_newstate();
-	Log(LEVEL_INFO,"Created lua state");
-
-	luaL_openlibs(L);
-
-	BindLuaAll();
-
+	if(!InitLua())
+		return;
 
 	for(int i = 0; i < num; i++)
 		resManager.AddStorage(storages[i]);
@@ -77,15 +72,27 @@ bool Engine::CreateWindow(const GameConfig &config){
 Version Engine::GetVersion(){
 	return Version("2.0.0");
 }
-bool Engine::BindLuaAll(){
-	return true;
-}
 bool Engine::BindLua(){
 	return true;
 }
-Engine::~Engine() {
+bool Engine::InitLua(){
+	L = luaL_newstate();
+	if(!L){
+		Log(LEVEL_FATAL, "Failed to create lua state");
+		return false;
+	}
+	Log(LEVEL_INFO, "Created lua state");
+	luaL_openlibs(L);
+	BindLua();
+	return true;
+}
+void Engine::CloseLua(){
 	if(L)
 		lua_close(L);
+}
+
+Engine::~Engine() {
+	CloseLua();
 	DestroyWindow();
 }
 

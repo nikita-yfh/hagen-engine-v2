@@ -16,7 +16,7 @@ extern "C" {
 
 class Engine{
 public:
-	Engine(const char*const*storages,size_t num);
+	Engine(const char*const*storages, size_t num);
 	~Engine();
 
 	static Version GetVersion();
@@ -44,8 +44,9 @@ private:
 	void ProcessEvents();
 	void Render();
 
+	bool InitLua();
 	bool BindLua();
-	bool BindLuaAll();
+	void CloseLua();
 
 	State state;
 

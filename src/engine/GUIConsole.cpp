@@ -6,10 +6,11 @@ struct HistoryEntry{
 	HistoryEntry *prev;
 };
 
-GUIConsole::GUIConsole(lua_State *_L) : L(_L){
+GUIConsole::GUIConsole(ResourceManager *resManager, lua_State *_L) : L(_L){
 	*inputBuf = '\0';
 	history = nullptr;
 	historyPos = nullptr;
+	resManager->LoadJSON("ui/console.json", config);
 }
 GUIConsole::~GUIConsole(){
 	while(history){
@@ -20,53 +21,69 @@ GUIConsole::~GUIConsole(){
 }
 
 void GUIConsole::Render(const Locale &locale){
+	if(!config.enabled){
+		Hide();
+		return;
+	}
 	ImGui::Begin(locale["console.title"], &shown);
 
-	const float footerHeightToReserve = ImGui::GetStyle().ItemSpacing.y +
-		ImGui::GetFrameHeightWithSpacing();
-	ImGui::BeginChild("scrolling", ImVec2(0, -footerHeightToReserve),
+	float reserve = 0.0f;
+	if(config.input)
+		reserve = -ImGui::GetStyle().ItemSpacing.y - ImGui::GetFrameHeightWithSpacing();
+	ImGui::BeginChild("scrolling", ImVec2(0.0f, reserve),
 		false, ImGuiWindowFlags_HorizontalScrollbar);
-	if (ImGui::BeginPopupContextWindow()) {
-		if (ImGui::Selectable(locale["console.clear"]))
+
+	if(ImGui::BeginPopupContextWindow()) {
+		if(ImGui::Selectable(locale["console.clear"]))
 			Logger::Instance().Clear();
 		ImGui::EndPopup();
 	}
-	for (LogEntry *entry = Logger::Instance().items; entry; entry = entry->next) {
-		if (!filter.PassFilter(entry->message))
+	for(LogEntry *entry = Logger::Instance().items; entry; entry = entry->next) {
+		if(!filter.PassFilter(entry->message))
 			continue;
-		ImGui::PushStyleColor(ImGuiCol_Text, entry->GetColor());
-		ImGui::TextWrapped("%s", entry->message.c_str());
-		ImGui::PopStyleColor();
+		if(config.colors){
+			ImGui::PushStyleColor(ImGuiCol_Text, entry->GetColor());
+			ImGui::TextWrapped("%s", entry->message.c_str());
+			ImGui::PopStyleColor();
+		}else
+			ImGui::TextWrapped("%s", entry->message.c_str());
+
 	}
-	if (scrollToBottom && (ImGui::GetScrollY() >= ImGui::GetScrollMaxY() || autoScroll))
+	if(scrollToBottom &&(ImGui::GetScrollY() >= ImGui::GetScrollMaxY() || autoScroll))
 		ImGui::SetScrollHereY(1.0f);
 	scrollToBottom = false;
 	ImGui::EndChild();
-	ImGui::Separator();
-    bool reclaimFocus = false;
-	ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue |
-		ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackHistory;
-	if (ImGui::InputText(locale["console.input"], inputBuf, sizeof(inputBuf),
-			flags, &GUIConsole::StaticInputCallback, this)) {
-		if(*inputBuf){
-			AddHistoryEntry(inputBuf);
-			ExecCommand(inputBuf);
-			*inputBuf = '\0';
-			scrollToBottom = true;
+	if(config.input){
+		ImGui::Separator();
+		bool reclaimFocus = false;
+		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+		if(config.history)
+			flags |= ImGuiInputTextFlags_CallbackHistory;
+		if(config.completion)
+			flags |= ImGuiInputTextFlags_CallbackCompletion;
+		if(ImGui::InputText(locale["console.input"], inputBuf, sizeof(inputBuf),
+				flags, &GUIConsole::StaticInputCallback, this)) {
+			if(*inputBuf){
+				if(config.history)
+					AddHistoryEntry(inputBuf);
+				ExecCommand(inputBuf);
+				*inputBuf = '\0';
+				scrollToBottom = true;
+			}
+			reclaimFocus = true;
 		}
-		reclaimFocus = true;
+		ImGui::SetItemDefaultFocus();
+		if(reclaimFocus)
+			ImGui::SetKeyboardFocusHere(-1);
 	}
-	ImGui::SetItemDefaultFocus();
-	if (reclaimFocus)
-        ImGui::SetKeyboardFocusHere(-1);
 	ImGui::End();
 }
 int GUIConsole::StaticInputCallback(ImGuiInputTextCallbackData *data){
-	GUIConsole *console = (GUIConsole*)data->UserData;
+	GUIConsole *console =(GUIConsole*)data->UserData;
 	return console->InputCallback(data);
 }
 int GUIConsole::InputCallback(ImGuiInputTextCallbackData *data){
-	switch (data->EventFlag) {
+	switch(data->EventFlag) {
 	case ImGuiInputTextFlags_CallbackCompletion:
 		break;
 	case ImGuiInputTextFlags_CallbackHistory:
@@ -109,4 +126,18 @@ void GUIConsole::AddHistoryEntry(const char *cmd){
 		history->prev = entry;
 	history = entry;
 	historyPos = nullptr;
+}
+
+GUIConsole::Config::Config() :
+	enabled(true), input(true), colors(true),
+	history(true), completion(true) {}
+
+bool GUIConsole::Config::FromJSON(const rapidjson::Value &value){
+	return
+		jsonutils::CheckObject(value) &&
+		jsonutils::GetMember(value, "enabled", enabled, false) &&
+		jsonutils::GetMember(value, "input", input, false) &&
+		jsonutils::GetMember(value, "colors", colors, false) &&
+		jsonutils::GetMember(value, "history", history, false) &&
+		jsonutils::GetMember(value, "completion", completion, false);
 }

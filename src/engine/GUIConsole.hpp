@@ -6,14 +6,16 @@ extern "C" {
 #include "lualib.h"
 }
 
+#include "ResourceManager.hpp"
 #include "Interface.hpp"
 #include "Locale.hpp"
+#include "JSONUtils.hpp"
 
 struct HistoryEntry;
 
 class GUIConsole : public Window{
 public:
-	GUIConsole(lua_State *L);
+	GUIConsole(ResourceManager *resManager, lua_State *L);
 	~GUIConsole();
 
 	void Render(const Locale &loc);
@@ -33,4 +35,16 @@ private:
 	HistoryEntry *historyPos;
 
     lua_State *L;
+
+	struct Config{
+		Config();
+
+		bool enabled;
+		bool input;
+		bool colors;
+		bool completion;
+		bool history;
+
+		bool FromJSON(const rapidjson::Value &value);
+	}config;
 };

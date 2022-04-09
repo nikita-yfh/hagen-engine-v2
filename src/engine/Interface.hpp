@@ -11,9 +11,16 @@ public:
 	Window() : shown(true) {}
 	virtual ~Window() {}
 	virtual void Render(const Locale &locale) = 0;
-	Window *next;
 
+	inline void Show(){
+		shown = true;
+	}
+	inline void Hide(){
+		shown = false;
+	}
 	bool shown;
+
+	Window *next;
 };
 
 class Interface{

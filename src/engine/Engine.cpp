@@ -70,7 +70,7 @@ bool Engine::CreateWindow(const GameConfig &config){
 	gladLoadGL();
 
 	interface = new Interface(resManager, window, context, settings.language);
-	interface->AddWindow(new GUIConsole(L));
+	interface->AddWindow(new GUIConsole(resManager, L));
 
 	return true;
 }

@@ -65,6 +65,7 @@ bool Engine::CreateWindow(const GameConfig &config){
 
 	interface = new Interface(resManager, window, context, settings.language);
 	interface->AddWindow(new GUIConsole(resManager, L));
+	interface->AddWindow(new GUISettings(settings));
 
 	return true;
 }

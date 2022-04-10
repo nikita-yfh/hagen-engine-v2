@@ -23,21 +23,21 @@ bool Settings::GraphicsSettings::SetDefault(){
 	}
 	windowSize.width = dm.w;
 	windowSize.height = dm.h;
-	doubleBuffer=true;
-	verticalSync=false;
-	maxFPS=0;
-	MSAASamples=4;
-	windowMode=FULLSCREEN;
+	doubleBuffer = true;
+	verticalSync = false;
+	maxFPS = 0;
+	MSAASamples = 4;
+	windowMode = FULLSCREEN;
 	return true;
 }
 bool Settings::AudioSettings::SetDefault(){
-	soundVolume=1.0f;
-	musicVolume=1.0f;
+	soundVolume = 1.0f;
+	musicVolume = 1.0f;
 	return true;
 }
 
 int Settings::GraphicsSettings::GetWindowFlags() const {
-	int windowFlags=SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
+	int windowFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 	switch(windowMode){
 	case FULLSCREEN:
 		windowFlags |= SDL_WINDOW_FULLSCREEN;

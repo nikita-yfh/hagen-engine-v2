@@ -64,6 +64,7 @@ bool CheckValue(const Value &parent, const char *name, bool required = true);
 
 bool CheckObject(const Value &value);
 
+bool CheckArray(const Value &array);
 bool CheckArray(const Value &array, size_t size);
 bool CheckArray(const Value &array, size_t minSize, size_t maxSize);
 
@@ -84,7 +85,7 @@ template<typename T>
 bool GetArrayMember(const Value &parent, size_t n, T &data){
 	const Value &value = parent[n];
 	if(!FromJSON(value, data)){
-		LogF(LEVEL_ERROR, "Value of index %s has wrong type", n);
+		LogF(LEVEL_ERROR, "Value of index %zu has wrong type", n);
 		return false;
 	}
 	return true;
@@ -92,4 +93,3 @@ bool GetArrayMember(const Value &parent, size_t n, T &data){
 
 
 } //namespace jsonutils
-  //

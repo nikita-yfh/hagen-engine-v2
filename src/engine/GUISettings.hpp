@@ -26,6 +26,8 @@ public:
 
 	void Render(const Locale &locale);
 private:
+	input::keycode prevKey;
+	int selectedKey;
 	Settings &settings;
 	DisplayModes displayModes;
 };

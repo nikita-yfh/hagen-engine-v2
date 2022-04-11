@@ -3,12 +3,10 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdint.h>
 
 class String {
 public:
-	typedef char* Iterator;
-	typedef const char* ConstIterator;
-
 	String() : str(nullptr) {};
 	String(const String &src){
 		Allocate(src.str);
@@ -55,14 +53,12 @@ public:
 		if(str)
 			free(str);
 	}
-	static String Format(const char *format, ...){
-		va_list args;
-		va_start(args, format);
-		char buf[1024];
-		vsnprintf(buf, 1024, format, args);
-		va_end(args);
-		return String(buf);
+	inline uint32_t Hash() const{
+		return Hash(str);
 	}
+
+	static String Format(const char *format, ...);
+	static uint32_t Hash(const char *str);
 private:
 	void Allocate(const char *src){
 		str = (char*)malloc(strlen(src) + 1);

@@ -2,10 +2,13 @@
 
 #include "box2d.h"
 #include "String.hpp"
+#include "Input.hpp"
 #include "JSONUtils.hpp"
+#include "ResourceManager.hpp"
 
 struct Settings{
-public:
+	Settings(input::InputConfig &config)
+		: input(config) {}
 	struct GraphicsSettings {
 		struct Size{
 			int width;
@@ -32,8 +35,8 @@ public:
 
 		bool SetDefault();
 
-		void ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
-		bool FromJSON(const rapidjson::Value &value);
+		void SaveSettings(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+		bool LoadSettings(const rapidjson::Value &value);
 	} graphics;
 
 	struct AudioSettings {
@@ -42,10 +45,11 @@ public:
 
 		bool SetDefault();
 
-		void ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
-		bool FromJSON(const rapidjson::Value &value);
+		void SaveSettings(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
+		bool LoadSettings(const rapidjson::Value &value);
 	} audio;
 
+	input::InputConfig &input;
 	String language;
 
 	bool SetDefault();

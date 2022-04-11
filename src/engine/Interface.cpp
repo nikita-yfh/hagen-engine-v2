@@ -10,7 +10,7 @@
 using namespace ImGui;
 
 Interface::Interface(ResourceManager &resManager, SDL_Window *window,
-		SDL_GLContext glcontext, const char *language) : windows(nullptr){
+		SDL_GLContext glcontext) : windows(nullptr){
 	IMGUI_CHECKVERSION();
     CreateContext();
     ImGuiIO& io = GetIO();
@@ -26,7 +26,7 @@ Interface::Interface(ResourceManager &resManager, SDL_Window *window,
 				!ImGui_ImplOpenGL3_Init(nullptr))
 		Log(LEVEL_ERROR, "Failed to initilize ImGui");
 
-	resManager.LoadResource(String::Format("locales/%s/gui.json", language), &locale);
+	resManager.LoadResource("ui/strings.json", &locale);
 
 	Style style;
 	if(resManager.LoadJSON("ui/style.json", style))

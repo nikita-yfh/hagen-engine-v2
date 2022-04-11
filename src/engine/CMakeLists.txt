@@ -2,6 +2,7 @@ set(ENGINE "engine")
 set(ENGINE_SOURCES
 	"Camera.cpp"
 	"Engine.cpp"
+	"Input.cpp"
 	"GameConfig.cpp"
 	"Settings.cpp"
 	"Interface.cpp"
@@ -14,6 +15,7 @@ set(ENGINE_HEADERS
 	"b2_user_settings.h"
 	"Camera.hpp"
 	"Engine.hpp"
+	"Input.hpp"
 	"GameConfig.hpp"
 	"Settings.hpp"
 	"Interface.hpp"

@@ -156,11 +156,17 @@ bool CheckObject(const Value &value){
 	return true;
 }
 
-bool CheckArray(const Value &array, size_t size) {
+bool CheckArray(const Value &array) {
 	if(!array.IsArray()){
 		Log(LEVEL_ERROR, "Value is not an array");
 		return false;
 	}
+	return true;
+}
+	
+bool CheckArray(const Value &array, size_t size) {
+	if(!CheckArray(array))
+		return false;
 	if(array.Size() != size){
 		LogF(LEVEL_ERROR, "Wrong array size (size %zu, need %zu)", array.Size(), size);
 		return false;
@@ -168,10 +174,8 @@ bool CheckArray(const Value &array, size_t size) {
 	return true;
 }
 bool CheckArray(const Value &array, size_t minSize, size_t maxSize) {
-	if(!array.IsArray()){
-		Log(LEVEL_ERROR, "Value is not an array");
+	if(!CheckArray(array))
 		return false;
-	}
 	if(array.Size() < minSize || array.Size() > maxSize){
 		LogF(LEVEL_ERROR, "Wrong array size (size %zu, need %zu-%zu)",
 							array.Size(), minSize, maxSize);

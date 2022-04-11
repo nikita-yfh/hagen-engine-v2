@@ -114,7 +114,7 @@ void GUIConsole::HistoryDown(){
 
 void GUIConsole::ExecCommand(const char *cmd){
 	Log(LEVEL_DEBUG, cmd);
-	if(luaL_dostring(L, cmd));
+	if(luaL_dostring(L, cmd))
 		Log(LEVEL_ERROR, lua_tostring(L, -1));
 }
 void GUIConsole::AddHistoryEntry(const char *cmd){

@@ -45,12 +45,16 @@ DisplayModes::~DisplayModes(){
 GUISettings::GUISettings(Settings &_settings)
 			: settings(_settings) {
 	displayModes.Set(0);
+	selectedKey = 0;
 }
 GUISettings::~GUISettings(){
 }
 
 void GUISettings::Render(const Locale &locale) {
 	ImGui::Begin(locale["settings.title"], &shown);
+	ImVec2 reserve(0.0f, -ImGui::GetStyle().ItemSpacing.y -
+		ImGui::GetFrameHeightWithSpacing());
+	ImGui::BeginChild("settings", reserve, false);
 	ImGui::BeginTabBar("tabs");
 	ImGui::PushItemWidth(ImGui::GetFontSize()*15.0f);
 	if(ImGui::BeginTabItem(locale["settings.graphics"])){
@@ -87,11 +91,51 @@ void GUISettings::Render(const Locale &locale) {
 		ImGui::EndTabItem();
 	}
 	if(ImGui::BeginTabItem(locale["settings.input"])){
+		input::InputConfig &input = settings.input;
+		for(int i = 0; i < input.keyCount; i++){
+			char str[256];
+			snprintf(str, 256, "settings.keyBindings.%s", input.keys[i].name.c_str());
+			if(ImGui::Selectable(locale[str], selectedKey == i,
+						ImGuiSelectableFlags_AllowDoubleClick)){
+				selectedKey = i;
+				if(ImGui::IsMouseDoubleClicked(0)){
+					prevKey = input::GetPressedCode();
+					ImGui::OpenPopup("bind");
+				}
+			}
+			ImGui::SameLine(ImGui::GetFontSize()*12.0f);
+			ImGui::Text(input::KeyToStr(input.keys[i].key));
+		}
+		if(ImGui::BeginPopupModal("bind", nullptr,
+					ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar)){
+			ImGui::Text(locale["settings.bind"]);
+			input::keycode key = input::GetPressedCode();
+			if(key != prevKey && key != input::NOT_PRESSED){
+				input.keys[selectedKey].key = key;
+				for(int i = 0; i < input.keyCount; i++)
+					if(selectedKey != i && input.keys[selectedKey].key == input.keys[i].key)
+						input.keys[i].key = input::NOT_PRESSED;
+				ImGui::CloseCurrentPopup();
+			}
+			prevKey = key;
+			ImGui::EndPopup();
+		}
 		ImGui::EndTabItem();
+
 	}
 	if(ImGui::BeginTabItem(locale["settings.game"])){
 		ImGui::EndTabItem();
 	}
 	ImGui::EndTabBar();	
+	ImGui::EndChild();
+	ImGui::Separator();
+	ImGui::Button(locale["ok"]);
+	ImGui::SameLine();
+	ImGui::Button(locale["cancel"]);
+	ImGui::SameLine();
+	if(ImGui::Button(locale["settings.default"]))
+		settings.SetDefault();
+	ImGui::SameLine();
 	ImGui::End();
 }
+

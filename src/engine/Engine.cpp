@@ -7,7 +7,8 @@
 #include "GUIConsole.hpp"
 #include "GUISettings.hpp"
 
-Engine::Engine(const char*const*storages,size_t num) {
+Engine::Engine(const char*const*storages, size_t num)
+		: settings(inputConfig) {
 	state = State::Error;
 
 	if(!InitLua())
@@ -24,6 +25,9 @@ Engine::Engine(const char*const*storages,size_t num) {
 	if(!resManager.LoadJSON("game.json", gameConfig))
 		return;
 	savesManager.Set(gameConfig.name);
+
+	if(!resManager.LoadJSON("input.json", inputConfig))
+		return;
 
 	if(!savesManager.LoadJSON("settings.json", settings))
 		if(!settings.SetDefault() || !savesManager.SaveJSON("settings.json", settings))
@@ -63,7 +67,7 @@ bool Engine::CreateWindow(const GameConfig &config){
 
 	gladLoadGL();
 
-	interface = new Interface(resManager, window, context, settings.language);
+	interface = new Interface(resManager, window, context);
 	interface->AddWindow(new GUIConsole(resManager, L));
 	interface->AddWindow(new GUISettings(settings));
 

@@ -13,7 +13,8 @@ static const char *windowModes[] = {
 bool Settings::SetDefault(){
 	language = "en";
 	return graphics.SetDefault() &&
-			audio.SetDefault();
+			audio.SetDefault() &&
+			input.SetDefault();
 }
 bool Settings::GraphicsSettings::SetDefault(){
 	SDL_DisplayMode dm;
@@ -51,25 +52,25 @@ int Settings::GraphicsSettings::GetWindowFlags() const {
 
 void Settings::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.SetObject();
-	graphics.ToJSON(value, allocator);
-	audio.ToJSON(value, allocator);
+	graphics.SaveSettings(value, allocator);
+	audio.SaveSettings(value, allocator);
 	value.AddMember("language",	jsonutils::ToJSON(language), allocator);
 }
 bool Settings::FromJSON(const rapidjson::Value &value){
 	return
 		jsonutils::CheckObject(value) &&
-		graphics.FromJSON(value) &&
-		audio.FromJSON(value) &&
+		graphics.LoadSettings(value) &&
+		audio.LoadSettings(value) &&
 		jsonutils::GetMember(value, "language",	language);
 }
-void Settings::GraphicsSettings::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void Settings::GraphicsSettings::SaveSettings(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("windowSize", jsonutils::ToJSON(windowSize, allocator), allocator);
 	value.AddMember("doubleBuffer",	doubleBuffer, allocator);
 	value.AddMember("verticalSync", verticalSync, allocator);
 	value.AddMember("maxFPS", maxFPS, allocator);
 	value.AddMember("windowMode", jsonutils::StringType(windowModes[windowMode]), allocator);
 }
-bool Settings::GraphicsSettings::FromJSON(const rapidjson::Value &value){
+bool Settings::GraphicsSettings::LoadSettings(const rapidjson::Value &value){
 	const char *windowModeStr;
 	return
 		jsonutils::GetMember(value, "windowSize", windowSize) &&
@@ -90,11 +91,11 @@ bool Settings::GraphicsSettings::Size::FromJSON(const rapidjson::Value &value){
 		jsonutils::GetArrayMember(value, 0, width) &&
 		jsonutils::GetArrayMember(value, 1, height);
 }
-void Settings::AudioSettings::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void Settings::AudioSettings::SaveSettings(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("soundVolume", soundVolume, allocator);
 	value.AddMember("musicVolume", musicVolume, allocator);
 }
-bool Settings::AudioSettings::FromJSON(const rapidjson::Value &value){
+bool Settings::AudioSettings::LoadSettings(const rapidjson::Value &value){
 	return
 		jsonutils::GetMember(value, "soundVolume", soundVolume) &&
 		jsonutils::GetMember(value, "musicVolume", musicVolume);

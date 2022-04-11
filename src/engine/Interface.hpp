@@ -25,7 +25,7 @@ public:
 
 class Interface{
 public:
-	Interface(ResourceManager &resManager, SDL_Window*, SDL_GLContext, const char *language);
+	Interface(ResourceManager &resManager, SDL_Window*, SDL_GLContext);
 	~Interface();
 
 	void Render();

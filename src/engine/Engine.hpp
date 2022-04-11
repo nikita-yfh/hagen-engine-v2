@@ -13,6 +13,7 @@ extern "C" {
 #include "ResourceManager.hpp"
 #include "SavesManager.hpp"
 #include "Interface.hpp"
+#include "Input.hpp"
 
 class Engine{
 public:
@@ -58,5 +59,6 @@ private:
 
 	ResourceManager resManager;
 	SavesManager savesManager;
+	input::InputConfig inputConfig;
 	Interface *interface;
 };

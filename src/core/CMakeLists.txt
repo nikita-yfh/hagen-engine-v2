@@ -8,6 +8,7 @@ set(CORE_SOURCES
 	"ResourceManager.cpp"
 	"SavesManager.cpp"
 	"Resource.cpp"
+	"String.cpp"
 	"Surface.cpp"
 	"Storage.cpp"
 	"Shader.cpp"

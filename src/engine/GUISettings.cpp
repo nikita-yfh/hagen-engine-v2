@@ -10,23 +10,29 @@ bool DisplayModes::Set(int displayIndex){
 	modes = new SDL_DisplayMode[count];
 	strings = new String[count];
 	SDL_DisplayMode *prev = nullptr;
-	for(int i = 0; i < count; i++){
-		if(SDL_GetDisplayMode(displayIndex, i, &modes[i]) != 0) {
+	
+	int c = count;
+	for(int i = 0, j = 0; i < c; i++, j++){
+		if(SDL_GetDisplayMode(displayIndex, i, &modes[j]) != 0) {
 			Log(LEVEL_ERROR, SDL_GetError());
 			this->~DisplayModes();
 			return false;
 		}
+		if(j > 0 && modes[j-1].w == modes[j].w && modes[j-1].h == modes[j].h){
+			j--;
+			count--;
+		}
 	}
 	return true;
 }
-void DisplayModes::Render(const Locale &locale, Settings::GraphicsSettings::Size &size) const {
+void DisplayModes::Render(const Locale &locale, GraphicsSettings::Size &size) const {
 	char currentSizeStr[32];
 	sprintf(currentSizeStr, "%d x %d", size.width, size.height);
 	if(ImGui::BeginCombo(locale["settings.windowSize"], currentSizeStr)){
 		for(int i = 0; i < count; i++){
 			SDL_DisplayMode &mode = modes[i];
 			char sizeStr[32];
-			sprintf(sizeStr, "%d x %d, %dhz", mode.w, mode.h, mode.refresh_rate);
+			sprintf(sizeStr, "%d x %d", mode.w, mode.h);
 			if(ImGui::Selectable(sizeStr, strcmp(currentSizeStr, sizeStr) == 0)){
 				size.width = mode.w;
 				size.height = mode.h;
@@ -42,8 +48,8 @@ DisplayModes::~DisplayModes(){
 	count = 0;
 }
 
-GUISettings::GUISettings(Settings &_settings)
-			: settings(_settings) {
+GUISettings::GUISettings(SavesManager &_savesManager, Settings &_settings)
+			: settings(_settings), savesManager(_savesManager) {
 	displayModes.Set(0);
 	selectedKey = 0;
 }
@@ -51,6 +57,7 @@ GUISettings::~GUISettings(){
 }
 
 void GUISettings::Render(const Locale &locale) {
+	static Settings copy = settings;
 	ImGui::Begin(locale["settings.title"], &shown);
 	ImVec2 reserve(0.0f, -ImGui::GetStyle().ItemSpacing.y -
 		ImGui::GetFrameHeightWithSpacing());
@@ -58,7 +65,7 @@ void GUISettings::Render(const Locale &locale) {
 	ImGui::BeginTabBar("tabs");
 	ImGui::PushItemWidth(ImGui::GetFontSize()*15.0f);
 	if(ImGui::BeginTabItem(locale["settings.graphics"])){
-		Settings::GraphicsSettings &graphics = settings.graphics;
+		GraphicsSettings &graphics = settings.graphics;
 		const char *windowModes[] = {
 			locale["settings.windowModes.fullscreen"],
 			locale["settings.windowModes.fullscreenDesktop"],
@@ -85,7 +92,7 @@ void GUISettings::Render(const Locale &locale) {
 		ImGui::EndTabItem();
 	}
 	if(ImGui::BeginTabItem(locale["settings.audio"])){
-		Settings::AudioSettings &audio = settings.audio;
+		AudioSettings &audio = settings.audio;
 		ImGui::SliderFloat(locale["settings.sound"], &audio.soundVolume, 0.0f, 1.0f, "");
 		ImGui::SliderFloat(locale["settings.music"], &audio.musicVolume, 0.0f, 1.0f, "");
 		ImGui::EndTabItem();
@@ -129,13 +136,24 @@ void GUISettings::Render(const Locale &locale) {
 	ImGui::EndTabBar();	
 	ImGui::EndChild();
 	ImGui::Separator();
-	ImGui::Button(locale["ok"]);
+	if(ImGui::Button(locale["ok"])){
+		SaveSettings();
+		Hide();
+	}
 	ImGui::SameLine();
-	ImGui::Button(locale["cancel"]);
+	if(ImGui::Button(locale["cancel"])){
+		DiscardSettings();
+		Hide();
+	}
 	ImGui::SameLine();
 	if(ImGui::Button(locale["settings.default"]))
 		settings.SetDefault();
 	ImGui::SameLine();
 	ImGui::End();
 }
-
+void GUISettings::SaveSettings(){
+	savesManager.SaveJSON("settings.json", settings);
+}
+void GUISettings::DiscardSettings(){
+	savesManager.LoadJSON("settings.json", settings);
+}

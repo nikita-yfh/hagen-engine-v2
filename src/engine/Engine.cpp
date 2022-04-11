@@ -39,7 +39,7 @@ Engine::Engine(const char*const*storages, size_t num)
 	state = State::Run;
 }
 bool Engine::CreateWindow(const GameConfig &config){
-	const Settings::GraphicsSettings &graphics = settings.graphics;
+	const GraphicsSettings &graphics = settings.graphics;
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,
 			graphics.doubleBuffer);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,
@@ -69,7 +69,7 @@ bool Engine::CreateWindow(const GameConfig &config){
 
 	interface = new Interface(resManager, window, context);
 	interface->AddWindow(new GUIConsole(resManager, L));
-	interface->AddWindow(new GUISettings(settings));
+	interface->AddWindow(new GUISettings(savesManager, settings));
 
 	return true;
 }

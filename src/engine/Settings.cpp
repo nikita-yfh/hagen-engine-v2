@@ -16,7 +16,7 @@ bool Settings::SetDefault(){
 			audio.SetDefault() &&
 			input.SetDefault();
 }
-bool Settings::GraphicsSettings::SetDefault(){
+bool GraphicsSettings::SetDefault(){
 	SDL_DisplayMode dm;
 	if (SDL_GetDesktopDisplayMode(0, &dm) != 0){
 		Log(LEVEL_ERROR,SDL_GetError());
@@ -31,13 +31,13 @@ bool Settings::GraphicsSettings::SetDefault(){
 	windowMode = FULLSCREEN;
 	return true;
 }
-bool Settings::AudioSettings::SetDefault(){
+bool AudioSettings::SetDefault(){
 	soundVolume = 1.0f;
 	musicVolume = 1.0f;
 	return true;
 }
 
-int Settings::GraphicsSettings::GetWindowFlags() const {
+int GraphicsSettings::GetWindowFlags() const {
 	int windowFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 	switch(windowMode){
 	case FULLSCREEN:
@@ -65,14 +65,14 @@ bool Settings::FromJSON(const rapidjson::Value &value){
 		input.LoadSettings(value) &&
 		jsonutils::GetMember(value, "language",	language);
 }
-void Settings::GraphicsSettings::SaveSettings(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void GraphicsSettings::SaveSettings(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("windowSize", jsonutils::ToJSON(windowSize, allocator), allocator);
 	value.AddMember("doubleBuffer",	doubleBuffer, allocator);
 	value.AddMember("verticalSync", verticalSync, allocator);
 	value.AddMember("maxFPS", maxFPS, allocator);
 	value.AddMember("windowMode", jsonutils::StringType(windowModes[windowMode]), allocator);
 }
-bool Settings::GraphicsSettings::LoadSettings(const rapidjson::Value &value){
+bool GraphicsSettings::LoadSettings(const rapidjson::Value &value){
 	const char *windowModeStr;
 	return
 		jsonutils::GetMember(value, "windowSize", windowSize) &&
@@ -82,22 +82,22 @@ bool Settings::GraphicsSettings::LoadSettings(const rapidjson::Value &value){
 		jsonutils::GetMember(value, "windowMode", windowModeStr) &&
 		(windowMode = jsonutils::GetEnum(windowModeStr, windowModes, 3)) != -1;
 }
-void Settings::GraphicsSettings::Size::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void GraphicsSettings::Size::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.SetArray();
 	value.PushBack(width, allocator);
 	value.PushBack(height, allocator);
 }
-bool Settings::GraphicsSettings::Size::FromJSON(const rapidjson::Value &value){
+bool GraphicsSettings::Size::FromJSON(const rapidjson::Value &value){
 	return
 		jsonutils::CheckArray(value, 2) &&
 		jsonutils::GetArrayMember(value, 0, width) &&
 		jsonutils::GetArrayMember(value, 1, height);
 }
-void Settings::AudioSettings::SaveSettings(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+void AudioSettings::SaveSettings(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("soundVolume", soundVolume, allocator);
 	value.AddMember("musicVolume", musicVolume, allocator);
 }
-bool Settings::AudioSettings::LoadSettings(const rapidjson::Value &value){
+bool AudioSettings::LoadSettings(const rapidjson::Value &value){
 	return
 		jsonutils::GetMember(value, "soundVolume", soundVolume) &&
 		jsonutils::GetMember(value, "musicVolume", musicVolume);

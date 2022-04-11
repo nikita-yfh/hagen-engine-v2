@@ -17,7 +17,7 @@ public:
 
 		bool doubleBuffer;
 		bool verticalSync;
-		int maxFPS; //0 to disable limit
+		int maxFPS; // 0 to disable limit
 
 		int MSAASamples;
 

@@ -67,8 +67,18 @@ void GUISettings::Render(const Locale &locale) {
 					graphics.windowMode = i;
 			ImGui::EndCombo();
 		}
+		bool limitFPS = (graphics.maxFPS != 0);
 		ImGui::Checkbox(locale["settings.doubleBuffer"], &graphics.doubleBuffer);
 		ImGui::Checkbox(locale["settings.verticalSync"], &graphics.verticalSync);
+		ImGui::Checkbox(locale["settings.limitFPS"], &limitFPS);
+		if(limitFPS){
+			if(graphics.maxFPS == 0)
+				graphics.maxFPS = 60.0f;
+			ImGui::SameLine();
+			ImGui::PushItemWidth(ImGui::GetFontSize()*8.0f);
+			ImGui::InputInt(locale["settings.maxFPS"], &graphics.maxFPS);
+		}else
+			graphics.maxFPS = 0;
 		ImGui::EndTabItem();
 	}
 	if(ImGui::BeginTabItem(locale["settings.audio"])){

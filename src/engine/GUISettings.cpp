@@ -10,16 +10,12 @@ bool DisplayModes::Set(int displayIndex){
 	modes = new SDL_DisplayMode[count];
 	strings = new String[count];
 	SDL_DisplayMode *prev = nullptr;
-	for(int i = 0, j = 0; i < count; i++, j++){
-		if(SDL_GetDisplayMode(displayIndex, i, &modes[j]) != 0) {
+	for(int i = 0; i < count; i++){
+		if(SDL_GetDisplayMode(displayIndex, i, &modes[i]) != 0) {
 			Log(LEVEL_ERROR, SDL_GetError());
 			this->~DisplayModes();
 			return false;
 		}
-		if(i != 0 && modes[j].w == modes[j-1].w && modes[j].h == modes[j-1].h)
-			j--; // Skip the same resolutions
-		if(i == count - 1)
-			count = j + 1;
 	}
 	return true;
 }
@@ -30,7 +26,7 @@ void DisplayModes::Render(const Locale &locale, Settings::GraphicsSettings::Size
 		for(int i = 0; i < count; i++){
 			SDL_DisplayMode &mode = modes[i];
 			char sizeStr[32];
-			sprintf(sizeStr, "%d x %d", mode.w, mode.h);
+			sprintf(sizeStr, "%d x %d, %dhz", mode.w, mode.h, mode.refresh_rate);
 			if(ImGui::Selectable(sizeStr, strcmp(currentSizeStr, sizeStr) == 0)){
 				size.width = mode.w;
 				size.height = mode.h;
@@ -56,6 +52,7 @@ GUISettings::~GUISettings(){
 void GUISettings::Render(const Locale &locale) {
 	ImGui::Begin(locale["settings.title"], &shown);
 	ImGui::BeginTabBar("tabs");
+	ImGui::PushItemWidth(ImGui::GetFontSize()*15.0f);
 	if(ImGui::BeginTabItem(locale["settings.graphics"])){
 		Settings::GraphicsSettings &graphics = settings.graphics;
 		const char *windowModes[] = {

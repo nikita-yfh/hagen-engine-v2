@@ -116,8 +116,8 @@ bool FromJSON(const Value &value, ImVec4 &data){
 	return
 		CheckArray(value, 4) &&
 		GetArrayMember(value, 0, data.x) &&
-		GetArrayMember(value, 1, data.y);
-		GetArrayMember(value, 2, data.z);
+		GetArrayMember(value, 1, data.y) &&
+		GetArrayMember(value, 2, data.z) &&
 		GetArrayMember(value, 3, data.w);
 }
 bool FromJSON(const Value &value, b2Filter &data){

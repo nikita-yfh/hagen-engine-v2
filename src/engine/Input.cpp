@@ -99,6 +99,12 @@ bool InputConfig::LoadSettings(const rapidjson::Value &value){
 	}
 	return true;
 }
+void InputConfig::SaveSettings(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
+	rapidjson::Value array(rapidjson::kArrayType);
+	for(int i = 0; i < keyCount; i++)
+		array.PushBack(jsonutils::StringType(KeyToStr(keys[i].key)), allocator);
+	value.AddMember("keyBindings", array, allocator);
+}
 keycode InputConfig::GetKey(const char *str) const {
 	for(int i = 0; i < keyCount; i++)
 		if(keys[i].name == str)

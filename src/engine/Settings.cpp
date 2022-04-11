@@ -54,6 +54,7 @@ void Settings::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) 
 	value.SetObject();
 	graphics.SaveSettings(value, allocator);
 	audio.SaveSettings(value, allocator);
+	input.SaveSettings(value, allocator);
 	value.AddMember("language",	jsonutils::ToJSON(language), allocator);
 }
 bool Settings::FromJSON(const rapidjson::Value &value){
@@ -61,6 +62,7 @@ bool Settings::FromJSON(const rapidjson::Value &value){
 		jsonutils::CheckObject(value) &&
 		graphics.LoadSettings(value) &&
 		audio.LoadSettings(value) &&
+		input.LoadSettings(value) &&
 		jsonutils::GetMember(value, "language",	language);
 }
 void Settings::GraphicsSettings::SaveSettings(rapidjson::Value &value, jsonutils::Allocator &allocator) const{

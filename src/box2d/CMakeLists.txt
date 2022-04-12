@@ -96,4 +96,5 @@ set(BOX2D_HEADERS
         b2_world_callbacks.h
         box2d.h
 )
+include_directories("../engine")
 add_library("box2d" SHARED ${BOX2D_SOURCES} ${BOX2D_HEADERS})

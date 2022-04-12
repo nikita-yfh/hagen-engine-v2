@@ -6,6 +6,7 @@
 #include "Surface.hpp"
 #include "GUIConsole.hpp"
 #include "GUISettings.hpp"
+#include "Level.hpp"
 
 Engine::Engine(const char*const*storages, size_t num)
 		: settings(inputConfig) {
@@ -37,6 +38,9 @@ Engine::Engine(const char*const*storages, size_t num)
 
 	interface.AddWindow(new GUIConsole(resManager, L));
 	interface.AddWindow(new GUISettings(this, settings));
+
+	Level level;
+	resManager.LoadJSON("levels/1.json", level);
 
 	state = State::Run;
 }

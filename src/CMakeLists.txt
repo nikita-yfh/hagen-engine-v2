@@ -1,5 +1,6 @@
 include_directories(
 	"."
+	"engine"
 	"box2d"
 	"imgui"
 	"imgui/backends"

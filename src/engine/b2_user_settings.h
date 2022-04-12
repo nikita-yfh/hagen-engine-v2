@@ -1,19 +1,19 @@
-#include <cstdarg>
-#include <cstdint>
+#include <stdarg.h>
+#include <stdint.h>
 
 #define b2_lengthUnitsPerMeter 1.0f
 #define b2_maxPolygonVertices	4
 
-namespace luabridge{
-	class LuaRef;
-};
-struct B2_API b2BodyUserData {
+struct b2BodyUserData {
+	uint32_t hash;
 };
 
-struct B2_API b2FixtureUserData {
+struct b2FixtureUserData {
+	uint32_t hash;
 };
 
-struct B2_API b2JointUserData {
+struct b2JointUserData {
+	uint32_t hash;
 };
 
 B2_API void* b2Alloc_Default(int32 size);

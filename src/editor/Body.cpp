@@ -105,8 +105,9 @@ void Body::OnPropertyGridChange(const wxString& name, const wxVariant& value){
 void Body::ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const{
 	value.AddMember("type", jsonutils::String(bodyTypes[type]), allocator);
 	value.AddMember("linearVelocity", jsonutils::ToJSON(linearVelocity, allocator), allocator);
-	value.AddMember("linearDamping", linearDamping, allocator);
 	value.AddMember("angularVelocity", angularVelocity, allocator);
+	value.AddMember("linearDamping", linearDamping, allocator);
+	value.AddMember("angularDamping", angularDamping, allocator);
 	value.AddMember("allowSleep", allowSleep, allocator);
 	value.AddMember("awake", awake, allocator);
 	value.AddMember("fixedRotation", fixedRotation, allocator);
@@ -122,6 +123,7 @@ bool Body::FromJSON(const rapidjson::Value &value){
 		jsonutils::GetMember(value, "linearVelocity", linearVelocity) &&
 		jsonutils::GetMember(value, "angularVelocity", angularVelocity) &&
 		jsonutils::GetMember(value, "linearDamping", linearDamping) &&
+		jsonutils::GetMember(value, "angularDamping", angularDamping) &&
 		jsonutils::GetMember(value, "allowSleep", allowSleep) &&
 		jsonutils::GetMember(value, "awake", awake) &&
 		jsonutils::GetMember(value, "fixedRotation", fixedRotation) &&

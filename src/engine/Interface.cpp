@@ -9,10 +9,20 @@
 
 using namespace ImGui;
 
-Interface::Interface(ResourceManager &resManager, SDL_Window *window,
-		SDL_GLContext glcontext) : windows(nullptr){
+Interface::Interface()
+	: windows(nullptr), window(nullptr) {}
+
+Interface::~Interface(){
+	while(windows){
+		Window *next = windows->next;
+		delete windows;
+		windows = next;
+	}
+}
+bool Interface::Create(ResourceManager &resManager, SDL_Window *window,
+		SDL_GLContext glcontext) {
 	IMGUI_CHECKVERSION();
-    CreateContext();
+	ImGui::CreateContext();
     ImGuiIO& io = GetIO();
 
     io.IniFilename = nullptr;
@@ -23,21 +33,19 @@ Interface::Interface(ResourceManager &resManager, SDL_Window *window,
 	ImGui::StyleColorsDark();
 
     if(!ImGui_ImplSDL2_InitForOpenGL(window, glcontext) ||
-				!ImGui_ImplOpenGL3_Init(nullptr))
+				!ImGui_ImplOpenGL3_Init(nullptr)){
 		Log(LEVEL_ERROR, "Failed to initilize ImGui");
+		return false;
+	}
 
 	resManager.LoadResource("ui/strings.json", &locale);
 
 	Style style;
 	if(resManager.LoadJSON("ui/style.json", style))
 		ImGui::GetStyle() = style;
+	return true;
 }
-Interface::~Interface(){
-	while(windows){
-		Window *next = windows->next;
-		delete windows;
-		windows = next;
-	}
+void Interface::Destroy() {
 	ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
@@ -47,7 +55,6 @@ void Interface::Render(){
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
 
-	Window *prev = nullptr;
 	for(Window *window = windows; window; window = window->next)
 		if(window->shown)
 			window->Render(locale);

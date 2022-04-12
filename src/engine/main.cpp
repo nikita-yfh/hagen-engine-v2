@@ -16,19 +16,14 @@ int main(int argc,char **argv){
 	const char*const*storages = argv + 1;
 	size_t storagesNum = argc - 1;
 
-	while(true){
-		Engine engine(storages, storagesNum);
-		if(engine.HasError()){
-			Log(LEVEL_FATAL, "Failed to initilize engine");
-			SDL_Quit();
-			return -1;
-		}
-		Log(LEVEL_INFO, "Engine initilized");
-		engine.Run();
-		if(engine.NeedQuit())
-			break;
-		Log(LEVEL_INFO, "Restarting engine...");
+	Engine engine(storages, storagesNum);
+	if(engine.HasError()){
+		Log(LEVEL_FATAL, "Failed to initilize engine");
+		SDL_Quit();
+		return -1;
 	}
+	Log(LEVEL_INFO, "Engine initilized");
+	engine.Run();
 
 	SDL_Quit();
 	return 0;

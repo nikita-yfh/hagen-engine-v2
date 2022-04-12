@@ -21,7 +21,6 @@ Engine::Engine(const char*const*storages, size_t num)
 		return;
 	}
 
-	GameConfig gameConfig;
 	if(!resManager.LoadJSON("game.json", gameConfig))
 		return;
 	savesManager.Set(gameConfig.name);
@@ -29,15 +28,36 @@ Engine::Engine(const char*const*storages, size_t num)
 	if(!resManager.LoadJSON("input.json", inputConfig))
 		return;
 
-	if(!savesManager.LoadJSON("settings.json", settings))
-		if(!settings.SetDefault() || !savesManager.SaveJSON("settings.json", settings))
-			return;
-
+	if(!LoadSettings())
+		return;
 	if(!CreateWindow(gameConfig))
 		return;
 
+	gladLoadGL();
+
+	interface.AddWindow(new GUIConsole(resManager, L));
+	interface.AddWindow(new GUISettings(this, settings));
+
 	state = State::Run;
 }
+
+bool Engine::ApplySettingsNow(){
+	state = State::Run;
+	DestroyWindow();
+	if(!CreateWindow(gameConfig))
+		return LoadSettings();
+	else
+		return savesManager.SaveJSON("settings.json", settings);
+}
+
+bool Engine::LoadSettings() {
+	if(!savesManager.LoadJSON("settings.json", settings))
+		if(!settings.SetDefault() || !savesManager.SaveJSON("settings.json", settings))
+			return false;
+	return true;
+}
+
+
 bool Engine::CreateWindow(const GameConfig &config){
 	const GraphicsSettings &graphics = settings.graphics;
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,
@@ -65,11 +85,7 @@ bool Engine::CreateWindow(const GameConfig &config){
 	context = SDL_GL_CreateContext(window);
 	SDL_GL_MakeCurrent(window,context);
 
-	gladLoadGL();
-
-	interface = new Interface(resManager, window, context);
-	interface->AddWindow(new GUIConsole(resManager, L));
-	interface->AddWindow(new GUISettings(savesManager, settings));
+	interface.Create(resManager, window, context);
 
 	return true;
 }
@@ -92,8 +108,10 @@ bool Engine::InitLua(){
 	return true;
 }
 void Engine::CloseLua(){
-	if(L)
+	if(L){
 		lua_close(L);
+		Log(LEVEL_INFO, "Closed lua state");
+	}
 }
 
 Engine::~Engine() {
@@ -102,6 +120,7 @@ Engine::~Engine() {
 }
 
 void Engine::DestroyWindow(){
+	interface.Destroy();
 	if(window)
 		SDL_DestroyWindow(window);
 	if(context)
@@ -110,7 +129,7 @@ void Engine::DestroyWindow(){
 
 void Engine::ProcessEvents(){
 	while (SDL_PollEvent(&event)) {
-		interface->ProcessEvent(&event);
+		interface.ProcessEvent(&event);
 		if (event.type == SDL_QUIT)
 			state = State::Quit;
 	}
@@ -118,16 +137,20 @@ void Engine::ProcessEvents(){
 void Engine::Render(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	interface->Render();
+	interface.Render();
 
 	SDL_GL_SwapWindow(window);
 }
 
 void Engine::Run() {
-	while (state == State::Run) {
-		int t = SDL_GetTicks();
-		ProcessEvents();
-		Render();
-	}
+	do{
+		if(state == State::Restart)
+			ApplySettingsNow();
+		while (state == State::Run) {
+			int t = SDL_GetTicks();
+			ProcessEvents();
+			Render();
+		}
+	} while (state == State::Restart);
 }
 

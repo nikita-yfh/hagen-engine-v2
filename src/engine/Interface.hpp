@@ -25,12 +25,15 @@ public:
 
 class Interface{
 public:
-	Interface(ResourceManager &resManager, SDL_Window*, SDL_GLContext);
+	Interface();
 	~Interface();
 
 	void Render();
 	void ProcessEvent(SDL_Event *e);
 	void AddWindow(Window *window);
+
+	bool Create(ResourceManager &resManager, SDL_Window*, SDL_GLContext);
+	void Destroy();
 private:
 	Locale locale;
 	Window *windows;

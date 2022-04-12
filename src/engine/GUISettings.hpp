@@ -1,12 +1,12 @@
 #pragma once
 
-#include "SavesManager.hpp"
 #include "Interface.hpp"
 #include "Locale.hpp"
 #include "JSONUtils.hpp"
 #include "Settings.hpp"
 
 struct HistoryEntry;
+class Engine;
 
 class DisplayModes{
 public:
@@ -21,17 +21,14 @@ private:
 
 class GUISettings : public Window{
 public:
-	GUISettings(SavesManager &savesManager, Settings &settings);
+	GUISettings(Engine *engine, Settings &settings);
 	~GUISettings();
 
 	void Render(const Locale &locale);
 private:
-	void DiscardSettings();
-	void SaveSettings();
-
 	input::keycode prevKey;
 	int selectedKey;
 	Settings &settings;
-	SavesManager &savesManager;
+	Engine *engine;
 	DisplayModes displayModes;
 };

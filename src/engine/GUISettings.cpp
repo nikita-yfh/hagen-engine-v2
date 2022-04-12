@@ -1,4 +1,5 @@
 #include "GUISettings.hpp"
+#include "Engine.hpp"
 
 bool DisplayModes::Set(int displayIndex){
 	count = SDL_GetNumDisplayModes(displayIndex);
@@ -48,8 +49,8 @@ DisplayModes::~DisplayModes(){
 	count = 0;
 }
 
-GUISettings::GUISettings(SavesManager &_savesManager, Settings &_settings)
-			: settings(_settings), savesManager(_savesManager) {
+GUISettings::GUISettings(Engine *_engine, Settings &_settings)
+			: settings(_settings), engine(_engine) {
 	displayModes.Set(0);
 	selectedKey = 0;
 }
@@ -99,6 +100,7 @@ void GUISettings::Render(const Locale &locale) {
 	}
 	if(ImGui::BeginTabItem(locale["settings.input"])){
 		input::InputConfig &input = settings.input;
+		ImGui::BeginChild("keys", ImVec2(0.0f, 0.0f), true);
 		for(int i = 0; i < input.keyCount; i++){
 			char str[256];
 			snprintf(str, 256, "settings.keyBindings.%s", input.keys[i].name.c_str());
@@ -127,6 +129,7 @@ void GUISettings::Render(const Locale &locale) {
 			prevKey = key;
 			ImGui::EndPopup();
 		}
+		ImGui::EndChild();
 		ImGui::EndTabItem();
 
 	}
@@ -137,12 +140,15 @@ void GUISettings::Render(const Locale &locale) {
 	ImGui::EndChild();
 	ImGui::Separator();
 	if(ImGui::Button(locale["ok"])){
-		SaveSettings();
+		engine->ApplySettings();
 		Hide();
 	}
 	ImGui::SameLine();
+	if(ImGui::Button(locale["apply"]))
+		engine->ApplySettings();
+	ImGui::SameLine();
 	if(ImGui::Button(locale["cancel"])){
-		DiscardSettings();
+		engine->LoadSettings();
 		Hide();
 	}
 	ImGui::SameLine();
@@ -150,10 +156,4 @@ void GUISettings::Render(const Locale &locale) {
 		settings.SetDefault();
 	ImGui::SameLine();
 	ImGui::End();
-}
-void GUISettings::SaveSettings(){
-	savesManager.SaveJSON("settings.json", settings);
-}
-void GUISettings::DiscardSettings(){
-	savesManager.LoadJSON("settings.json", settings);
 }

@@ -25,8 +25,10 @@ public:
 	inline bool HasError() const{
 		return state == State::Error;
 	}
-	inline bool NeedQuit() const{
-		return state == State::Quit;
+	inline void ApplySettings() {
+		// You can't restart engine
+		// in ImGui frame
+		state = State::Restart;
 	}
 
 	void Run();
@@ -38,9 +40,12 @@ public:
 		Error
 	};
 
+	bool LoadSettings();
+
 private:
 	bool CreateWindow(const GameConfig &config);
 	void DestroyWindow();
+	bool ApplySettingsNow();
 
 	void ProcessEvents();
 	void Render();
@@ -59,6 +64,7 @@ private:
 
 	ResourceManager resManager;
 	SavesManager savesManager;
+	GameConfig gameConfig;
 	input::InputConfig inputConfig;
-	Interface *interface;
+	Interface interface;
 };

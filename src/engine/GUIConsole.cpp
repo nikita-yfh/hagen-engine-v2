@@ -10,6 +10,7 @@ GUIConsole::GUIConsole(ResourceManager &resManager, lua_State *_L) : L(_L){
 	*inputBuf = '\0';
 	history = nullptr;
 	historyPos = nullptr;
+	scrollToBottom = true;
 	resManager.LoadJSON("ui/console.json", config);
 }
 GUIConsole::~GUIConsole(){
@@ -25,13 +26,13 @@ void GUIConsole::Render(const Locale &locale){
 		Hide();
 		return;
 	}
+	ImGui::SetNextWindowSize(ImVec2(ImGui::GetFontSize()*30.0f, ImGui::GetFontSize()*20.0f));
 	ImGui::Begin(locale["console.title"], &shown);
 
 	float reserve = 0.0f;
 	if(config.input)
 		reserve = -ImGui::GetStyle().ItemSpacing.y - ImGui::GetFrameHeightWithSpacing();
-	ImGui::BeginChild("scrolling", ImVec2(0.0f, reserve),
-		false, ImGuiWindowFlags_HorizontalScrollbar);
+	ImGui::BeginChild("scrolling", ImVec2(0.0f, reserve), false);
 
 	if(ImGui::BeginPopupContextWindow()) {
 		if(ImGui::Selectable(locale["console.clear"]))
@@ -49,7 +50,7 @@ void GUIConsole::Render(const Locale &locale){
 			ImGui::TextWrapped("%s", entry->message.c_str());
 
 	}
-	if(scrollToBottom &&(ImGui::GetScrollY() >= ImGui::GetScrollMaxY() || autoScroll))
+	if(scrollToBottom && (ImGui::GetScrollY() >= ImGui::GetScrollMaxY() || autoScroll))
 		ImGui::SetScrollHereY(1.0f);
 	scrollToBottom = false;
 	ImGui::EndChild();

@@ -58,8 +58,8 @@ GUISettings::~GUISettings(){
 }
 
 void GUISettings::Render(const Locale &locale) {
-	static Settings copy = settings;
-	ImGui::SetNextWindowSize(ImVec2(ImGui::GetFontSize()*30.0f, ImGui::GetFontSize()*20.0f));
+	ImVec2 size(ImGui::GetFontSize()*30.0f, ImGui::GetFontSize()*20.0f);
+	ImGui::SetNextWindowSize(size, ImGuiCond_FirstUseEver);
 	ImGui::Begin(locale["settings.title"], &shown);
 	ImVec2 reserve(0.0f, -ImGui::GetStyle().ItemSpacing.y -
 		ImGui::GetFrameHeightWithSpacing());

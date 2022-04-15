@@ -21,6 +21,7 @@ Interface::~Interface(){
 }
 bool Interface::Create(ResourceManager &resManager, SDL_Window *window,
 		SDL_GLContext glcontext) {
+	initilized = false;
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
     ImGuiIO& io = GetIO();
@@ -43,12 +44,15 @@ bool Interface::Create(ResourceManager &resManager, SDL_Window *window,
 	Style style;
 	if(resManager.LoadJSON("ui/style.json", style))
 		ImGui::GetStyle() = style;
+	initilized = true;
 	return true;
 }
 void Interface::Destroy() {
-	ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplSDL2_Shutdown();
-    ImGui::DestroyContext();
+	if(initilized) {
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplSDL2_Shutdown();
+		ImGui::DestroyContext();
+	}
 }
 void Interface::Render(){
 	ImGui_ImplOpenGL3_NewFrame();

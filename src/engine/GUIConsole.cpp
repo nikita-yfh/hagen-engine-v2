@@ -26,7 +26,8 @@ void GUIConsole::Render(const Locale &locale){
 		Hide();
 		return;
 	}
-	ImGui::SetNextWindowSize(ImVec2(ImGui::GetFontSize()*30.0f, ImGui::GetFontSize()*20.0f));
+	ImVec2 size(ImGui::GetFontSize()*30.0f, ImGui::GetFontSize()*20.0f);
+	ImGui::SetNextWindowSize(size, ImGuiCond_FirstUseEver);
 	ImGui::Begin(locale["console.title"], &shown);
 
 	float reserve = 0.0f;

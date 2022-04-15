@@ -34,15 +34,6 @@ public:
 	bool Load(const char *text, size_t size);
 	bool Load(const char *text);
 
-	template<typename T>
-	inline void ToJSON(const T &object){
-		object.ToJSON(document, document.GetAllocator());
-	}
-	template<typename T>
-	inline bool FromJSON(T &object){
-		return object.FromJSON(document);
-	}
-
 	rapidjson::Document document;
 private:
 	bool LogError(const char *text) const;

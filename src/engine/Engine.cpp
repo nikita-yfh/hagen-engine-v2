@@ -39,8 +39,9 @@ Engine::Engine(const char*const*storages, size_t num)
 	interface.AddWindow(new GUIConsole(resManager, L));
 	interface.AddWindow(new GUISettings(this, settings));
 
-	Level level;
-	resManager.LoadJSON("levels/1.json", level);
+	level = new Level(resManager);
+	if(!resManager.LoadJSON("levels/1.json", *level))
+		return;
 
 	state = State::Run;
 }
@@ -121,6 +122,8 @@ void Engine::CloseLua(){
 Engine::~Engine() {
 	CloseLua();
 	DestroyWindow();
+	if(level)
+		delete level;
 }
 
 void Engine::DestroyWindow(){
@@ -140,7 +143,10 @@ void Engine::ProcessEvents(){
 }
 void Engine::Render(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
 
+	if(level)
+		level->Render();
 	interface.Render();
 
 	SDL_GL_SwapWindow(window);

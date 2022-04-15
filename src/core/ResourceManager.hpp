@@ -41,7 +41,7 @@ public:
 		JSONResource res;
 		return
 			LoadResource(path, &res) &&
-			res.FromJSON(object);
+			object.FromJSON(res.document);
 	}
 private:
 	void AddResource(const char *path, Resource *res);

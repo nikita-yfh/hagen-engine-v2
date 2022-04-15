@@ -2,12 +2,15 @@
 
 #include "Surface.hpp"
 
+static const GLenum type = GL_TEXTURE_2D;
+
 Texture::Texture()
 	:texture(0) {}
 
 Texture::~Texture() {
-	glDeleteTextures(1,&texture);
+	glDeleteTextures(1, &texture);
 }
+
 bool Texture::Load(SDL_RWops *file){
 	Surface srcRes;
 
@@ -16,7 +19,7 @@ bool Texture::Load(SDL_RWops *file){
 
 	SDL_Surface *&surface=srcRes.surface;
 
-	glGenTextures(1,&texture);
+	glGenTextures(1, &texture);
 
 	width=surface->w;
 	height=surface->h;
@@ -30,7 +33,7 @@ bool Texture::Load(SDL_RWops *file){
 	return true;
 }
 void Texture::Bind() const{
-	glBindTexture(type,texture);
+	glBindTexture(type, texture);
 }
 void Texture::Activate() const{
 	Bind();
@@ -42,32 +45,32 @@ void Texture::Deactivate() const{
 GLuint Texture::GetID() const{
 	return texture;
 }
-void Texture::SetParameterf(GLenum pname,float value) const{
+void Texture::SetParameterf(GLenum pname, float value) const{
 	Bind();
-	glTexParameterf(type,pname,value);
+	glTexParameterf(type, pname, value);
 }
-void Texture::SetParameteri(GLenum pname,int value) const{
+void Texture::SetParameteri(GLenum pname, int value) const{
 	Bind();
-	glTexParameteri(type,pname,value);
+	glTexParameteri(type, pname, value);
 }
 float Texture::GetParameterf(GLenum pname) const{
 	Bind();
 	float value;
-	glGetTexParameterfv(type,pname,&value);
+	glGetTexParameterfv(type, pname, &value);
 	return value;
 }
 
 int Texture::GetParameteri(GLenum pname) const{
 	Bind();
 	int value;
-	glGetTexParameteriv(type,pname,&value);
+	glGetTexParameteriv(type, pname, &value);
 	return value;
 }
 void Texture::SetWrapX(GLenum wrap){
-	SetParameteri(GL_TEXTURE_WRAP_S,wrap);
+	SetParameteri(GL_TEXTURE_WRAP_S, wrap);
 }
 void Texture::SetWrapY(GLenum wrap){
-	SetParameteri(GL_TEXTURE_WRAP_T,wrap);
+	SetParameteri(GL_TEXTURE_WRAP_T, wrap);
 }
 GLenum Texture::GetWrapX() const{
 	return GetParameteri(GL_TEXTURE_WRAP_S);
@@ -82,10 +85,10 @@ int Texture::GetHeigth() const{
 	return height;
 }
 void Texture::SetMagFiltering(GLenum type){
-	SetParameteri(GL_TEXTURE_MAG_FILTER,type);
+	SetParameteri(GL_TEXTURE_MAG_FILTER, type);
 }
 void Texture::SetMinFiltering(GLenum type){
-	SetParameteri(GL_TEXTURE_MIN_FILTER,type);
+	SetParameteri(GL_TEXTURE_MIN_FILTER, type);
 }
 void Texture::SetFiltering(GLenum type){
 	SetMinFiltering(type);

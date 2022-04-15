@@ -14,6 +14,7 @@ extern "C" {
 #include "SavesManager.hpp"
 #include "Interface.hpp"
 #include "Input.hpp"
+#include "Level.hpp"
 
 class Engine{
 public:
@@ -26,8 +27,7 @@ public:
 		return state == State::Error;
 	}
 	inline void ApplySettings() {
-		// You can't restart engine
-		// in ImGui frame
+		// You can't restart engine from ImGui frame
 		state = State::Restart;
 	}
 
@@ -59,8 +59,9 @@ private:
 	SDL_Event event;
 	SDL_Window *window;
 	SDL_GLContext context;
-	lua_State *L;
 	Settings settings;
+	lua_State *L;
+	Level *level;
 
 	ResourceManager resManager;
 	SavesManager savesManager;

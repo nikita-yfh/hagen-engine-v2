@@ -26,12 +26,12 @@ public:
 		JSONResource res;
 		return
 			LoadResource(path, &res) &&
-			res.FromJSON(object);
+			object.FromJSON(res.document);
 	}
 	template<class T>
 	bool SaveJSON(const char *path, const T &object){
 		JSONResource res;
-		res.ToJSON(object);
+		object.ToJSON(res.document, res.document.GetAllocator());
 		return SaveResource(path, &res);
 	}
 private:

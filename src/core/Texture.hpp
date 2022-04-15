@@ -9,7 +9,7 @@ public:
 	Texture();
 	~Texture();
 
-	bool Load(SDL_RWops *file) override;
+	virtual bool Load(SDL_RWops *file) override;
 
 	void Bind() const;
 	void Activate() const;
@@ -35,10 +35,9 @@ private:
 	GLuint texture;
 	int width;
 	int height;
-	const GLenum type=GL_TEXTURE_2D;
 
-	void	SetParameteri(GLenum pname,int value) const;
-	void	SetParameterf(GLenum pname,float value) const;
+	void	SetParameteri(GLenum pname, int value) const;
+	void	SetParameterf(GLenum pname, float value) const;
 
 	int		GetParameteri(GLenum pname) const;
 	float	GetParameterf(GLenum pname) const;

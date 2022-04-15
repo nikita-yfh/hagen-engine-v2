@@ -21,7 +21,7 @@ Interface::~Interface(){
 }
 bool Interface::Create(ResourceManager &resManager, SDL_Window *window,
 		SDL_GLContext glcontext) {
-	initilized = false;
+	initialized = false;
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
     ImGuiIO& io = GetIO();
@@ -44,11 +44,11 @@ bool Interface::Create(ResourceManager &resManager, SDL_Window *window,
 	Style style;
 	if(resManager.LoadJSON("ui/style.json", style))
 		ImGui::GetStyle() = style;
-	initilized = true;
+	initialized = true;
 	return true;
 }
 void Interface::Destroy() {
-	if(initilized) {
+	if(initialized) {
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplSDL2_Shutdown();
 		ImGui::DestroyContext();

@@ -22,7 +22,7 @@ int main(int argc,char **argv){
 		SDL_Quit();
 		return -1;
 	}
-	Log(LEVEL_INFO, "Engine initilized");
+	Log(LEVEL_INFO, "Engine initialized");
 	engine.Run();
 
 	SDL_Quit();

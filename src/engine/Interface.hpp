@@ -35,7 +35,7 @@ public:
 	bool Create(ResourceManager &resManager, SDL_Window*, SDL_GLContext);
 	void Destroy();
 private:
-	bool initilized;
+	bool initialized;
 	Locale locale;
 	Window *windows;
 	SDL_Window *window;

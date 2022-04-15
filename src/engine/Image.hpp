@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include "Texture.hpp"
-#include "b2_world.h"
+#include "b2_body.h"
 
 class Image {
 public:
@@ -12,7 +12,12 @@ public:
 	const b2Vec2& GetPosition() const;
 	float GetAngle() const;
 
+	int8_t GetLayer() const;
+	void SetLayer(int8_t layer);
+
+	void Render(float textureScale) const;
 private:
+
 	Image() {};
 
 	uint32_t hash;
@@ -42,4 +47,10 @@ inline const b2Vec2 &Image::GetPosition() const {
 }
 inline float Image::GetAngle() const {
 	return angle;
+}
+inline int8_t Image::GetLayer() const {
+	return layer;
+}
+inline void Image::SetLayer(int8_t _layer) {
+	layer = _layer;
 }

@@ -122,11 +122,6 @@ static bool LoadBodyDef(b2BodyDef *def, const rapidjson::Value &value) {
 }
 Image *Level::LoadImage(const rapidjson::Value &value) {
 	Image *image = new Image();
-	image->next = images;
-	image->prev = nullptr;
-	if(images)
-		images->next = image;
-	images = image;
 	const char *id;
 	const char *body;
 	const char *texture;
@@ -142,9 +137,16 @@ Image *Level::LoadImage(const rapidjson::Value &value) {
 	image->hash = String::Hash(id);
 	image->bindBody = FindBody(body);
 	image->texture = resManager.LoadResource<Texture>(texture);
+	AddImage(image);
 	return image;
 }
-
+void Level::AddImage(Image *image) {
+	image->next = images;
+	image->prev = nullptr;
+	if(images)
+		images->prev = image;
+	images = image;
+}
 
 Level::Level(ResourceManager &_resManager)
 	: resManager(_resManager), b2World(b2Vec2_zero) {}
@@ -175,11 +177,14 @@ bool Level::FromJSON(const rapidjson::Value &value) {
 		!jsonutils::CheckValue(value, "images"))
 		return false;
 	SetGravity(gravity);
-	const rapidjson::Value &bodies = value["bodies"];
-	const rapidjson::Value &joints = value["joints"];
-	const rapidjson::Value &images = value["images"];
-	for(int i = 0; i < bodies.Size(); i++)
-		if(!LoadBody(bodies[i]))
+	const rapidjson::Value &bodyArray  = value["bodies"];
+	const rapidjson::Value &jointArray = value["joints"];
+	const rapidjson::Value &imageArray = value["images"];
+	for(int i = 0; i < bodyArray.Size(); i++)
+		if(!LoadBody(bodyArray[i]))
+			return false;
+	for(int i = 0; i < imageArray.Size(); i++)
+		if(!LoadImage(imageArray[i]))
 			return false;
 	return true;
 }
@@ -199,10 +204,17 @@ b2Joint *Level::FindJoint(const char *id) {
 }
 void Level::Render() const {
 	camera.Apply();
-	glBegin(GL_TRIANGLES);
-	glVertex2f(0.0f, 0.0f);
-	glVertex2f(1.0f, 0.0f);
-	glVertex2f(0.0f, 1.0f);
-	glEnd();
+	for(int layer = INT8_MIN; layer <= INT8_MAX; layer++){
+		for(Image *image = images; image; image = image->next){
+			if(image->GetLayer() == layer){
+				glPushMatrix();
+				image->Render(textureScale);
+				glPopMatrix();
+			}
+		}
+	}
+}
+void Level::Update(float time) {
+	Step(time, 8, 8);
 }
 	

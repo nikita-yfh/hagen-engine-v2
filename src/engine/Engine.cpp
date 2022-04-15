@@ -88,7 +88,7 @@ bool Engine::CreateWindow(const GameConfig &config){
 		Log(LEVEL_WARNING, "Failed to set window icon");
 
 	context = SDL_GL_CreateContext(window);
-	SDL_GL_MakeCurrent(window,context);
+	SDL_GL_MakeCurrent(window, context);
 
 	interface.Create(resManager, window, context);
 
@@ -144,6 +144,8 @@ void Engine::ProcessEvents(){
 void Engine::Render(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	if(level)
 		level->Render();
@@ -157,9 +159,10 @@ void Engine::Run() {
 		if(state == State::Restart)
 			ApplySettingsNow();
 		while (state == State::Run) {
-			int t = SDL_GetTicks();
 			ProcessEvents();
 			Render();
+			if(level)
+				level->Update(1.0f/60.0f);
 		}
 	} while (state == State::Restart);
 }

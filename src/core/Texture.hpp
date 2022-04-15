@@ -18,7 +18,7 @@ public:
 	GLuint GetID() const;
 
 	int GetWidth() const;
-	int GetHeigth() const;
+	int GetHeight() const;
 
 	void SetWrapX(GLenum wrap);
 	void SetWrapY(GLenum wrap);
@@ -42,3 +42,10 @@ private:
 	int		GetParameteri(GLenum pname) const;
 	float	GetParameterf(GLenum pname) const;
 };
+
+inline int Texture::GetWidth() const{
+	return width;
+}
+inline int Texture::GetHeight() const{
+	return height;
+}

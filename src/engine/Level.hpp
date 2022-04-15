@@ -21,7 +21,9 @@ public:
 	Image *FindImage(const char *id);
 
 	void Render() const;
+	void Update(float time);
 private:
+	void AddImage(Image *image);
 	b2Body *LoadBody(const rapidjson::Value &value);
 	b2Joint *LoadJoint(const rapidjson::Value &value);
 	Image *LoadImage(const rapidjson::Value &value);

@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 #define b2_lengthUnitsPerMeter 1.0f
-#define b2_maxPolygonVertices	4
+#define b2_maxPolygonVertices	8
 
 struct b2BodyUserData {
 	uint32_t hash;

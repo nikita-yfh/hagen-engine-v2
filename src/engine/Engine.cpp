@@ -7,6 +7,7 @@
 #include "GUIConsole.hpp"
 #include "GUISettings.hpp"
 #include "Level.hpp"
+#include <chrono>
 
 Engine::Engine(const char*const*storages, size_t num)
 		: settings(inputConfig) {
@@ -159,17 +160,18 @@ void Engine::Run() {
 	do{
 		if(state == State::Restart)
 			ApplySettingsNow();
-		uint32_t prevTime = SDL_GetTicks();
+
+		auto prevTime = std::chrono::high_resolution_clock::now();
 		while (state == State::Run) {
 			ProcessEvents();
 			Render();
 
-			uint32_t time = SDL_GetTicks() - prevTime;
-			LogF(LEVEL_DEBUG, "%d", time);
-			prevTime = SDL_GetTicks();
+			auto time = std::chrono::high_resolution_clock::now() - prevTime;
+			prevTime = std::chrono::high_resolution_clock::now();
+			float seconds = std::chrono::duration_cast<std::chrono::microseconds>(time).count()/1000000.0f;
 
 			if(level)
-				level->Update(time / 1000.0f);
+				level->Update(seconds);
 		}
 	} while (state == State::Restart);
 }

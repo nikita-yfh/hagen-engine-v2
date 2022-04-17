@@ -18,6 +18,7 @@ public:
 		BODY,
 		JOINT,
 		IMAGE,
+		LIGHT,
 		FIXTURE
 	};
 

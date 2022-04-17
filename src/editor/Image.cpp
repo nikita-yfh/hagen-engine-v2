@@ -2,16 +2,17 @@
 #include "GLUtils.hpp"
 
 bool Image::enabled = false;
+const float *Image::scale;
 
-Image::Image(const Texture *_texture, const Body *_bindBody, const float &_scale) :
-	texture(_texture), scale(_scale), bindBody(_bindBody), layer(0), repeat(1.0f, 1.0f) {}
+Image::Image(const Texture *_texture, const Body *_bindBody) :
+	texture(_texture), bindBody(_bindBody), layer(0), repeat(1.0f, 1.0f) {}
 
 void Image::Transform() const{
 	if(bindBody)
 		bindBody->Transform();
 	Rotatable::Transform();
-	glutils::Scale(texture->GetWidth()*repeat.x/2.0f/scale,
-					texture->GetHeight()*repeat.y/2.0f/scale);
+	glutils::Scale(texture->GetWidth()*repeat.x/2.0f/(*scale),
+					texture->GetHeight()*repeat.y/2.0f/(*scale));
 }
 Mouse Image::GetBodyMouse(const Mouse &mouse) const{
 	if(bindBody)
@@ -50,8 +51,8 @@ void Image::DrawPoints(const Colors &colors) const{
 	}
 }
 bool Image::TestPoint(const b2Vec2 &point) const{
-	return abs(point.x)*scale*2.0f/repeat.x < texture->GetWidth() &&
-			abs(point.y)*scale*2.0f/repeat.y < texture->GetHeight();
+	return abs(point.x)*(*scale)*2.0f/repeat.x < texture->GetWidth() &&
+			abs(point.y)*(*scale)*2.0f/repeat.y < texture->GetHeight();
 }
 bool Image::UpdatePoints(const Mouse &_mouse){
 	if(!enabled)
@@ -68,7 +69,7 @@ bool Image::UpdatePoints(const Mouse &_mouse){
 	return selected == 2 || UpdatePoint(mouse, 1, position);
 }
 bool Image::Create(const Mouse &mouse){
-	UpdatePoint(GetBodyMouse(mouse),1,position);
+	UpdatePoint(GetBodyMouse(mouse), 1,position);
 	return true;
 }
 bool Image::TryRemove(const void *object){
@@ -85,12 +86,12 @@ int8_t Image::GetLayer() const {
 	return layer;
 }
 void Image::UpdatePropertyGrid(wxPropertyGrid *pg, bool n) const{
-	Rotatable::UpdatePropertyGrid(pg,n);
+	Rotatable::UpdatePropertyGrid(pg, n);
 	if(n){
 		pg->Append(new wxIntProperty("layer", wxPG_LABEL, layer));
 		pg->Append(new Vec2Property("repeat", wxPG_LABEL, repeat));
 	}
-	Object::UpdatePropertyGrid(pg,n);
+	Object::UpdatePropertyGrid(pg, n);
 }
 void Image::OnPropertyGridChange(const wxString& name, const wxVariant& value){
 	Rotatable::OnPropertyGridChange(name, value);

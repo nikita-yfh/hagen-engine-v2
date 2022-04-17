@@ -6,7 +6,7 @@
 
 class Image : public Object, public Rotatable{
 public:
-	Image(const Texture *texture, const Body *body, const float &scale);
+	Image(const Texture *texture, const Body *body);
 
 	virtual void Draw(const Colors &colors) const override;
 	virtual void DrawPreview() const override;
@@ -24,6 +24,7 @@ public:
 	void ToJSON(rapidjson::Value &value, jsonutils::Allocator &allocator) const;
 	bool FromJSON(const rapidjson::Value &value);
 
+	static inline void SetScale(const float *_scale){scale=_scale;}
 	static bool enabled;
 private:
 	int8_t layer;
@@ -38,7 +39,7 @@ private:
 	const Texture *texture;
 	const Body *bindBody;
 
-	const float &scale;
+	static const float *scale;
 };
 
 

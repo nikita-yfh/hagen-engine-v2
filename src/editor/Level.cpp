@@ -14,13 +14,15 @@
 #include <wx/glcanvas.h>
 
 Level::Level(const Directory &dir) :
-	textures(nullptr),
-	objects(nullptr),
-	create(nullptr),
-	gravity(0.0f, -9.8f),
-	allowSleep(true),
-	textureScale(100.0f),
-	gameDir(dir) {}
+		textures(nullptr),
+		objects(nullptr),
+		create(nullptr),
+		gravity(0.0f, -9.8f),
+		allowSleep(true),
+		textureScale(100.0f),
+		gameDir(dir) {
+	Image::SetScale(&textureScale);
+}
 
 void Level::Clear(){
 	while(textures){
@@ -51,7 +53,7 @@ void Level::AddImage(const wxString &path){
 	const Object *selected = GetFirstSelected();
 	if(selected && selected->GetObjectType() != Object::BODY)
 		selected = nullptr;
-	Image *image = new Image(texture, (const Body*)selected, textureScale);
+	Image *image = new Image(texture, (const Body*)selected);
 	AddObject(image);
 }
 void Level::AddJoint(Joint *joint){
@@ -442,7 +444,7 @@ bool Level::FromJSON(const rapidjson::Value &value){
 			Texture *texture = GetTextureByID(textureID);
 			if(!texture)
 				texture = AddTexture(textureID);
-			Image *image = new Image(texture, bind, textureScale);
+			Image *image = new Image(texture, bind);
 			AddLoadObject(image);
 			if(!image->FromJSON(j))
 				return false;

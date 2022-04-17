@@ -39,6 +39,7 @@ wxBEGIN_EVENT_TABLE(EditorFrame,wxFrame)
 	EVT_MENU(ID_IMAGE_EDIT,					EditorFrame::SetImageEditMode)
 	EVT_MENU(ID_SET_GRID,					EditorFrame::SetGridSize)
 	EVT_MENU(ID_REVERSE,					EditorFrame::Reverse)
+	EVT_MENU(ID_PREVIEW,					EditorFrame::SetPreview)
 	EVT_UPDATE_UI(wxID_COPY,		 		EditorFrame::OneSelected)
 	EVT_UPDATE_UI(wxID_CUT,			 		EditorFrame::OneSelected)
 	EVT_UPDATE_UI(wxID_DUPLICATE,	 		EditorFrame::OneSelected)
@@ -107,6 +108,9 @@ void EditorFrame::DeleteSelected(wxCommandEvent&e){
 void EditorFrame::SetImageEditMode(wxCommandEvent&){
 	Image::enabled = !Image::enabled;
 	canvas->Refresh();
+}
+void EditorFrame::SetPreview(wxCommandEvent&){
+	canvas->SetPreview();
 }
 void EditorFrame::SetGridSize(wxCommandEvent&){
 	canvas->SetGridSize();

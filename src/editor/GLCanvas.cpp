@@ -47,11 +47,16 @@ void GLCanvas::SetGridSize(){
 	camera.SetGrid(InputGridDialog::InputGrid(this, camera.gridSize));
 	Refresh();
 }
-
+void GLCanvas::SetPreview(){
+	if(level.IsCreating())
+		level.CancelCreating();
+	preview = !preview;
+	Refresh();
+}
 b2Vec2 GLCanvas::GetMousePos(wxMouseEvent &e) const{
 	wxPoint global=e.GetPosition();
 	wxSize size=GetSize();
-	return b2Vec2(global.x-size.x/2,global.y-size.y/2);
+	return b2Vec2(global.x-size.x/2, global.y-size.y/2);
 
 }
 b2Vec2 GLCanvas::GetMousePos() const{
@@ -61,11 +66,11 @@ b2Vec2 GLCanvas::GetGridMousePos() const{
 	return camera.ToGrid(mouse);
 }
 void GLCanvas::Update(){
-	wxPostEvent(GetParent()->GetParent(), wxCommandEvent(EVENT_UPDATE_LEVEL));
+	wxPostEvent(GetParent(), wxCommandEvent(EVENT_UPDATE_LEVEL));
 	Refresh();
 }
 void GLCanvas::SetMouse(const b2Vec2 &pixels){
-	mouse=camera.ConvertFromPixels(pixels);
+	mouse = camera.ConvertFromPixels(pixels);
 }
 void GLCanvas::OnRightDown(wxMouseEvent&e) {
 	if(level.IsCreating()){
@@ -78,6 +83,8 @@ void GLCanvas::OnRightDown(wxMouseEvent&e) {
 	e.Skip();
 }
 void GLCanvas::OnLeftDown(wxMouseEvent&e) {
+	if(preview)
+		return;
 	SetFocus();
 	if(!level.IsCreating() && !wxGetKeyState(WXK_SHIFT))
 		level.UnselectAll();
@@ -121,7 +128,7 @@ void GLCanvas::Draw(wxPaintEvent&) {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glMatrixMode(GL_PROJECTION);
-	colors.ClearColor(COLOR_BGR);
+	colors.ClearColor(preview?COLOR_BLACK:COLOR_BGR);
 	glClear(GL_COLOR_BUFFER_BIT);
 	wxSize size=GetSize();
 	wxSize halfsize=size/2;
@@ -129,10 +136,16 @@ void GLCanvas::Draw(wxPaintEvent&) {
 	glLoadIdentity();
 	glOrtho(-halfsize.x, halfsize.x, halfsize.y, -halfsize.y, 0.0f, 1.0f);
 
-	camera.Apply(colors,halfsize);
-	level.Draw(colors);
-	if(camera.zoom>15)
-		level.DrawPoints(colors);
+	if(!preview)
+		camera.DrawGrid(colors,halfsize);
+	camera.Apply();
+	if(preview)
+		level.DrawPreview();
+	else{
+		level.Draw(colors);
+		if(camera.zoom>15)
+			level.DrawPoints(colors);
+	}
 	glFlush();
 	SwapBuffers();
 }

@@ -18,19 +18,21 @@ Mouse Image::GetBodyMouse(const Mouse &mouse) const{
 		return bindBody->GetLocalMouse(mouse);
 	return mouse;
 }
-void Image::Draw(const Colors &colors) const{
+void Image::Draw(const Colors&) const{
+	Draw(0.5);
+}
+void Image::DrawPreview() const{
+	Draw(1.0f);
+}
+void Image::Draw(float alpha) const{
 	Transform();
 	texture->Activate();
 	glBegin(GL_QUADS);
-	glColor4f(1.0f,1.0f,1.0f,0.5f);
-	glTexCoord2f(0,0);
-	glVertex2i(-1, -1);
-	glTexCoord2f(0,repeat.y);
-	glVertex2i(-1,  1);
-	glTexCoord2f(repeat.x,repeat.y);
-	glVertex2i( 1,  1);
-	glTexCoord2f(repeat.x,0);
-	glVertex2f( 1, -1);
+	glColor4f(1.0f, 1.0f, 1.0f, alpha);
+	glTexCoord2f(0.0f, 0.0f);			glVertex2i(-1, -1);
+	glTexCoord2f(0.0f, repeat.y);		glVertex2i(-1,  1);
+	glTexCoord2f(repeat.x, repeat.y);	glVertex2i( 1,  1);
+	glTexCoord2f(repeat.x, 0.0f);		glVertex2f( 1, -1);
 	glEnd();
 	texture->Deactivate();
 }

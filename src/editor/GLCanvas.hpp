@@ -15,6 +15,7 @@ public:
 	b2Vec2 GetGridMousePos() const;
 
 	void SetGridSize();
+	void SetPreview();
 private:
 	void OnRightDown(wxMouseEvent&);
 	void OnLeftDown(wxMouseEvent&);
@@ -34,6 +35,7 @@ private:
 	Colors colors;
 	Camera camera;
 	b2Vec2 mouse;
+	bool preview;
 
 	wxDECLARE_EVENT_TABLE();
 };

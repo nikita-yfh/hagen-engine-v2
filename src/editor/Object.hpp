@@ -28,6 +28,7 @@ public:
 	inline void UnselectPoints(){if(IsSelectedPoint())Select();}
 
 	virtual void Draw(const Colors &colors) const = 0;
+	virtual void DrawPreview() const;
 	virtual void DrawPoints(const Colors &colors) const = 0;
 	virtual bool UpdatePoints(const Mouse &mouse) = 0;
 	virtual bool Create(const Mouse &mouse);

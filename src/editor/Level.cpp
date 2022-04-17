@@ -136,6 +136,17 @@ void Level::Draw(const Colors &colors) const{
 		}
 	}
 }
+void Level::DrawPreview() const{
+	for(int layer = INT8_MIN; layer <= INT8_MAX; layer++){
+		for(Object *object = objects;object;object = object->next){
+			if(object->GetLayer() == layer){
+				glPushMatrix();
+				object->DrawPreview();
+				glPopMatrix();
+			}
+		}
+	}
+}
 void Level::DrawPoints(const Colors &colors) const{
 	for(Object *object = objects;object;object = object->next){
 		glPushMatrix();

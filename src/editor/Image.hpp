@@ -9,6 +9,7 @@ public:
 	Image(const Texture *texture, const Body *body, const float &scale);
 
 	virtual void Draw(const Colors &colors) const override;
+	virtual void DrawPreview() const override;
 	virtual void DrawPoints(const Colors &colors) const override;
 	virtual bool UpdatePoints(const Mouse &mouse) override;
 	virtual bool Create(const Mouse &mouse) override;
@@ -31,6 +32,8 @@ private:
 	Mouse GetBodyMouse(const Mouse &mouse) const;
 	void Transform() const;
 	bool TestPoint(const b2Vec2 &point) const;
+
+	void Draw(float alpha) const;
 
 	const Texture *texture;
 	const Body *bindBody;

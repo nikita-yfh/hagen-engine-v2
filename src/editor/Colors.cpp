@@ -2,14 +2,15 @@
 #include <wx/glcanvas.h>
 
 Colors::Colors(){
+	colors[COLOR_BLACK]			= wxColor(0, 0, 0, 255);
 	colors[COLOR_BGR]			= GetSystemColor(wxSYS_COLOUR_WINDOW);
 	colors[COLOR_GRID]			= GetSystemColor(wxSYS_COLOUR_GRAYTEXT);
 	colors[COLOR_DARK]			= GetSystemColor(wxSYS_COLOUR_BTNTEXT);
 	colors[COLOR_INACTIVE]		= GetSystemColor(wxSYS_COLOUR_GRAYTEXT);
 	colors[COLOR_ACTIVE]		= GetSystemColor(wxSYS_COLOUR_MENUHILIGHT);
-	colors[COLOR_BODY_STATIC]	= wxColor(128,230,128,255);
-	colors[COLOR_BODY_KINEMATIC]= wxColor(128,128,230,255);
-	colors[COLOR_BODY_DYNAMIC]	= wxColor(230,178,178,255);
+	colors[COLOR_BODY_STATIC]	= wxColor(128, 230, 128, 255);
+	colors[COLOR_BODY_KINEMATIC]= wxColor(128, 128, 230, 255);
+	colors[COLOR_BODY_DYNAMIC]	= wxColor(230, 178, 178, 255);
 	colors[COLOR_JOINT]			= colors[COLOR_ACTIVE];
 	colors[COLOR_JOINT_CONNECT] = colors[COLOR_INACTIVE];
 }

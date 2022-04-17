@@ -6,7 +6,8 @@ class Camera{
 public:
 	Camera();
 
-	void Apply(const Colors &colors, const wxSize &halfsize) const;
+	void Apply() const;
+	void DrawGrid(const Colors &colors, const wxSize &halfsize) const;
 
 	void SetGrid(float grid);
 	bool UpdateGrid(bool shift, bool ctrl);

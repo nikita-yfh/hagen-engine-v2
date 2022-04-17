@@ -3,6 +3,7 @@
 #include <wx/settings.h>
 
 enum Color{
+	COLOR_BLACK,
 	COLOR_BGR,
 	COLOR_GRID,
 	COLOR_DARK,

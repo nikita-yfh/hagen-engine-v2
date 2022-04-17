@@ -6,7 +6,7 @@ Camera::Camera()
 	:position(0.0f,0.0f), zoom(100.0f), gridSize(0.25f), currentGridSize(0.25f),
 		currentAngleGrid(M_PI/12.0f) {}
 
-void Camera::Apply(const Colors &colors, const wxSize &halfsize) const{
+void Camera::DrawGrid(const Colors &colors, const wxSize &halfsize) const{
 	if(currentGridSize*zoom>10){
 		colors.Apply(COLOR_GRID);
 		glLineWidth(1.0f);
@@ -30,9 +30,12 @@ void Camera::Apply(const Colors &colors, const wxSize &halfsize) const{
 		}
 		glEnd();
 	}
+}
+void Camera::Apply() const {
 	glScalef(zoom,zoom,1.0f);
 	glTranslatef(-position.x,-position.y,0.0f);
 }
+
 void Camera::SetGrid(float grid){
 	gridSize = grid;
 	UpdateGrid(false, false);

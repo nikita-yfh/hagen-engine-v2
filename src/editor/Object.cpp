@@ -37,6 +37,8 @@ bool Object::UpdatePoint(const Mouse &mouse, int index, b2Vec2 &pos, bool grid){
 bool Object::CancelCreating(){
 	return true;
 }
+void Object::DrawPreview() const{
+}
 bool Object::Create(const Mouse &mouse){
 	return true;
 }

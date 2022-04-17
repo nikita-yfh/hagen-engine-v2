@@ -21,6 +21,7 @@ enum{
 	ID_IMAGE_EDIT,
 	ID_REVERSE,
 	ID_SET_GRID,
+	ID_PREVIEW,
 	ID_ADD_BODY,
 	ID_ADD_BODY_STATIC,
 	ID_ADD_BODY_KINEMATIC,
@@ -81,6 +82,7 @@ private:
 	void SetImageEditMode(wxCommandEvent&);
 	void SetGridSize(wxCommandEvent&);
 	void Reverse(wxCommandEvent&);
+	void SetPreview(wxCommandEvent&);
 	
 	void SaveFile(wxCommandEvent&);
 	void SaveFileAs(wxCommandEvent&);

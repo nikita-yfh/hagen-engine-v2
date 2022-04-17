@@ -127,15 +127,17 @@ Image *Level::LoadImage(const rapidjson::Value &value) {
 	const char *texture;
 	if(!jsonutils::CheckObject(value) ||
 		!jsonutils::GetMember(value, "id", id) ||
-		!jsonutils::GetMember(value, "bindBody", body) ||
 		!jsonutils::GetMember(value, "texture", texture) ||
 		!jsonutils::GetMember(value, "position", image->position) ||
 		!jsonutils::GetMember(value, "angle", image->angle) ||
 		!jsonutils::GetMember(value, "layer", image->layer) ||
 		!jsonutils::GetMember(value, "repeat", image->repeat))
 		return nullptr;
+	if(value.HasMember("bindBody") && !jsonutils::GetMember(value, "bindBody", body))
+		return nullptr;
+	if(body)
+		image->bindBody = FindBody(body);
 	image->hash = String::Hash(id);
-	image->bindBody = FindBody(body);
 	image->texture = resManager.LoadResource<Texture>(texture);
 	AddImage(image);
 	return image;
@@ -189,17 +191,24 @@ bool Level::FromJSON(const rapidjson::Value &value) {
 	return true;
 }
 b2Body *Level::FindBody(const char *id) {
-	uint32_t hash = String::Hash(id);
+	hash_t hash = String::Hash(id);
 	for(b2Body *body = GetBodyList(); body; body = body->GetNext())
 		if(body->GetUserData().hash == hash)
 			return body;
 	return nullptr;
 }
 b2Joint *Level::FindJoint(const char *id) {
-	uint32_t hash = String::Hash(id);
+	hash_t hash = String::Hash(id);
 	for(b2Joint *joint = GetJointList(); joint; joint = joint->GetNext())
 		if(joint->GetUserData().hash == hash)
 			return joint;
+	return nullptr;
+}
+Image *Level::FindImage(const char *id) {
+	hash_t hash = String::Hash(id);
+	for(Image *image = GetImageList(); image; image = image->GetNext())
+		if(image->hash == hash)
+			return image;
 	return nullptr;
 }
 void Level::Render() const {
@@ -215,6 +224,7 @@ void Level::Render() const {
 	}
 }
 void Level::Update(float time) {
-	Step(time, 8, 8);
+	Step(time, 16, 16);
+	const b2Vec2 &position = FindBody("needBox")->GetPosition();
 }
 	

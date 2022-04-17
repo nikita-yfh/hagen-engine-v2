@@ -16,8 +16,13 @@ void Poly::ClearPoints(){
 }
 void Poly::AddPoint(b2Vec2 _point){
 	Point *point = new Point(_point);
-	point->next = points;
-	points = point;
+	if(points){
+		Point *last = points;
+		while(last->next)
+			last = last->next;
+		last->next = point;
+	}else
+		points = point;
 }
 
 int Poly::GetPointCount() const{
@@ -92,20 +97,22 @@ bool Poly::UpdatePoints(const Mouse &_mouse){
 	for(Point *point=points;point;point=point->next)
 		if(UpdatePoint(mouse,index++,*point))
 			return true;
-	for(Point *p1=points;p1;p1=p1->next){
-		Point *p2=p1->next;
-		if(p2==nullptr)p2=points;
-		b2Vec2 point((*p1+*p2)/2.0f);
-		if(*p1==*p2){ //delete p2
-			Point *child=p2->next;
-			delete p2;
-			p1->next=child;
-		}
-		if(UpdatePoint(mouse,index++,point)){
-			p1->next=new Point(point);
-			p1->next->next=p2;
-			selected=index-GetPointCount()+1;
-			return true;
+	if(IsSelected()) {
+		for(Point *p1=points;p1;p1=p1->next){
+			Point *p2=p1->next;
+			if(p2==nullptr)p2=points;
+			b2Vec2 point((*p1+*p2)/2.0f);
+			if(*p1==*p2){ //delete p2
+				Point *child=p2->next;
+				delete p2;
+				p1->next=child;
+			}
+			if(UpdatePoint(mouse,index++,point)){
+				p1->next=new Point(point);
+				p1->next->next=p2;
+				selected=index-GetPointCount()+1;
+				return true;
+			}
 		}
 	}
 	return UpdateBody(mouse);

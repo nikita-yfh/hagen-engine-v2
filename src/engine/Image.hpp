@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include "Texture.hpp"
+#include "String.hpp"
 #include "b2_body.h"
 
 class Image {
@@ -20,7 +21,7 @@ private:
 
 	Image() {};
 
-	uint32_t hash;
+	hash_t hash;
 
 	b2Vec2 position;
 	float angle;

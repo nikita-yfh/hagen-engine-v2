@@ -67,6 +67,7 @@ bool Engine::CreateWindow(const GameConfig &config){
 	const GraphicsSettings &graphics = settings.graphics;
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,
 			graphics.doubleBuffer);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,
 			graphics.MSAASamples);
 	SDL_GL_SetSwapInterval(graphics.verticalSync);
@@ -158,11 +159,17 @@ void Engine::Run() {
 	do{
 		if(state == State::Restart)
 			ApplySettingsNow();
+		uint32_t prevTime = SDL_GetTicks();
 		while (state == State::Run) {
 			ProcessEvents();
 			Render();
+
+			uint32_t time = SDL_GetTicks() - prevTime;
+			LogF(LEVEL_DEBUG, "%d", time);
+			prevTime = SDL_GetTicks();
+
 			if(level)
-				level->Update(1.0f/60.0f);
+				level->Update(time / 1000.0f);
 		}
 	} while (state == State::Restart);
 }

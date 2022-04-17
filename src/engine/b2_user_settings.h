@@ -1,19 +1,22 @@
+#pragma once
+
 #include <stdarg.h>
 #include <stdint.h>
+#include "String.hpp" // hash_t
 
 #define b2_lengthUnitsPerMeter 1.0f
 #define b2_maxPolygonVertices	8
 
 struct b2BodyUserData {
-	uint32_t hash;
+	hash_t hash;
 };
 
 struct b2FixtureUserData {
-	uint32_t hash;
+	hash_t hash;
 };
 
 struct b2JointUserData {
-	uint32_t hash;
+	hash_t hash;
 };
 
 B2_API void* b2Alloc_Default(int32 size);

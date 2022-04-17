@@ -1,13 +1,13 @@
 #include "String.hpp"
 
 // MurmurHash2
-uint32_t String::Hash(const char *data) {
+hash_t String::Hash(const char *data) {
 	uint32_t len = strlen(data);
 
 	const uint32_t seed = 0x57FC36BE;
 	const uint32_t m = 0x5bd1e995;
 	const int r = 24;
-	uint32_t h = seed ^ len;
+	hash_t h = seed ^ len;
 
 	while(len >= 4) {
 		uint32_t k = *(uint32_t *)data;

@@ -26,7 +26,8 @@ bool Texture::Load(SDL_RWops *file){
 	width = surface->w;
 	height = surface->h;
 
-	SetFiltering(GL_NEAREST);
+	SetMagFiltering(GL_NEAREST);
+	SetMinFiltering(GL_LINEAR);
 	SetWrapX(GL_REPEAT);
 	SetWrapY(GL_REPEAT);
 	glTexImage2D(type, 0, GL_RGBA, width, height, 0,

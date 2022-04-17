@@ -53,7 +53,7 @@ bool Camera::UpdateGrid(bool shift, bool ctrl){
 }
 
 b2Vec2 Camera::ConvertToPixels(const b2Vec2 &p) const{
-	return (p-position)*zoom;
+	return zoom*(p-position);
 }
 b2Vec2 Camera::ConvertFromPixels(const b2Vec2 &p) const{
 	return position+p/zoom;

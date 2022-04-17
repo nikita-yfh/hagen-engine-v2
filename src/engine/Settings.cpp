@@ -70,6 +70,7 @@ void GraphicsSettings::SaveSettings(rapidjson::Value &value, jsonutils::Allocato
 	value.AddMember("doubleBuffer",	doubleBuffer, allocator);
 	value.AddMember("verticalSync", verticalSync, allocator);
 	value.AddMember("maxFPS", maxFPS, allocator);
+	value.AddMember("MSAASamples", MSAASamples, allocator);
 	value.AddMember("windowMode", jsonutils::StringType(windowModes[windowMode]), allocator);
 }
 bool GraphicsSettings::LoadSettings(const rapidjson::Value &value){
@@ -79,6 +80,7 @@ bool GraphicsSettings::LoadSettings(const rapidjson::Value &value){
 		jsonutils::GetMember(value, "doubleBuffer", doubleBuffer) &&
 		jsonutils::GetMember(value, "verticalSync", verticalSync) &&
 		jsonutils::GetMember(value, "maxFPS", maxFPS) &&
+		jsonutils::GetMember(value, "MSAASamples", MSAASamples) &&
 		jsonutils::GetMember(value, "windowMode", windowModeStr) &&
 		(windowMode = jsonutils::GetEnum(windowModeStr, windowModes, 3)) != -1;
 }

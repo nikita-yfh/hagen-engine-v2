@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+typedef uint32_t hash_t;
+
 class String {
 public:
 	String() : str(nullptr) {};
@@ -53,12 +55,12 @@ public:
 		if(str)
 			free(str);
 	}
-	inline uint32_t Hash() const{
+	inline hash_t Hash() const{
 		return Hash(str);
 	}
 
 	static String Format(const char *format, ...);
-	static uint32_t Hash(const char *str);
+	static hash_t Hash(const char *str);
 private:
 	void Allocate(const char *src){
 		str = (char*)malloc(strlen(src) + 1);

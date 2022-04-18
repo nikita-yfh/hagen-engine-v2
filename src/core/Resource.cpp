@@ -59,8 +59,7 @@ bool JSONResource::Load(SDL_RWops *file){
 	TextResource textRes;
 	if(!textRes.Load(file))
 		return false;
-	document.Parse(textRes.data, textRes.size);
-	return LogError(textRes.data);
+	return Load(textRes.data, textRes.size);
 }
 bool JSONResource::Load(const char *text, size_t size){
 	document.Parse(text, size);

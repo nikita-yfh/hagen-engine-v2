@@ -120,7 +120,7 @@ static bool LoadBodyDef(b2BodyDef *def, const rapidjson::Value &value) {
 		jsonutils::GetMember(value, "enabled", def->enabled) &&
 		jsonutils::GetMember(value, "gravityScale", def->gravityScale);
 }
-Image *Level::LoadImage(const rapidjson::Value &value) {
+Image *Level::LoadImage(const rapidjson::Value &value, ResourceManager &resManager) {
 	Image *image = new Image();
 	const char *id;
 	const char *body;
@@ -150,9 +150,6 @@ void Level::AddImage(Image *image) {
 	images = image;
 }
 
-Level::Level(ResourceManager &_resManager)
-	: resManager(_resManager), b2World(b2Vec2_zero) {}
-
 b2Body *Level::LoadBody(const rapidjson::Value &value) {
 	b2BodyDef bodyDef;
 	if(!LoadBodyDef(&bodyDef, value))
@@ -169,7 +166,7 @@ b2Body *Level::LoadBody(const rapidjson::Value &value) {
 	}
 	return body;
 }
-bool Level::FromJSON(const rapidjson::Value &value) {
+bool Level::FromJSON(const rapidjson::Value &value, ResourceManager &resManager) {
 	b2Vec2 gravity;
 	if(!jsonutils::CheckObject(value) ||
 		!jsonutils::GetMember(value, "gravity", gravity) ||
@@ -186,7 +183,7 @@ bool Level::FromJSON(const rapidjson::Value &value) {
 		if(!LoadBody(bodyArray[i]))
 			return false;
 	for(int i = 0; i < imageArray.Size(); i++)
-		if(!LoadImage(imageArray[i]))
+		if(!LoadImage(imageArray[i], resManager))
 			return false;
 	return true;
 }

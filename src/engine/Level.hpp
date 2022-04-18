@@ -9,12 +9,12 @@
 
 class Level : public b2World {
 public:
-	Level(ResourceManager &resManager);
+	Level() : b2World(b2Vec2_zero) {}
 
 	Image* GetImageList();
 	const Image* GetImageList() const;
 
-	bool FromJSON(const rapidjson::Value &value);
+	bool FromJSON(const rapidjson::Value &value, ResourceManager &resManager);
 
 	b2Body *FindBody(const char *id);
 	b2Joint *FindJoint(const char *id);
@@ -26,12 +26,11 @@ private:
 	void AddImage(Image *image);
 	b2Body *LoadBody(const rapidjson::Value &value);
 	b2Joint *LoadJoint(const rapidjson::Value &value);
-	Image *LoadImage(const rapidjson::Value &value);
+	Image *LoadImage(const rapidjson::Value &value, ResourceManager &resManager);
 
 	Camera camera;
 	float textureScale;
 	Image *images;
-	ResourceManager &resManager;
 };
 
 inline Image *Level::GetImageList() {

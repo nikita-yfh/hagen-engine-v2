@@ -43,6 +43,13 @@ public:
 			LoadResource(path, &res) &&
 			object.FromJSON(res.document);
 	}
+	template<class T>
+	bool LoadJSONExt(const char *path, T &object){
+		JSONResource res;
+		return
+			LoadResource(path, &res) &&
+			object.FromJSON(res.document, *this);
+	}
 private:
 	void AddResource(const char *path, Resource *res);
 

@@ -40,8 +40,8 @@ Engine::Engine(const char*const*storages, size_t num)
 	interface.AddWindow(new GUIConsole(resManager, L));
 	interface.AddWindow(new GUISettings(this, settings));
 
-	level = new Level(resManager);
-	if(!resManager.LoadJSON("levels/1.json", *level))
+	level = new Level();
+	if(!resManager.LoadJSONExt("levels/1.json", *level))
 		return;
 
 	state = State::Run;
